@@ -1,0 +1,123 @@
+<project basedir="/home/bsutton/dev/NoojeeClick/" default="all">
+	<description>
+		Builds the Noojee Click xpi file ready for deployment.
+	</description>
+
+	<property name="src" value="${basedir}/srcExtension" />
+	<property name="build" value="${basedir}/build" />
+	<property name="version" value="1.1 alpha3" />
+	<property name="versionDir" value="${basedir}/versions/${version}" />
+	<property name="xpiName" value="noojeeclick-${version}.xpi" />
+	<property name="updateURL" value="&lt;em:updateURL&gt;https://www.noojee.com.au/noojeeclick/update.rdf&lt;/em:updateURL&gt;" />
+
+	<fileset id="includes" dir="${src}">
+		<include name="**/*.xml" />
+		<include name="**/*.js" />
+		<include name="**/*.png" />
+		<include name="**/*.manifest" />
+		<include name="**/*.xul" />
+		<include name="${versionDir}/updateinfo${version}.xml" />
+		<include name="update.rdf" />
+		<include name="install.rdf" />
+		<exclude name="**/*.xpi" />
+		<exclude name="**/.*" />
+	</fileset>
+
+
+	<target name="init" depends="filter">
+		<tstamp />
+	</target>
+
+	<target name="filter">
+		<description>
+			Sub target which is responsible for substituting tokens found in files
+		</description>
+		<mkdir dir="${versionDir}" />
+		<copy file="${build}/templates/update.rdf" tofile="${src}/update.rdf" overwrite="True">
+			<filterchain>
+				<replacetokens>
+					<token key="version" value="${version}" />
+				</replacetokens>
+			</filterchain>
+		</copy>
+	</target>
+
+	<target name="installMozilla">
+		<description>
+			Sub target which is responsible for substituting tokens found in files
+		</description>
+		<mkdir dir="${versionDir}" />
+		<copy file="${build}/templates/install.rdf" tofile="${src}/install.rdf" overwrite="True">
+			<filterchain>
+				<replacetokens>
+					<token key="version" value="${version}" />
+					<token key="updateURL" value="" />
+				</replacetokens>
+			</filterchain>
+		</copy>
+	</target>
+
+	<target name="installLocal">
+		<description>
+			Sub target which is responsible for substituting tokens found in files
+		</description>
+		<mkdir dir="${versionDir}" />
+		<copy file="${build}/templates/install.rdf" tofile="${src}/install.rdf" overwrite="True">
+			<filterchain>
+				<replacetokens>
+					<token key="version" value="${version}" />
+					<token key="updateURL" value="${updateURL}" />
+				</replacetokens>
+			</filterchain>
+		</copy>
+	</target>
+
+	<target name="mozilla" depends="installMozilla">
+		<description>
+			Builds an xpi suitable for hosting on the mozilla plugin website.
+		</description>
+		<echo>Building mozilla</echo>
+		<mkdir dir="${versionDir}/mozilla" />
+		<delete file="${versionDir}/mozilla/${xpiName}" />
+		<jar basedir="${src}" duplicate="fail" excludes="**/*" destfile="${versionDir}/mozilla/${xpiName}">
+			<fileset refid="includes" />
+		</jar>
+	</target>
+
+	<target name="local" depends="installLocal">
+		<description>
+			Builds an xpi suitable for hosting on the mozilla plugin website.
+		</description>
+		<echo>Building local</echo>
+		<mkdir dir="${versionDir}/local" />
+		<delete file="${versionDir}/local/${xpiName}" />
+		<jar basedir="${src}" duplicate="fail" excludes="**/*" destfile="${versionDir}/local/${xpiName}">
+			<fileset refid="includes" />
+		</jar>
+	</target>
+
+	<target name="all" depends="init,local,mozilla">
+		<!-- Install noojee click into firefox -->
+		<exec dir="." executable="/bin/bash">
+			<arg value="--login" />
+			<arg value="-i" />
+			<arg value="-c" />
+			<arg value="cd /home/bsutton/dev/NoojeeClick/; ./devinstall.sh" />
+		</exec>
+
+		<!-- kill firefox as we must restart after installing xul -->
+		<exec dir="." executable="/bin/bash">
+			<arg value="--login" />
+			<arg value="-i" />
+			<arg value="-c" />
+			<arg value="killall firefox-3.5" />
+		</exec>
+
+		
+		<!-- now restart firefox -->
+		<exec dir="." executable="/bin/bash">
+			<arg value="/home/bsutton/dev/NoojeeClick/restartfirefox.sh" />
+		</exec>
+
+	</target>
+</project>
