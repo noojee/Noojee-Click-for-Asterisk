@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xhtml>
+<body>
+<h1>Release notes</h1>
+<p>Version 0.5.0
+This release includes a number of enhancements as well as a number of bug fixes.
+<b>Enhancements</b>
+Added context menus (right click) to allow:
+* Dialing selected text
+* Adding a dial pattern based on selected text
+* Dialing a number differently
+
+Now sets the 'callerid' to the phone number being dialled so it is displayed on the users handset.
+Added experimental support for Noojee Vision integration.
+Changed the default of 'Auto Answer' to true, as most people should use auto answer.
+Added abiliy to set the technology in the extension (defaults to SIP/).
+You can use this to set your home or mobile (cell) as the extension by setting Local/XXXXXXX where XXXXXX is your mobile or home number.
+Be careful as when using Local/ both ends ring simultaneously so you need to answer you moble quickly.
+
+<b>Bug Fixes</b>
+Fixed issue with dialing from clipboard which wasn't adding the international prefix when needed.
+Renamed 'log' to 'njlog' to avoid conflicts with other extensions.
+Resolved issue with some boolean preferences causing Noojee Click to start if no default value specified.
+Removed bug where 'context' was not being initialized under some circumstances.
+Fixed a bug where the 'channel' was being passed twice during the dial.
+Fixed a bug where the Dial Prefix was being ignored.
+
+<b>Known Issues </b>
+When adding a dial pattern which is an extended version of an existing pattern the new pattern doesn't take affect immediately. 
+You need to refresh the page using the browsers 'refresh' button.
+I still can't get the help button to display help in an external web browser so I've disabled it.
+</p> 
+</body>
+</xhtml>
