@@ -1,10 +1,15 @@
-Components.utils.import("resource://noojeeclick/prompts.jsm");
-Components.utils.import("resource://noojeeclick/util.jsm");
-Components.utils.import("resource://noojeeclick/prefs.jsm");
-Components.utils.import("resource://noojeeclick/phonepatterns.jsm");
+// List of tags whose children we will scan looking for phone numbers
+const
+tagsOfInterest = [ "a", "abbr", "acronym", "address", "applet", "b", "bdo",
+		"big", "blockquote", "body", "caption", "center", "cite", "code", "dd",
+		"del", "div", "dfn", "dt", "em", "fieldset", "font", "form", "h1",
+		"h2", "h3", "h4", "h5", "h6", "i", "iframe", "ins", "kdb", "li",
+		"object", "pre", "p", "q", "samp", "small", "span", "strike", "s",
+		"strong", "sub", "sup", "td", "th", "tt", "u", "var" ];
 
+var xpath = "//text()[(parent::" + tagsOfInterest.join(" or parent::") + ")]";
 
-function onRefresh() 
+function onRefresh()
 {
 	var documentList = getWindowList();
 
@@ -13,10 +18,10 @@ function onRefresh()
 
 }
 
-function onRefreshOne(doc) 
+function onRefreshOne(doc)
 {
 	njdebug("render", "onRefresh called for doc=" + doc);
-	try 
+	try
 	{
 		// First remove any clicks.
 		var spans = doc.getElementsByName("noojeeClick");
@@ -25,7 +30,7 @@ function onRefreshOne(doc)
 
 		var removalSpanArray = [];
 		var removedSpanItemCount = 0;
-		for ( var i = spans.length - 1; i >= 0; i--) 
+		for ( var i = spans.length - 1; i >= 0; i--)
 		{
 			var removalImageArray = [];
 			var removedImageItemCount = 0;
@@ -34,66 +39,69 @@ function onRefreshOne(doc)
 
 			var children = span.childNodes;
 			var insertionPoint = span;
-			for ( var j = children.length - 1; j >= 0; j--) 
+			for ( var j = children.length - 1; j >= 0; j--)
 			{
 				var child = children[j];
 				var deleted = false;
-				if (child.nodeName == "IMG") 
+				if (child.nodeName == "IMG")
 				{
-					if (child.name == "noojeeClickImg") 
+					if (child.name == "noojeeClickImg")
 					{
 						removalImageArray[removedImageItemCount++] = child;
 						deleted = true;
 					}
 				}
-				if (deleted == false) 
+				if (deleted == false)
 				{
 					parent.insertBefore(child, insertionPoint);
 					insertionPoint = child;
 				}
 			}
 
-			for ( var k = 0; k < removedImageItemCount; k++) 
+			for ( var k = 0; k < removedImageItemCount; k++)
 			{
 				span.removeChild(removalImageArray[k]);
 			}
 			removalSpanArray[removedSpanItemCount++] = span;
 		}
 
-		for ( var l = 0; l < removedSpanItemCount; l++) 
+		for ( var l = 0; l < removedSpanItemCount; l++)
 		{
 			if (removalSpanArray[l].parentNode != null)
 				removalSpanArray[l].parentNode.removeChild(removalSpanArray[l]);
 			else
-				njdebug("render", "unexpected null parentNode for: " + removalSpanArray[l]);
+				njdebug("render", "unexpected null parentNode for: "
+						+ removalSpanArray[l]);
 		}
 
 		// Now add the Noojee Dial icons back in.
-		if (getBoolValue("enabled") == true) {
+		if (getBoolValue("enabled") == true)
+		{
 			addClickToDialLinks(doc);
 		}
 
-	} catch (e) {
+	} catch (e)
+	{
 		njlog(e);
-		prompt.exception("onRefreshOne", e);
+		showException("onRefreshOne", e);
 	}
 }
 
-
-
-function addClickToDialLinks(document) 
+function addClickToDialLinks(document)
 {
 	if (excluded(document) == true)
 		njdebug("render", "excluded=" + document.location.href);
-	else 
+	else
 	{
-		njdebug("render", "rendering: " + (document.location ? document.location.href : document));
-		
-		pattern = getValue("pattern");
-		delimiters = getValue("delimiters");
+		njdebug("render", "rendering: "
+				+ (document.location ? document.location.href : document));
+
+		var pattern = getValue("pattern");
+		var delimiters = getValue("delimiters");
 		njdebug("render", "pattern =" + pattern);
 
-		if (pattern != null && trim(pattern).length != 0) {
+		if (pattern != null && trim(pattern).length != 0)
+		{
 			// Get the list of tags that we are gong to search for matching
 			// phone numbers.
 			var candidates = document.evaluate(xpath, document, null,
@@ -103,22 +111,40 @@ function addClickToDialLinks(document)
 			var trackRegex = new RegExp(transposePattern(pattern), "ig");
 			njdebug("render", "regex=" + trackRegex);
 
-			// Loop through and test every candiate for a match.
-			for ( var cand = null, i = 0; (cand = candidates.snapshotItem(i)); i++) {
+			// Loop through and test every candidate for a match.
+			for ( var cand = null, i = 0; (cand = candidates.snapshotItem(i)); i++)
+			{
 
 				njdebug("render", "examining node=" + cand.nodeValue);
-				if (trackRegex.test(cand.nodeValue)) 
+				if (trackRegex.test(cand.nodeValue))
 				{
 					njdebug("render", "cand=" + cand);
+
+					// Check that the node isn't owned by a document which is in
+					// design mode (i.e. an editor).
+					// If it is then we skip the node.
+					if (document.getElementById(cand.id) != null)
+					{
+						var owner = document.getElementById(cand.id).ownerDocument;
+						if (owner.designMode == "on" || owner.contentEditable == "on")
+						{
+							njdebug("render", "Found node in designMode, skipping");
+							continue;
+						}
+					}
+					else
+						njdebug("render", "Can't find owner for cand");
+
 					// First check that the parent isn't already a noojeeClick
 					// element
 					// In some case we appear to be processing the document
 					// twice
 					// but I've not found a simple way to suppress it so we do
 					// this simple check
-					if (cand.parentNode != null && cand.parentNode.getAttribute("name") != "noojeeClick") 
+					if (cand.parentNode != null
+							&& cand.parentNode.getAttribute("name") != "noojeeClick")
 					{
-						// Create an artificial parent span to insert the rework
+						// Create an artificial parent span to insert the reworked
 						// text
 						var span = document.createElement("span");
 						span.setAttribute("name", "noojeeClick");
@@ -138,10 +164,10 @@ function addClickToDialLinks(document)
 						// which we wrap in an image tag with the noojee click
 						// icon.
 						// As we go we rebuild the text into a single new parent
-						// span ready for re-inserting into the orginal parent
+						// span ready for re-inserting into the original parent
 						// with any noojee click images inserted.
 						for ( var match = null, lastLastIndex = 0; (match = trackRegex
-								.exec(source));) 
+								.exec(source));)
 						{
 							// OK so we having a matching string
 							njdebug("render", "match=" + match);
@@ -166,19 +192,19 @@ function addClickToDialLinks(document)
 							// move on.
 
 							// check the preceding character
-							if (match.index > 0) 
+							if (match.index > 0)
 							{
 								//njlog("preceeding=" + source.substring(
 								//	match.index - 1, match.index));
 								if ("0123456789+-,.".indexOf(source.substring(
-										match.index - 1, match.index)) != -1) 
+										match.index - 1, match.index)) != -1)
 								{
 									// the non match had an invalid character so 
 									// our number mustn't be a phone number.
 									continue;
 								}
 								if (delimiters.indexOf(source.substring(
-										match.index - 1, match.index)) != -1) 
+										match.index - 1, match.index)) != -1)
 								{
 									// the non match had an invalid character so 
 									// our number mustn't be a phone number.
@@ -187,14 +213,14 @@ function addClickToDialLinks(document)
 							}
 
 							// check the following character.
-							if (match.index + match[0].length < source.length - 1) 
+							if (match.index + match[0].length < source.length - 1)
 							{
 								//njlog("following=" + source.substring(
 								//	match.index + match[0].length, match.index + match[0].length + 1));
 
 								if ("0123456789+-,.".indexOf(source.substring(
 										match.index + match[0].length,
-										match.index + match[0].length + 1)) != -1) 
+										match.index + match[0].length + 1)) != -1)
 								{
 									// the non match had an invalid character so 
 									// our number mustn't be a phone number.
@@ -202,7 +228,7 @@ function addClickToDialLinks(document)
 								}
 								if (delimiters.indexOf(source.substring(
 										match.index + match[0].length,
-										match.index + match[0].length + 1)) != -1) 
+										match.index + match[0].length + 1)) != -1)
 								{
 									// the non match had an invalid character so 
 									// our number mustn't be a phone number.
@@ -229,8 +255,11 @@ function addClickToDialLinks(document)
 											"chrome://noojeeclick/content/images/micro.png");
 							img.setAttribute("name", "noojeeClickImg");
 							img.setAttribute("title", match[0]);
-							img.addEventListener("onmouseover", onMouseOver, true);
-							img.addEventListener("onmouseout", onMouseOut, true);
+							img.addEventListener("onmouseover", onMouseOver,
+									true);
+							img
+									.addEventListener("onmouseout", onMouseOut,
+											true);
 							img.addEventListener("click", onDialHandler, true);
 							img.setAttribute("PhoneNo", match[0]);
 							clickSpan.appendChild(text);
@@ -253,25 +282,25 @@ function addClickToDialLinks(document)
  * Determines if a document should be excluded by check if its URL matches any
  * of the URLs laid out in the excuded preferences.
  */
-function excluded(doc) 
+function excluded(doc)
 {
 	var excluded = false;
 
 	if (doc.location != null)
 	{
 		njdebug("render", "checking exclusion for url=" + doc.location.href);
-	
+
 		var exclusions = getValue("exclusions");
-		if (exclusions != null && exclusions.length != 0) 
+		if (exclusions != null && exclusions.length != 0)
 		{
 			njdebug("render", "exclusions=" + exclusions);
 			exclusions = exclusions.split("\n");
-			for ( var i = 0; i < exclusions.length; i++) 
+			for ( var i = 0; i < exclusions.length; i++)
 			{
 				var exclusion = trim(exclusions[i]);
-				if (exclusion.length > 0) 
+				if (exclusion.length > 0)
 				{
-					if (doc.location.href.indexOf(exclusion) == 0) 
+					if (doc.location.href.indexOf(exclusion) == 0)
 					{
 						njdebug("render", "excluded: " + doc.location.href);
 						excluded = true;
@@ -282,6 +311,6 @@ function excluded(doc)
 		} else
 			njdebug("render", "No Exclusions.");
 	}
-	
+
 	return excluded;
 }

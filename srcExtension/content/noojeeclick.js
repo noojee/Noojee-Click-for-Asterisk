@@ -10,20 +10,58 @@
 // If you phone isn't supported then just copy one of the following lines and
 // add your entry. Thats all that is required to support new auto answer headers.
 //
+const
+autoAnswerList = [
+{
+    manufacturer :"Aastra",
+    header :"Call-Info:\\\\; answer-after=0"
+},
+{
+    manufacturer :"GrandStream",
+    header :"Call-Info:\\\\; answer-after=0"
+},
+{
+    manufacturer :"Linksys",
+    header :"Call-Info:\\\\; answer-after=0"
+},
+{
+    manufacturer :"Polycom",
+    header :"Alert-Info: Ring Answer"
+},
+{
+    manufacturer :"Snom",
+    header :"Call-Info:\\\\; answer-after=0"
+},
+{
+    manufacturer :"Yealink",
+    header :"Call-Info:\\\\; answer-after=0"
+}
+];
 
-/** 
-  * set up a namespace to avoid polluting Mozilla's namespace
-  */
-//let noojeeClick = {
+var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
+        .getService(Components.interfaces.nsIConsoleService);
 
-Components.utils.import("resource://noojeeclick/asterisk.jsm");
-Components.utils.import("resource://noojeeclick/constants.jsm");
-Components.utils.import("resource://noojeeclick/prompts.jsm");
-Components.utils.import("resource://noojeeclick/util.jsm");
-Components.utils.import("resource://noojeeclick/prefs.jsm");
-Components.utils.import("resource://noojeeclick/monitor.jsm");
-Components.utils.import("resource://noojeeclick/statusbar.jsm");
+var reportError = Components.utils.reportError;
 
+const
+serverTypeList = [
+{
+    type :"Astmanproxy",
+    description :"Astmanproxy"
+},
+{
+    type :"AJAM",
+    description :"AJAM (Asterisk 1.4+)"
+},
+{
+    type :"NJVision",
+    description :"Noojee Vision"
+} ];
+
+// Not actually used except as a flag to tell us we have already initialized the
+// page.
+const
+css = ".NoojeeClickInstalled { }";
 
 // globals
 var host = '10.10.0.124';
@@ -39,26 +77,31 @@ var initialised = false;
 var loggingEnabled = false
 var enableAutoAnswer = false;
 var handsetType = autoAnswerList[0].manufacturer;
-
+var serverType = serverTypeList[0].type;
 
 var ie = window.document.all
 var ns6 = window.document.getElementById && !window.document.all
 
 
-
+var statusWindow = new dialStatus();
 
 window.addEventListener("load", init, true);
 
+// Login and begin monitoring events
+
+if (gAsterisk == null)
+{
+	gAsterisk = new Asterisk();
+	gAsterisk.init();
+}
 
 function init()
 {
+	// var contextMenu = document.getElementById("contentAreaContextMenu");
+
 	try
 	{
 		njdebug("noojeeclick", "init");
-		prompt.init(window);
-		statusbar.init(window);
-		gAsterisk.init(new XMLHttpRequest(), new DOMParser());
-	
 		/*
 		 * initialise the api so that standard html pages can call us TODO: we
 		 * should probably secure this so that users can control what pages have
@@ -66,6 +109,8 @@ function init()
 		 */
 		njAPIinit();
 		
+		statusWindow = new dialStatus();
+
 		var myListener = new prefListener("extensions.noojeeclick.", function(branch, name)
 		{
 			switch (name)
@@ -96,7 +141,7 @@ function init()
 	catch (e)
 	{
 		njlog(e);
-		prompt.exception("init", e);
+		showException("init", e);
 	}
 
 }
@@ -119,26 +164,25 @@ function onPageLoad(e)
 			// If we can't add the global styles then we have a major problem
 			if (addGlobalStyle(document, css))
 			{
-		
+				getValues();
+				
 				if (getBoolValue("monitor") == true)
 					new Monitor().init(document);
 
 				addClickToDialLinks(document);
 			}
 			else
-				njerror("noojeeclick", "Loading of Styles failed so init terminated");
+				njerror("Loading of Styles failed so init terminated");
 		}
 	}
 	catch (e)
 	{
 		njlog(e);
-		prompt.exception("noojeeclick", e);
+		showException("onPageLoad", e);
 	}
 }
 
-/** Popup a dialog with the selected telephone number
- * and allow the user to edit it before dialing the number
- */
+
 function onDialDifferently(e)
 {
 	njlog('Dial differently');
@@ -147,9 +191,6 @@ function onDialDifferently(e)
 	doDialDifferently(obj);
 }
 
-/**
- * dial the number associated with the click Noojee Click icon
- */
 function onDial(e)
 {
 	njlog("onDial");
@@ -157,27 +198,13 @@ function onDial(e)
 	var phoneNo = obj.getAttribute("phoneNo");
 
 	if (phoneNo == null || phoneNo.length == 0)
-		prompt.alert("Please enter a phone number.");
+		njAlert("Please enter a phone number.");
 	else
-	{
-		if (navigator.onLine)
-		{
-			gAsterisk.dial(phoneNo);
-		}
-		else
-			prompt.alert("The browser must be online in order to dial.");
-	}
-	
-	
+		gAsterisk.dial(phoneNo);
 
 	return true;
 }
 
-/**
- * Answer an incoming call.
- *
- * TODO: actually finish implementing this
- */
 function onAnswer(e)
 {
 	njlog("onAnswer");
@@ -186,276 +213,8 @@ function onAnswer(e)
 	return true;
 }
 
-/**
- * Dial the number currently 'selected' when the user dragged their mouse
- * over a phone number. We confirm the number with the user before dialling.
- *
- */
-function dialSelectionMenuAction()
-{
-	njdebug("noojeeclick", "dialSelectionMenuAction called");
-	var phoneNo = getSelectedText();
-	if (phoneNo == null || phoneNo.length == 0)
-	{
-		prompt.alert("Please select a phone number first");
-		return;
-	}
 
-	var result = prompt.prompt("Confirm number to dial.", phoneNo);
-	if (result.OK == true && result.value != null)
-	{
-		phoneNo = result.value;
-		if (phoneNo.length == 0)
-			prompt.alert("Please enter a phone number.");
-		else if (navigator.onLine)
-		{
-			gAsterisk.dial(phoneNo);
-		}
-		else
-			prompt.alert("The browser must be online in order to dial.");
-	}
-}
 
-/** 
- * Dial the number currently on the clipboard.
- * We start by stripping any non-phone number characters
- * display the remainder (hopfully a phone number) to the 
- * user and allow them to click 'dial' to dial the number.
- * TODO: some allowed characters such as '+' may only occur
- *  once and at the begining of the number so we should
- *  strip subsequent characters out.
- */
-function dialFromClipboardMenuAction()
-{
-	var phoneNo = getClipboardText();
-
-	var result = prompt.prompt("Confirm number to dial.", phoneNo);
-	if (result.OK == true && result.value != null)
-	{
-		phoneNo = result.value;
-		if (phoneNo.length == 0)
-			prompt.alert("Please enter a phone number.");
-		else if (navigator.onLine)
-		{
-			gAsterisk.dial(phoneNo);
-		}
-		else
-			prompt.alert("The browser must be online in order to dial.");
-
-	}
-}
-
-/**
- * Display the click phone number and allow the user
- * to edit it before dialing the number.
- */
-function dialDifferentlyMenuAction(target)
-{
-	target = document.popupNode;
-	njdebug("noojeeclick", "target=" + target);
-
-	// if (target.onImage)
-	{
-		doDialDifferently(target);
-	}
-	// else
-	// prompt.alert("Dial differently only works on the Noojee Click dial icon");
-}
-
-/**
- * Display the click phone number and allow the user
- * to edit it before dialing the number.
- */
-function doDialDifferently(target)
-{
-	var phoneNo = target.getAttribute("phoneNo");
-	var result = prompt.prompt("Enter number to dial.", phoneNo);
-	if (result.OK == true && result.value != null)
-	{
-		phoneNo = result.value;
-		if (phoneNo.length == 0)
-			prompt.alert("Please enter a phone number.");
-		else if (navigator.onLine)
-		{
-			gAsterisk.dial(phoneNo);
-		}
-		else
-			prompt.alert("The browser must be online in order to dial.");
-
-	}
-}
-
-/**
- * Handler for the dial menu item.
- */
-
-function dialMenuAction()
-{
-	var phoneNo = "";
-	var result = prompt.prompt("Enter number to dial.", phoneNo);
-	if (result.OK == true && result.value != null)
-	{
-		phoneNo = result.value;
-		if (phoneNo.length == 0)
-			prompt.alert("Please enter a phone number.");
-		else if (navigator.onLine)
-		{
-			gAsterisk.dial(phoneNo);
-		}
-		else
-			prompt.alert("The browser must be online in order to dial.");
-
-	}
-}
-
-/**
- * Handler for the 'redial' menu item.
- */
-function redialMenuAction()
-{
-	njdebug("noojeeclick", "redialMenuAction called");
-	var phoneNo = getValue("lastDialed");
-	if (phoneNo != null && phoneNo.length > 0)
-	{
-		gAsterisk.dial(phoneNo);
-	}
-	else
-		prompt.alert("Redial string is empty."); // this shouldn't happen.
-}
-
-/**
- * Allows a user to 'select' a non-recognized phone number
- * and automatically generates a pattern that number.
- * The pattern is show to the user for any adjustments
- * and then added to the current list of Patterns.
- */
-function onAddDialPatternMenuAction()
-{
-	var fault = false;
-	var phoneNo = getRawSelectedText();
-	if (phoneNo == null || trim(phoneNo).length == 0)
-	{
-		prompt.alert("Please select a phone number first");
-		return;
-	}
-
-	// transpose the phone number into a pattern
-	phoneNo = trim(phoneNo);
-	var newPattern = "";
-	var delimiters = getValue("delimiters");
-	for ( var i = 0; i < phoneNo.length; i++)
-	{
-		if (delimiters.indexOf(phoneNo[i]) != -1)
-			newPattern += phoneNo[i];
-		else
-		{
-			switch (phoneNo[i])
-			{
-				case '0':
-				case '1':
-				case '2':
-				case '3':
-				case '4':
-				case '5':
-				case '6':
-				case '7':
-				case '8':
-				case '9':
-					newPattern += 'X';
-					break;
-				case '+':
-					newPattern += '+';
-					break;
-				case '.':
-					newPattern += '.';
-					break;
-				case ' ':
-					newPattern += ' ';
-					break;
-				default:
-					prompt.alert("Unsupported character found in phone number: '" + phoneNo[i] + "'");
-					fault = true;
-					break;
-
-			}
-		}
-	}
-
-	if (!fault)
-	{
-		var result = prompt.prompt("Add pattern for " + phoneNo + "?", newPattern);
-		if (result.OK == true && result.value != null)
-		{
-			newPattern  = result.value;
-
-			if (newPattern.length != 0)
-			{
-				var patternList = getValue("pattern");
-				patternList += "\n" + newPattern;
-				setValue("pattern", patternList);
-				pattern = newPattern;
-				onRefresh();
-			}
-		}
-	}
-}
-
-function getSelectedText()
-{
-	var selectedText = extractPhoneNo(trim(getRawSelectedText()));
-
-	return selectedText;
-}
-
-function getRawSelectedText()
-{
-	var selectedText = "";
-	selectedText = document.commandDispatcher.focusedWindow.getSelection().toString();
-	return selectedText;
-}
-
-function getClipboardText()
-{
-	var pasteText = "";
-	var clip = Components.classes["@mozilla.org/widget/clipboard;1"].getService(Components.interfaces.nsIClipboard);
-	if (!clip)
-		return false;
-	var trans = Components.classes["@mozilla.org/widget/transferable;1"]
-	        .createInstance(Components.interfaces.nsITransferable);
-	if (!trans)
-		return false;
-
-	trans.addDataFlavor("text/unicode");
-
-	clip.getData(trans, clip.kGlobalClipboard);
-	var str = new Object();
-	var strLength = new Object();
-	try
-	{
-		trans.getTransferData("text/unicode", str, strLength);
-		if (str)
-			str = str.value.QueryInterface(Components.interfaces.nsISupportsString);
-
-		var temp = "";
-		if (str)
-			temp = str.data.substring(0, strLength.value / 2);
-
-		pasteText = trim(extractPhoneNo(temp));
-
-	}
-	catch (e)
-	{
-		// Clipboard is empty (we think)
-		njlog("clipboard access threw exception, may just be empty " + e);
-	}
-
-	return pasteText;
-}
-
-/**
- * Handler for the context menu. 
- * Hides any menu items which currently arn't valid
- */
 function showMenuHideItems(event)
 {
 	var visibleItems = 3;
@@ -521,47 +280,74 @@ function showMenuHideItems(event)
 	}
 	catch (e)
 	{
-		prompt.exception("showMenuHideItems", e);
-		prompt.error(e);
+		showException("showMenuHideItems", e);
+		njAlert(e);
 	}
 
 }
 
-// Display tooltip
-function onMouseOver(e)
-{
-	njdebug("noojeeclick", "onMouseOver");
-}
 
-// Display tooltip
-function onMouseOut(e)
+function dialStatus()
 {
-	njdebug("noojeeclick", "onMouseOut");
-}
-
-// Just do the simple dial
-function onDialHandler(e)
-{
-	njdebug("noojeeclick", "onDialHandler");
-	try
+	this.updateStatus = function(status)
 	{
-		njdebug("noojeeclick", "onDialHandler");
-
-		if (!e)
-			e = window.event;
-		if (!isRClick(e))
+		var statusWindow = window.document.getElementById('noojeeStatus');
+		
+		if (statusWindow != null)
 		{
-			onDial(e);
+			if (status == null || trim(status).length == 0)
+			{
+				// Hide the status window when not in use.
+				statusWindow.hidden = true;
+				statusWindow.label = "";
+			}
+			else
+			{
+				statusWindow.hidden = false;
+				statusWindow.label = status;
+			}
 		}
 	}
-	catch (e)
-	{
-		njlog(e);
-		prompt.exception("onDialHandler", e);
-	}
+	
+	
+} ;
+
+function showHangupIcon()
+{
+	njdebug("noojeeclick", "showHangupIcon");
+	var menuIcon = window.document.getElementById("noojeeMenu");
+	menuIcon.hidden = true;
+	
+	var hangupIcon= window.document.getElementById("noojeeHangup");
+	hangupIcon.hidden = false;
+	
+// // change the status bar icon to the hangup icon and disable the contextmenu
+// statuspanel.image = "chrome://noojeeclick/content/images/hangup.png";
+// statuspanel.addEventListener("click", onHangup, false);
+// //statuspanel.style = "statusbarpanel-iconic";
+// statuspanel.contextMenu = "";
+	
+	
 }
 
+function resetIcon()
+{
+	njdebug("noojeeclick", "resetIcon");
+	var menuIcon = window.document.getElementById("noojeeMenu");
+	menuIcon.hidden = false;
+	
+	var hangupIcon= window.document.getElementById("noojeeHangup");
+	hangupIcon.hidden = true;
 
+	
+// var statuspanel = window.document.getElementById("noojeeMenu");
+// // reset the status bar icon and enable the contextmenu.
+// statuspanel.image = "chrome://noojeeclick/content/images/small.png";
+// statuspanel.contextMenu = "menuDial";
+// //statuspanel.style = "statusbarpanel-menu-iconic";
+// statuspanel.removeEventListener("click", onHangup, false);
+	
+}
 
 /*
 * Called when the users clicks the 'Hangup' button on the status bar
@@ -571,8 +357,10 @@ function onHangup()
 {
 	njlog("onHangup");
 	gAsterisk.hangup();
-	statusbar.resetIcon();
+	resetIcon();
+
 }
+
 
 function onDialDifferentlyShowing(menu)
 {
@@ -624,10 +412,6 @@ function onRedialShowing(menu)
 		redialMenu.hidden = true;
 }
 
-/**
- * Called when the status of NoojeeClick is toggled between enabled/disabled.
- * Each time we are enabled we re-initialise Asterisk
- */
 function onEnable()
 {
 	var enabled = getBoolValue("enabled");
@@ -637,8 +421,4 @@ function onEnable()
 	if (enabled == true)
 		gAsterisk.init();
 }
-
 	
-//}; // end of noojeeClick scope
-
-

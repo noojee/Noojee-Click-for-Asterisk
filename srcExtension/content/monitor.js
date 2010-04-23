@@ -5,7 +5,7 @@
  * if it changes it then it waits for the changes to stop and forces
  * a refresh of the page.
  * The interval we use to wait for a change to complete is quite short.
- * In reallity, due to the single threaded nature of browsers, the wait timer
+ * In reality, due to the single threaded nature of browsers, the wait timer
  * won't actually be called until the change has completed.
  * Asynchronous ajax calls may break this logic but we need to get the code
  * into the field to determine if this will be a problem.

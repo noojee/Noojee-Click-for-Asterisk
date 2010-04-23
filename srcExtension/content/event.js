@@ -148,7 +148,7 @@ function Bridge(response)
 		if (bridgestate == "Link")
 		{
 			var event = new Link(response);
-			event.apply(asterisk);
+			event.apply(astersik);
 		}
 		else 
 		{

@@ -1,5 +1,3 @@
-Components.utils.import("resource://noojeeclick/prompts.jsm");
-
 /**
  * Provides a way of transfering arbitrary JSON objects between a HTML-page and
  * the extension; this script is to be inserted in extension code
@@ -23,7 +21,7 @@ var DataTransferListener = {
 		// first we have to check if we allow this... based on URL or what?
 		if (aEvent.target.ownerDocument.location.host != "localhost") {
 			// TODO: add security here (e.g. from Pref/Setting of applet serving host)!
-			// prompt.error("As for security issues only secure HTML pages may pass data to ELWMS extension.");
+			// njAlert("As for security issues only secure HTML pages may pass data to ELWMS extension.");
 			// return;
 		}
 		// data is a escaped JSON String
@@ -47,9 +45,9 @@ var DataTransferListener = {
 	 * @param {HTMLNode} target The node that fired the event
 	 */
 	handleData : function(data, target) {
-		prompt.error("DataTransferListener.handleData: obtained " + data.name);
+		njAlert("DataTransferListener.handleData: obtained " + data.name);
 		if (data.id &gt; 1000) {
-			prompt.error("DataTransferListener.handleData: returning changed data")
+			njAlert("DataTransferListener.handleData: returning changed data")
 			return {id:2000, name:"Pong"};
 		}
 		return null;
@@ -119,7 +117,7 @@ var Communicator = {
 	  		}
 	  	} else {
 	  		// some error...
-	  		prompt.error("dataclient.js - Communicator.createElement ERROR!");
+	  		njAlert("dataclient.js - Communicator.createElement ERROR!");
 	  		return null;
 	  	}
 	},
@@ -147,7 +145,7 @@ var Communicator = {
 	 */
 	calledBack : function(aEvent) {
 		// TODO: decide what to do here!
-		prompt.error("Communicator.calledBack : " + unescape(aEvent.target.getAttribute("returnvalue")));
+		njAlert("Communicator.calledBack : " + unescape(aEvent.target.getAttribute("returnvalue")));
 	}
 };
  

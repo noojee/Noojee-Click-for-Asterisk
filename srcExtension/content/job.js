@@ -36,22 +36,31 @@ function Dial()
 
 		njdebug("job", "Channel=" + channel);
 
-		var callerID = getValue("callerID");
-
-
-		
 		// dial
 		var url = genURL("Originate");
 		url += channel;
 		url += "&Exten=" + normalised;
 		url += "&Context=" + context;
-		url += "&CallerId=" + phoneNo; // + "-NoojeeClick";
-		url += "&Variable=Caller(Name)=" + phoneNo; 
-//		url += "&Variable=Caller(Num)=" + phoneNo; 
-		
-		// + "-NoojeeClick";
+		// The next two variables are set to display the number that
+		// is being dialled on the local handset's LCD.
+		// The CallerId must only contain numbers as the likes of trixbox
+		// will drop the call if it contains non-digits.
+		// The CallerID(Name) is set for sip phones that can display text (I think this might work)
+		// 
+		url += "&Variable=CallerID(Num)=" + normalised; // Hopefully sets the handsets display 
+		url += "&Variable=CallerID(Name)=" + phoneNo + "-NoojeeClick";  //and this as well.
+
+		// If the user has configured the callerId then lets set it.
+		// We try to control the callerID that is presented to the 
+		// far end by setting CallerID(Num).
+		var callerID = getValue("callerId");
 		if (callerID != null)
-			url += "&Variable=Caller(Num)=" + callerID;
+		{
+			url += "&CallerId=" + callerID;
+		}
+		else 
+			url += "&CallerId=" + normalised; // no caller id so we like to display the number we dialling
+												// on the users handset.
 
 		njdebug("job", "url=" + url);
 

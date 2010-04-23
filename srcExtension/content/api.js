@@ -1,7 +1,3 @@
-Components.utils.import("resource://noojeeclick/prompts.jsm");
-Components.utils.import("resource://noojeeclick/util.jsm");
-
-
 /*
  * Set of API's which allows a web page to control NoojeeClck.
  */
@@ -46,7 +42,7 @@ function njAPIinit()
 
 /**
 
-eg: // in your XUL JS file Global = new Object(); Global.foo = function() { prompt.error('foo'); };
+eg: // in your XUL JS file Global = new Object(); Global.foo = function() { njAlert('foo'); };
 
 	Now you need to get a reference to your HTML window and add a reference back to Global.
 

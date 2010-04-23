@@ -430,13 +430,13 @@
 
 
 						<label value="By Noojee Telephony Solutions" />
-						<label value="Copyright © 2008-2009 Noojee IT Pty Ltd" />
+						<label value="Copyright © 2008-2010 Noojee IT Pty Ltd" />
 						<label value="http://www.noojee.com.au" />
 						<label value="Author: S. Brett Sutton" />
 						<p xmlns="http://www.w3.org/1999/xhtml">
 							<table width="100%">
 								<tr>
-									<td>Version: 1.1</td>
+									<td>Version: 1.1.2</td>
 </tr>
 <tr><p/></tr>
 <tr>
@@ -455,5 +455,6 @@
 	</prefpane>
 
 	<script type="application/x-javascript" src="chrome://noojeeclick/content/configuration.js" />
+	<script type="application/x-javascript" src="chrome://noojeeclick/content/prefs.js" />
 
 </prefwindow>

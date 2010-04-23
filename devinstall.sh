@@ -1,9 +1,3 @@
-target=/home/bsutton/.mozilla/firefox-3.5/5b8dnag4.default/extensions
-
-echo ${target}
-rm -rf ${target}/noojeeclick@noojee.com.au
-cp noojeeclick@noojee.com.au ${target}
-
 
 target=/home/bsutton/.mozilla/firefox/5b8dnag4.default/extensions
 

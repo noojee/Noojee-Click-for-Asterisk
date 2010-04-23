@@ -81,7 +81,7 @@ function rtrim()
 
 function isRClick(e)
 {
-	emod = (e) ? (e.eventPhase) ? "W3C" : "NN4" : (window.event) ? "IE4+" : "unknown";
+	var emod = (e) ? (e.eventPhase) ? "W3C" : "NN4" : (window.event) ? "IE4+" : "unknown";
 
 	return (emod == "NN4") ? (e.which > 1) : (e.button == 2);
 }
@@ -90,7 +90,7 @@ function isRClick(e)
 function addGlobalStyle(document, css)
 {
 	var success = false;
-	style = document.createElement("style");
+	var style = document.createElement("style");
 	style.setAttribute("noojeeclick", "true");
 	style.id = "noojeeClickStyle";
 	style.type = "text/css";
@@ -294,6 +294,59 @@ function getStatusWindow()
 	}
 	
 	return statusWindow;
+}
+
+function getSelectedText()
+{
+	var selectedText = extractPhoneNo(trim(getRawSelectedText()));
+
+	return selectedText;
+}
+
+
+function getRawSelectedText()
+{
+	var selectedText = "";
+	selectedText = document.commandDispatcher.focusedWindow.getSelection().toString();
+	return selectedText;
+}
+
+function getClipboardText()
+{
+	var pasteText = "";
+	var clip = Components.classes["@mozilla.org/widget/clipboard;1"].getService(Components.interfaces.nsIClipboard);
+	if (!clip)
+		return false;
+	var trans = Components.classes["@mozilla.org/widget/transferable;1"]
+	        .createInstance(Components.interfaces.nsITransferable);
+	if (!trans)
+		return false;
+
+	trans.addDataFlavor("text/unicode");
+
+	clip.getData(trans, clip.kGlobalClipboard);
+	var str = new Object();
+	var strLength = new Object();
+	try
+	{
+		trans.getTransferData("text/unicode", str, strLength);
+		if (str)
+			str = str.value.QueryInterface(Components.interfaces.nsISupportsString);
+
+		var temp = "";
+		if (str)
+			temp = str.data.substring(0, strLength.value / 2);
+
+		pasteText = trim(extractPhoneNo(temp));
+
+	}
+	catch (e)
+	{
+		// Clipboard is empty (we think)
+		njlog("clipboard access threw exception, may just be empty " + e);
+	}
+
+	return pasteText;
 }
 
 
