@@ -334,11 +334,17 @@ function resetIcon()
 {
 	njdebug("noojeeclick", "resetIcon");
 	var menuIcon = window.document.getElementById("noojeeMenu");
-	menuIcon.hidden = false;
+	if (menuIcon != null)
+		menuIcon.hidden = false;
+	else
+		njlog("Error retrieving the Noojee Menu Icon");
 	
 	var hangupIcon= window.document.getElementById("noojeeHangup");
-	hangupIcon.hidden = true;
-
+	if (hangupIcon != null)
+		hangupIcon.hidden = true;
+	else
+		njlog("Error retrieving the Noojee Hangup Icon");
+		
 	
 // var statuspanel = window.document.getElementById("noojeeMenu");
 // // reset the status bar icon and enable the contextmenu.

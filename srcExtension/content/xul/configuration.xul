@@ -4,8 +4,12 @@
 
 <prefwindow type="prefwindow" id="NoojeePreferences" title="Noojee Click for Asterisk"
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-	image="chrome://noojeeclick/content/images/noojee.png" buttons="accept,cancel"
-	helpURI="http://www.noojee.com.au/Page/NoojeeClickHelp" ondialogaccept="onConfigurationClosed();">
+	image="chrome://noojeeclick/content/images/noojee.png" 
+	buttons="accept,cancel"
+	helpURI="http://www.noojee.com.au/Page/NoojeeClickHelp" 
+	ondialogaccept="onConfigurationClosed();"
+	onload="onConfigurationLoad();"
+	>
 	<!--            ondialoghelp="showHelpWindow();" -->
 
 
@@ -60,7 +64,7 @@
 				type="unichar" />
 		</preferences>
 
-		<tabbox>
+		<tabbox id="njConfigTabbox">
 			<tabs>
 				<tab label="Phone" />
 				<tab label="Patterns" />
@@ -243,7 +247,7 @@
 				</tabpanel>
 
 
-				<tabpanel id="asterisk">
+				<tabpanel id="asterisktab">
 
 
 					<groupbox>
@@ -436,7 +440,7 @@
 						<p xmlns="http://www.w3.org/1999/xhtml">
 							<table width="100%">
 								<tr>
-									<td>Version: 1.1.2</td>
+									<td>Version: 1.1.3</td>
 </tr>
 <tr><p/></tr>
 <tr>
@@ -454,7 +458,8 @@
 		</tabbox>
 	</prefpane>
 
-	<script type="application/x-javascript" src="chrome://noojeeclick/content/configuration.js" />
 	<script type="application/x-javascript" src="chrome://noojeeclick/content/prefs.js" />
+	<script type="application/x-javascript" src="chrome://noojeeclick/content/util.js" />
+	<script type="application/x-javascript" src="chrome://noojeeclick/content/configuration.js" />
 
 </prefwindow>

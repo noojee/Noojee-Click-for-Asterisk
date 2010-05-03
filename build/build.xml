@@ -5,7 +5,7 @@
 
 	<property name="src" value="${basedir}/srcExtension" />
 	<property name="build" value="${basedir}/build" />
-	<property name="version" value="1.1.2" />
+	<property name="version" value="1.1.3" />
 	<property name="versionDir" value="${basedir}/versions/${version}" />
 	<property name="xpiName" value="noojeeclick-${version}.xpi" />
 	<property name="updateURL" value="&lt;em:updateURL&gt;https://www.noojee.com.au/noojeeclick/update.rdf&lt;/em:updateURL&gt;" />
@@ -110,7 +110,14 @@
 			<arg value="--login" />
 			<arg value="-i" />
 			<arg value="-c" />
-			<arg value="killall firefox-3.5" />
+			<arg value="killall firefox" />
+		</exec>
+
+		<exec dir="." executable="/bin/bash">
+			<arg value="--login" />
+			<arg value="-i" />
+			<arg value="-c" />
+			<arg value="killall firefox-bin" />
 		</exec>
 
 		
