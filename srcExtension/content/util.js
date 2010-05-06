@@ -300,7 +300,7 @@ isLocalChannel: function (channel)
 
 getSelectedText: function ()
 {
-	var selectedText = theApp.phonepatterns.extractPhoneNo(this.trim(getRawSelectedText()));
+	var selectedText = theApp.phonepatterns.extractPhoneNo(this.trim(this.getRawSelectedText()));
 
 	return selectedText;
 },

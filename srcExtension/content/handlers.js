@@ -79,7 +79,7 @@ onDialDifferently: function (e)
 dialSelectionMenuAction: function ()
 {
 	theApp.util.njdebug("handlers", "dialSelectionMenuAction called");
-	var phoneNo = getSelectedText();
+	var phoneNo = theApp.util.getSelectedText();
 	if (phoneNo == null || phoneNo.length == 0)
 	{
 		theApp.prompts.njAlert("Please select a phone number first");
