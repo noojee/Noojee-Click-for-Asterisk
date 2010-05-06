@@ -46,7 +46,7 @@ njAPIinit: function ()
 
 /**
 
-eg: // in your XUL JS file Global = new Object(); Global.foo = function() { njAlert('foo'); };
+eg: // in your XUL JS file Global = new Object(); Global.foo = function() { theApp.prompts.njAlert('foo'); };
 
 	Now you need to get a reference to your HTML window and add a reference back to Global.
 

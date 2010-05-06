@@ -24,7 +24,7 @@ onDial: function (e)
 	var phoneNo = obj.getAttribute("phoneNo");
 
 	if (phoneNo == null || phoneNo.length == 0)
-		theApp.util.njAlert("Please enter a phone number.");
+		theApp.prompts.njAlert("Please enter a phone number.");
 	else
 		theApp.asterisk.getInstance().dial(phoneNo);
 

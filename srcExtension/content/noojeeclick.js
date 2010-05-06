@@ -117,7 +117,7 @@ onDial: function (e)
 	var phoneNo = obj.getAttribute("phoneNo");
 
 	if (phoneNo == null || phoneNo.length == 0)
-		theApp.util.njAlert("Please enter a phone number.");
+		theApp.prompts.njAlert("Please enter a phone number.");
 	else
 		theApp.asterisk.getInstance().dial(phoneNo);
 
@@ -200,7 +200,7 @@ showMenuHideItems: function (event)
 	catch (e)
 	{
 		theApp.util.showException("showMenuHideItems", e);
-		theApp.util.njAlert(e);
+		theApp.prompts.njAlert(e);
 	}
 
 },

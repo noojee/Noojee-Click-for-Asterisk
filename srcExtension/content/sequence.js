@@ -91,7 +91,7 @@ Sequence: function (jobs, param, initialising)
 	 * 
 	 * if (details.readyState == 4 && details.status == 200) { njdebug("sequence", "reponse
 	 * loaded"); this.sequence.load(); } else { njdebug("sequence", "response error,
-	 * status=" + details.status); njAlert(details.responseText); } }
+	 * status=" + details.status); theApp.prompts.njAlert(details.responseText); } }
 	 */
 	this.load = function()
 	{
@@ -154,7 +154,7 @@ Sequence: function (jobs, param, initialising)
 		else
 		{
 			theApp.util.njdebug("sequence", "response error, status=" + details.status);
-			theApp.util.njAlert(details.responseText);
+			theApp.prompts.njAlert(details.responseText);
 		}
 
 	}
