@@ -2,15 +2,57 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 
 
+
 <prefwindow type="prefwindow" id="NoojeePreferences" title="Noojee Click for Asterisk"
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	image="chrome://noojeeclick/content/images/noojee.png" 
 	buttons="accept,cancel"
-	helpURI="http://www.noojee.com.au/Page/NoojeeClickHelp" 
-	ondialogaccept="onConfigurationClosed();"
-	onload="onConfigurationLoad();"
+	helpURI="http://www.noojee.com.au/Page/NoojeeClickHelp"
+	onload="noojeeClick.onConfigurationLoad();"
 	>
 	<!--            ondialoghelp="showHelpWindow();" -->
+<!-- 	 
+I can't get this to work as the namespace isn't being loaded. But then
+we just aren't using it at this point in time.
+	ondialogaccept="noojeeClick.configuration.onConfigurationClosed();"
+-->
+
+	 <script type="application/x-javascript"
+       src="chrome://global/content/globalOverlay.js"/>
+    <script type="application/x-javascript"
+       src="chrome://noojeeclick/content/namespace.js"/>
+    <script type="application/x-javascript"
+       src="chrome://noojeeclick/content/lib.js"/>
+    <script type="application/x-javascript"
+       src="chrome://noojeeclick/content/prompts.js"/>
+    <script type="application/x-javascript"
+       src="chrome://noojeeclick/content/util.js"/>
+	<script type="application/x-javascript"
+       src="chrome://noojeeclick/content/api.js"/>
+    <script type="application/x-javascript"
+       src="chrome://noojeeclick/content/prefs.js"/>
+	<script type="application/x-javascript"
+       src="chrome://noojeeclick/content/dialstatus.js"/>
+    <script type="application/x-javascript"
+       src="chrome://noojeeclick/content/monitor.js"/>
+    <script type="application/x-javascript"
+       src="chrome://noojeeclick/content/event.js"/>
+    <script type="application/x-javascript"
+       src="chrome://noojeeclick/content/job.js"/>
+    <script type="application/x-javascript"
+       src="chrome://noojeeclick/content/sequence.js"/>
+    <script type="application/x-javascript"
+       src="chrome://noojeeclick/content/handlers.js"/>
+    <script type="application/x-javascript"
+       src="chrome://noojeeclick/content/render.js"/>
+    <script type="application/x-javascript"
+       src="chrome://noojeeclick/content/phonepatterns.js"/>
+	<script type="application/x-javascript"
+       src="chrome://noojeeclick/content/asterisk.js"/>
+    <script type="application/x-javascript"
+       src="chrome://noojeeclick/content/noojeeclick.js"/>
+    <script type="application/x-javascript"
+       src="chrome://noojeeclick/content/configuration.js"/>
 
 
 	<prefpane id="noojeeClick" label="Preferences"
@@ -440,7 +482,7 @@
 						<p xmlns="http://www.w3.org/1999/xhtml">
 							<table width="100%">
 								<tr>
-									<td>Version: 1.1.3</td>
+									<td>Version: 1.5</td>
 </tr>
 <tr><p/></tr>
 <tr>
@@ -457,9 +499,15 @@
 			</tabpanels>
 		</tabbox>
 	</prefpane>
-
-	<script type="application/x-javascript" src="chrome://noojeeclick/content/prefs.js" />
+	
+	<!--
+	<script type="application/x-javascript" src="chrome://noojeeclick/content/namespace.js"/>
+    <script type="application/x-javascript" src="chrome://noojeeclick/content/lib.js"/>
 	<script type="application/x-javascript" src="chrome://noojeeclick/content/util.js" />
+	<script type="application/x-javascript" src="chrome://noojeeclick/content/prefs.js" />
 	<script type="application/x-javascript" src="chrome://noojeeclick/content/configuration.js" />
+	-->
+	
+	
 
 </prefwindow>

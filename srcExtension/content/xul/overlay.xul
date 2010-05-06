@@ -8,25 +8,25 @@
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
    
-    <popup id="contentAreaContextMenu" popupshowing="onDialDifferentlyShowing(this);">
+    <popup id="contentAreaContextMenu" popupshowing="noojeeClick.noojeeclick.onDialDifferentlyShowing(this);">
 		<menuseparator id="njcontextSeparator"/>
         <menuitem id="njcontextDialDifferently"
                   label="Dial Differently..."
                   observes="Tasks:dialDifferently"
                   class="menu-iconic-wide"	
-				  popupshowing="onDialDifferentlyShowing(this);"
+				  popupshowing="noojeeClick.noojeeclick.onDialDifferentlyShowing(this);"
                   />
         <menuitem id="njcontextDialSelection"
                   label="Dial Selection..."
                   observes="Tasks:dialSelection"
                   class="menu-iconic-wide"
-				  popupshowing="onDialSelectionShowing(document.popupNode);"
+				  popupshowing="noojeeClick.noojeeclick.onDialSelectionShowing(document.popupNode);"
                   />
         <menuitem id="njcontextDialAddPattern"
                   label="Add Dial Pattern..."
                   observes="Tasks:dialAddPattern"
                   class="menu-iconic-wide"
-				  popupshowing="onDialAddPatternShowing(document.popupNode);"
+				  popupshowing="noojeeClick.noojeeclick.onDialAddPatternShowing(document.popupNode);"
                   />
 
     </popup>
@@ -35,16 +35,16 @@
   commandupdater="true"
   events="focus"
   oncommandupdate="goUpdateCommand('Task:enable');goUpdateCommand('Task:redail');">
-    <command id="Tasks:dial" oncommand="dialMenuAction();"/>
-    <command id="Tasks:redial" oncommand="redialMenuAction();"/>
-    <command id="Tasks:dialFromClipboard" oncommand="dialFromClipboardMenuAction();"/>
-    <command id="Tasks:dialSelection" oncommand="dialSelectionMenuAction();"/>
-    <command id="Tasks:dialDifferently" oncommand="dialDifferentlyMenuAction();"/>
-    <command id="Tasks:configuration" oncommand="onConfiguration();"/>
-	<command id="Tasks:dialAddPattern" oncommand="onAddDialPatternMenuAction();"/>
-	<command id="Tasks:refresh" oncommand="onRefresh();"/>
-    <command id="Tasks:enable" oncommand="onEnable();"/>
-    <command id="Tasks:hangup" oncommand="onHangup();"/>
+    <command id="Tasks:dial" oncommand="noojeeClick.handlers.dialMenuAction();"/>
+    <command id="Tasks:redial" oncommand="noojeeClick.handlers.redialMenuAction();"/>
+    <command id="Tasks:dialFromClipboard" oncommand="noojeeClick.handlers.dialFromClipboardMenuAction();"/>
+    <command id="Tasks:dialSelection" oncommand="noojeeClick.handlers.dialSelectionMenuAction();"/>
+    <command id="Tasks:dialDifferently" oncommand="noojeeClick.handlers.dialDifferentlyMenuAction();"/>
+    <command id="Tasks:configuration" oncommand="noojeeClick.prefs.onConfiguration();"/>
+	<command id="Tasks:dialAddPattern" oncommand="noojeeClick.handlers.onAddDialPatternMenuAction();"/>
+	<command id="Tasks:refresh" oncommand="noojeeClick.render.onRefresh();"/> 
+    <command id="Tasks:enable" oncommand="noojeeClick.handlers.onEnable();"/>
+    <command id="Tasks:hangup" oncommand="noojeeClick.handlers.onHangup();"/>
     
   </commandset>
 
@@ -56,12 +56,12 @@
                       class="statusbarpanel-iconic"
                       hidden="true"
                       src="chrome://noojeeclick/content/images/hangup.png"
-                      onclick="onHangup();"/>
+                      onclick="noojeeClick.handlers.onHangup();"/>
       <statusbarpanel id="noojeeMenu"
                       class="statusbarpanel-menu-iconic"
                       src="chrome://noojeeclick/content/images/small.png"
                       contextmenu="menuDial">
-	      <menupopup id="menuDial" onpopupshowing="onEnableShowing(this);onRedialShowing(this);">
+	      <menupopup id="menuDial" onpopupshowing="noojeeClick.noojeeclick.onEnableShowing(this);noojeeClick.noojeeclick.onRedialShowing(this);">
 	        <menuitem id="menu_Dial"
 	              label="Dial..."
 	              observes="Tasks:dial"
@@ -69,7 +69,7 @@
 	        <menuitem id="menu_Redial"
 	              label="Redial:"
 	              observes="Tasks:redial"
-	              popupshowing="onRedialShowing(this);"
+	              popupshowing="noojeeClick.noojeeclick.onRedialShowing(this);"
 	              class="menu-iconic-wide"/>
 	        <menuitem id="menu_DialClipboard"
 	              label="Dial from Clipboard..."
@@ -83,7 +83,7 @@
 	              label="Enabled"
 	              type="checkbox"
 	              observes="Tasks:enable"
-	              popupshowing="onEnableShowing(this);"
+	              popupshowing="noojeeClick.noojeeclick.onEnableShowing(this);"
 	              class="menu-iconic-wide"/>
 	        
 	        <menuitem id="menu_Refresh"
@@ -98,6 +98,10 @@
     <script type="application/x-javascript"
        src="chrome://global/content/globalOverlay.js"/>
     <script type="application/x-javascript"
+       src="chrome://noojeeclick/content/namespace.js"/>
+    <script type="application/x-javascript"
+       src="chrome://noojeeclick/content/lib.js"/>
+    <script type="application/x-javascript"
        src="chrome://noojeeclick/content/prompts.js"/>
     <script type="application/x-javascript"
        src="chrome://noojeeclick/content/util.js"/>
@@ -105,6 +109,8 @@
        src="chrome://noojeeclick/content/api.js"/>
     <script type="application/x-javascript"
        src="chrome://noojeeclick/content/prefs.js"/>
+	<script type="application/x-javascript"
+       src="chrome://noojeeclick/content/dialstatus.js"/>
     <script type="application/x-javascript"
        src="chrome://noojeeclick/content/monitor.js"/>
     <script type="application/x-javascript"
@@ -123,5 +129,7 @@
        src="chrome://noojeeclick/content/asterisk.js"/>
     <script type="application/x-javascript"
        src="chrome://noojeeclick/content/noojeeclick.js"/>
+    <script type="application/x-javascript"
+       src="chrome://noojeeclick/content/configuration.js"/>
  
 </overlay>
