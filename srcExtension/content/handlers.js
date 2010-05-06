@@ -86,7 +86,7 @@ dialSelectionMenuAction: function ()
 		return;
 	}
 
-	var result = njPrompt("Confirm number to dial.", phoneNo);
+	var result = theApp.prompts.njPrompt("Confirm number to dial.", phoneNo);
 	if (result.OK == true && result.value != null)
 	{
 		phoneNo = result.value;
@@ -128,7 +128,7 @@ dialDifferentlyMenuAction: function (target)
 doDialDifferently: function (target)
 {
 	var phoneNo = target.getAttribute("phoneNo");
-	var result = njPrompt("Enter number to dial.", phoneNo);
+	var result = theApp.prompts.njPrompt("Enter number to dial.", phoneNo);
 	if (result.OK == true && result.value != null)
 	{
 		phoneNo = result.value;
@@ -179,7 +179,7 @@ onAddDialPatternMenuAction: function ()
 	phoneNo = theApp.util.trim(phoneNo);
 	var newPattern = "";
 	var delimiters = theApp.prefs.getValue("delimiters");
-	for ( var i = 0; i < phoneNo.length; i++)
+	for ( var i = 0; i < phoneNo.length && fault == false; i++)
 	{
 		if (delimiters.indexOf(phoneNo[i]) != -1)
 			newPattern += phoneNo[i];
@@ -219,7 +219,7 @@ onAddDialPatternMenuAction: function ()
 
 	if (!fault)
 	{
-		var result = njPrompt("Add pattern for " + phoneNo + "?", newPattern);
+		var result = theApp.prompts.njPrompt("Add pattern for " + phoneNo + "?", newPattern);
 		if (result.OK == true && result.value != null)
 		{
 			newPattern  = result.value;
@@ -229,7 +229,6 @@ onAddDialPatternMenuAction: function ()
 				var patternList = theApp.prefs.getValue("pattern");
 				patternList += "\n" + newPattern;
 				theApp.prefs.setValue("pattern", patternList);
-				pattern = newPattern;
 				theApp.render.onRefresh();
 			}
 		}
