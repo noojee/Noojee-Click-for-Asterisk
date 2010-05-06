@@ -15,7 +15,14 @@
  */
 
 
-function Monitor()
+
+
+noojeeClick.ns(function() { with (noojeeClick.LIB) {
+
+theApp.monitor =
+{
+
+Monitor: function ()
 {
 	this.pageMonitorID = -1; // id of the timer which we use to monitor page changes 
 	this.lastModified = new Date();
@@ -31,7 +38,7 @@ function Monitor()
 	 */
 	this.init = function(document)
 	{
-		njdebug("monitor", "init called for document=" + document);
+		theApp.util.njdebug("monitor", "init called for document=" + document);
 		this.document = document;
 		var self = this;
 		document.addEventListener("DOMSubtreeModified", function() { self.domModified(); }, false);
@@ -44,13 +51,13 @@ function Monitor()
 	 */
 	this.monitorPage = function(self)
 	{
-		njdebug("monitor", "monitorPage called with ID=" + this.pageMonitorID.toString()
+		theApp.util.njdebug("monitor", "monitorPage called with ID=" + this.pageMonitorID.toString()
 			+ " check=" + this.lastModificationCheck.toString()  + " actual=" + this.lastModified);
 		var duration = this.duration;
 		
 		if (this.lastModificationCheck != this.lastModified)
 		{
-			njdebug("monitor", "Monitored document still changing=" + this.document);
+			theApp.util.njdebug("monitor", "Monitored document still changing=" + this.document);
 			this.lastModificationCheck = this.lastModified;
 
 			// The page is still changing so keep monitoring.
@@ -60,20 +67,20 @@ function Monitor()
 		{
 			// The document has stopped changing and a refresh is required.
 			this.suppressDomModification = true;
-			njdebug("monitor", "Change complete forcing refresh for document=" + this.document);
-			onRefreshOne(this.document);
+			theApp.util.njdebug("monitor", "Change complete forcing refresh for document=" + this.document);
+			theApp.render.onRefreshOne(this.document);
 			this.pageMonitorID = -1;
-			njdebug("monitor", "Page Monitor stoped refresh complete for document=" + this.document);
+			theApp.util.njdebug("monitor", "Page Monitor stoped refresh complete for document=" + this.document);
 		}
 			
 	}
 
 	this.startPageMonitor = function()
 	{
-		njdebug("monitor", "Page Monitor Started ");
+		theApp.util.njdebug("monitor", "Page Monitor Started ");
 
 		this.pageMonitorID = window.setTimeout(function(self) {self.monitorPage(self); }, this.duration, this)
-		njdebug("monitor", "Page Monitor Timer ID=" + this.pageMonitorID);
+		theApp.util.njdebug("monitor", "Page Monitor Timer ID=" + this.pageMonitorID);
 	}
 	
 	/**
@@ -98,5 +105,9 @@ function Monitor()
 			this.suppressDomModification = false;
 	}
 
-};
+},
 
+
+}
+
+}});

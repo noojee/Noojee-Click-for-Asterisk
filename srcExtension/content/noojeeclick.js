@@ -10,8 +10,14 @@
 // If you phone isn't supported then just copy one of the following lines and
 // add your entry. Thats all that is required to support new auto answer headers.
 //
-const
-autoAnswerList = [
+
+
+noojeeClick.ns(function() { with (noojeeClick.LIB) {
+
+theApp.noojeeclick =
+{
+
+autoAnswerList: [
 {
     manufacturer :"Aastra",
     header :"Call-Info:\\\\; answer-after=0"
@@ -36,15 +42,9 @@ autoAnswerList = [
     manufacturer :"Yealink",
     header :"Call-Info:\\\\; answer-after=0"
 }
-];
+],
 
-var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
-        .getService(Components.interfaces.nsIConsoleService);
-
-var reportError = Components.utils.reportError;
-
-const
-serverTypeList = [
+serverTypeList: [
 {
     type :"Astmanproxy",
     description :"Astmanproxy"
@@ -56,203 +56,122 @@ serverTypeList = [
 {
     type :"NJVision",
     description :"Noojee Vision"
-} ];
-
-// Not actually used except as a flag to tell us we have already initialized the
-// page.
-const
-css = ".NoojeeClickInstalled { }";
+} ],
 
 // globals
-var host = '10.10.0.124';
-var port = '8088';
-var username;
-var password;
-var extension;
-var context;
-var dialPrefix;
-var internationalPrefix;
-var pattern;
-var initialised = false;
-var loggingEnabled = false
-var enableAutoAnswer = false;
-var handsetType = autoAnswerList[0].manufacturer;
-var serverType = serverTypeList[0].type;
-
-var ie = window.document.all
-var ns6 = window.document.getElementById && !window.document.all
+ie : window.document.all,
+ns6 : window.document.getElementById && !window.document.all,
 
 
-var statusWindow = new dialStatus();
-
-window.addEventListener("load", init, true);
-
-// Login and begin monitoring events
-
-if (gAsterisk == null)
-{
-	gAsterisk = new Asterisk();
-	gAsterisk.init();
-}
-
-function init()
-{
-	// var contextMenu = document.getElementById("contentAreaContextMenu");
-
-	try
-	{
-		njdebug("noojeeclick", "init");
-		/*
-		 * initialise the api so that standard html pages can call us TODO: we
-		 * should probably secure this so that users can control what pages have
-		 * access.
-		 */
-		njAPIinit();
-		
-		statusWindow = new dialStatus();
-
-		var myListener = new prefListener("extensions.noojeeclick.", function(branch, name)
-		{
-			switch (name)
-			{
-				case "pattern":
-					onRefresh();
-					break;
-			}
-		});
-		njdebug("noojeeclick", "registering Preference Observer.")
-		myListener.register();
-
-		// Hook the page load event
-		var appcontent = window.document.getElementById("appcontent");
-		if (appcontent != undefined && appcontent != null)
-			appcontent.addEventListener("DOMContentLoaded", onPageLoad, false);
-		else
-			njlog("appcontent returned null, can't install page handler");
-
-		// Add a context menu handler so we can dynamically show/hide specific menu items.
-		var contextMenu = document.getElementById("contentAreaContextMenu");
-		njdebug("noojeeclick", "contextMenu=" + contextMenu);
-		if (contextMenu)
-			contextMenu.addEventListener("popupshowing", showMenuHideItems, false);
-
-		njdebug("noojeeclick", "Init completed");
-	}
-	catch (e)
-	{
-		njlog(e);
-		showException("init", e);
-	}
-
-}
-
-function onPageLoad(e)
+onPageLoad: function (e)
 {
 	var document = e.originalTarget; // = window.content.document
 	
-	njAPIonLoad(document);
+	theApp.api.njAPIonLoad(document);
 	
-	njdebug("noojeeclick", "onPageLoad called");
+	theApp.util.njdebug("noojeeclick", "onPageLoad called");
 	try
 	{
 
-		if (getBoolValue("enabled") == true)
+		if (theApp.prefs.getBoolValue("enabled") == true)
 		{
-			if (hasGlobalStyle(document) == true)
+			if (theApp.util.hasGlobalStyle(document) == true)
 				return;
 
-			// If we can't add the global styles then we have a major problem
-			if (addGlobalStyle(document, css))
-			{
-				getValues();
-				
-				if (getBoolValue("monitor") == true)
-					new Monitor().init(document);
+			// Not actually used except as a flag to tell us we have already initialized the
+			// page.
+			var css = ".NoojeeClickInstalled { }";
 
-				addClickToDialLinks(document);
+			// If we can't add the global styles then we have a major problem
+			if (theApp.util.addGlobalStyle(document, css))
+			{
+				if (theApp.prefs.getBoolValue("monitor") == true)
+					new theApp.monitor.Monitor().init(document);
+
+				theApp.render.addClickToDialLinks(document);
 			}
 			else
-				njerror("Loading of Styles failed so init terminated");
+				theApp.util.njerror("Loading of Styles failed so init terminated");
 		}
 	}
 	catch (e)
 	{
-		njlog(e);
-		showException("onPageLoad", e);
+		theApp.util.njlog(e);
+		theApp.util.showException("onPageLoad", e);
 	}
-}
+},
 
 
-function onDialDifferently(e)
+onDialDifferently: function (e)
 {
-	njlog('Dial differently');
+	theApp.util.njlog('Dial differently');
 
 	var obj = ns6 ? e.target : event.srcElement;
-	doDialDifferently(obj);
-}
+	this.doDialDifferently(obj);
+},
 
-function onDial(e)
+onDial: function (e)
 {
-	njlog("onDial");
+	theApp.util.njlog("onDial");
 	var obj = ns6 ? e.target : event.srcElement;
 	var phoneNo = obj.getAttribute("phoneNo");
 
 	if (phoneNo == null || phoneNo.length == 0)
-		njAlert("Please enter a phone number.");
+		theApp.util.njAlert("Please enter a phone number.");
 	else
-		gAsterisk.dial(phoneNo);
+		theApp.asterisk.getInstance().dial(phoneNo);
 
 	return true;
-}
+},
 
-function onAnswer(e)
+onAnswer: function (e)
 {
-	njlog("onAnswer");
-	gAsterisk.answer();
+	theApp.util.njlog("onAnswer");
+	theApp.asterisk.getInstance().answer();
 
 	return true;
-}
+},
 
 
 
-function showMenuHideItems(event)
+showMenuHideItems: function (event)
 {
 	var visibleItems = 3;
 	try
 	{
-		njdebug("noojeeclick", "showMenuHideItems event=" + event);
-		njdebug("noojeeclick", "document.popupNode=" + document.popupNode);
+		theApp.util.njdebug("noojeeclick", "showMenuHideItems event=" + event);
+		theApp.util.njdebug("noojeeclick", "document.popupNode=" + document.popupNode);
 
-		njdebug("noojeeclick", "popupNode name=" + document.popupNode.hasAttribute("name"));
+		theApp.util.njdebug("noojeeclick", "popupNode name=" + document.popupNode.hasAttribute("name"));
 
 		if (document.popupNode.hasAttribute("name"))
 		{
 			if (document.popupNode.getAttribute("name") == "noojeeClickImg")
 			{
-				njdebug("noojeeclick", "noojeeClickImg");
-				menuItem = document.getElementById("njcontextDialDifferently");
+				theApp.util.njdebug("noojeeclick", "noojeeClickImg");
+				var menuItem = document.getElementById("njcontextDialDifferently");
 				menuItem.hidden = false;
 			}
 			else
 			{
-				njdebug("noojeeclick", "not noojee ClickImg");
-				menuItem = document.getElementById("njcontextDialDifferently");
+				theApp.util.njdebug("noojeeclick", "not noojee ClickImg");
+				var menuItem = document.getElementById("njcontextDialDifferently");
 				menuItem.hidden = true;
 				visibleItems--;
 			}
 		}
 		else
 		{
-			njdebug("noojeeclick", "not noojee ClickImg");
-			menuItem = document.getElementById("njcontextDialDifferently");
+			theApp.util.njdebug("noojeeclick", "not noojee ClickImg");
+			var menuItem = document.getElementById("njcontextDialDifferently");
 			menuItem.hidden = true;
 			visibleItems--;
 		}
 
 		if (gContextMenu.isTextSelected)
 		{
-			njdebug("noojeeclick", "popup - text selected");
-			menuItem = document.getElementById("njcontextDialSelection");
+			theApp.util.njdebug("noojeeclick", "popup - text selected");
+			var menuItem = document.getElementById("njcontextDialSelection");
 			menuItem.hidden = false;
 			menuItem = document.getElementById("njcontextDialAddPattern");
 			menuItem.hidden = false;
@@ -260,8 +179,8 @@ function showMenuHideItems(event)
 		}
 		else
 		{
-			njdebug("noojeeclick", "popup - text not selected");
-			menuItem = document.getElementById("njcontextDialSelection");
+			theApp.util.njdebug("noojeeclick", "popup - text not selected");
+			var menuItem = document.getElementById("njcontextDialSelection");
 			menuItem.hidden = true;
 			visibleItems--;
 			menuItem = document.getElementById("njcontextDialAddPattern");
@@ -271,50 +190,26 @@ function showMenuHideItems(event)
 
 		if (visibleItems == 0)
 		{
-			njdebug("noojeeclick", "removing separator");
+			theApp.util.njdebug("noojeeclick", "removing separator");
 			// all of the menu items have been suppressed so remove the
 			// separator.
-			menuItem = document.getElementById("njcontextSeparator");
+			var menuItem = document.getElementById("njcontextSeparator");
 			menuItem.hidden = true;
 		}
 	}
 	catch (e)
 	{
-		showException("showMenuHideItems", e);
-		njAlert(e);
+		theApp.util.showException("showMenuHideItems", e);
+		theApp.util.njAlert(e);
 	}
 
-}
+},
 
 
-function dialStatus()
+
+showHangupIcon: function ()
 {
-	this.updateStatus = function(status)
-	{
-		var statusWindow = window.document.getElementById('noojeeStatus');
-		
-		if (statusWindow != null)
-		{
-			if (status == null || trim(status).length == 0)
-			{
-				// Hide the status window when not in use.
-				statusWindow.hidden = true;
-				statusWindow.label = "";
-			}
-			else
-			{
-				statusWindow.hidden = false;
-				statusWindow.label = status;
-			}
-		}
-	}
-	
-	
-} ;
-
-function showHangupIcon()
-{
-	njdebug("noojeeclick", "showHangupIcon");
+	theApp.util.njdebug("noojeeclick", "showHangupIcon");
 	var menuIcon = window.document.getElementById("noojeeMenu");
 	menuIcon.hidden = true;
 	
@@ -323,16 +218,16 @@ function showHangupIcon()
 	
 // // change the status bar icon to the hangup icon and disable the contextmenu
 // statuspanel.image = "chrome://noojeeclick/content/images/hangup.png";
-// statuspanel.addEventListener("click", onHangup, false);
+// statuspanel.addEventListener("click", theApp.handlers.onHangup, false);
 // //statuspanel.style = "statusbarpanel-iconic";
 // statuspanel.contextMenu = "";
 	
 	
-}
+},
 
-function resetIcon()
+resetIcon: function ()
 {
-	njdebug("noojeeclick", "resetIcon");
+	theApp.util.njdebug("noojeeclick", "resetIcon");
 	var menuIcon = window.document.getElementById("noojeeMenu");
 	if (menuIcon != null)
 		menuIcon.hidden = false;
@@ -353,61 +248,50 @@ function resetIcon()
 // //statuspanel.style = "statusbarpanel-menu-iconic";
 // statuspanel.removeEventListener("click", onHangup, false);
 	
-}
+},
 
-/*
-* Called when the users clicks the 'Hangup' button on the status bar
-* 
-*/
-function onHangup()
+
+
+onDialDifferentlyShowing: function (menu)
 {
-	njlog("onHangup");
-	gAsterisk.hangup();
-	resetIcon();
-
-}
-
-
-function onDialDifferentlyShowing(menu)
-{
-	njdebug("noojeeclick", "onDialDifferentlyShowing");
+	theApp.util.njdebug("noojeeclick", "onDialDifferentlyShowing");
 	var menuItem = document.getElementById('njcontextDialDifferently');
 	menuItem.setAttribute("checked", enabled);
-}
+},
 
-function onDialSelectionShowing(menu)
+onDialSelectionShowing: function (menu)
 {
-	njdebug("noojeeclick", "onDialSelectionShowing called");
-	var selected = getSelectedText();
+	theApp.util.njdebug("noojeeclick", "onDialSelectionShowing called");
+	var selected = theApp.util.getSelectedText();
 	if (selected == null || selected.length == 0)
 	{
 		var menuItem = document.getElementById('njcontextDialSelection');
 		menuItem.hidden = true;
 	}
-}
+},
 
-function onDialAddPatternShowing(menu)
+onDialAddPatternShowing: function (menu)
 {
-	var selected = getSelectedText();
+	var selected = theApp.util.getSelectedText();
 	if (selected == null || selected.length == 0)
 	{
 		var menuItem = document.getElementById('njcontextDialAddPattern');
 		menuItem.hidden = true;
 	}
-}
+},
 
-function onEnableShowing(menu)
+onEnableShowing: function (menu)
 {
-	njdebug("noojeeclick", "onEnableShowing called");
-	var enabled = getBoolValue("enabled");
+	theApp.util.njdebug("noojeeclick", "onEnableShowing called");
+	var enabled = theApp.prefs.getBoolValue("enabled");
 	var enableMenu = document.getElementById('menu_Enable');
 	enableMenu.setAttribute("checked", enabled);
-}
+},
 
-function onRedialShowing(menu)
+onRedialShowing: function (menu)
 {
-	njdebug("noojeeclick", "onRedialShowing called");
-	var lastDialed = getValue("lastDialed");
+	theApp.util.njdebug("noojeeclick", "onRedialShowing called");
+	var lastDialed = theApp.prefs.getValue("lastDialed");
 	var redialMenu = document.getElementById('menu_Redial');
 	if (lastDialed != null && lastDialed.length > 0)
 	{
@@ -418,13 +302,9 @@ function onRedialShowing(menu)
 		redialMenu.hidden = true;
 }
 
-function onEnable()
-{
-	var enabled = getBoolValue("enabled");
-	enabled = !enabled;
-	setBoolValue("enabled", enabled);
-	onRefresh();
-	if (enabled == true)
-		gAsterisk.init();
 }
-	
+
+}});
+
+
+

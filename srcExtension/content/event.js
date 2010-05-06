@@ -1,13 +1,18 @@
 
-function eventFactory(xmlDoc)
+noojeeClick.ns(function() { with (noojeeClick.LIB) {
+
+theApp.event =
+{
+
+eventFactory: function (xmlDoc)
 {
 	var events = new Array();
 	var j = 0;
 
-	njdebug("event.low", "eventFactory called");
+	theApp.util.njdebug("event.low", "eventFactory called");
 
 	var genericElement = xmlDoc.getElementsByTagName("generic");
-	njdebug("event.low", "generic=" + genericElement);
+	theApp.util.njdebug("event.low", "generic=" + genericElement);
 
 	// Check each array instance for an event.
 	// We may end up with multiple events.
@@ -18,64 +23,64 @@ function eventFactory(xmlDoc)
 			var event = null;
 			var eventType = genericElement[i].getAttribute("event");
 			
-			if (NewChannel.name.toLowerCase() == eventType.toLowerCase())
+			if ("NewChannel".toLowerCase() == eventType.toLowerCase())
 			{
-				event = new NewChannel(genericElement[i]);
+				event = new this.NewChannel(genericElement[i]);
 			}
 			else if ("Dial".toLowerCase() == eventType.toLowerCase())
 			{
-				event = new DialEvent(genericElement[i]);
+				event = new this.DialEvent(genericElement[i]);
 			}
-			else if (Newcallerid.name.toLowerCase() == eventType.toLowerCase())
+			else if ("Newcallerid".toLowerCase() == eventType.toLowerCase())
 			{
-				event = new Newcallerid(genericElement[i]);
+				event = new this.Newcallerid(genericElement[i]);
 			}
-			else if (Newstate.name.toLowerCase() == eventType.toLowerCase())
+			else if ("Newstate".toLowerCase() == eventType.toLowerCase())
 			{
-				event = new Newstate(genericElement[i]);
+				event = new this.Newstate(genericElement[i]);
 			}
-			else if (WaitEventComplete.name.toLowerCase() == eventType.toLowerCase())
+			else if ("WaitEventComplete".toLowerCase() == eventType.toLowerCase())
 			{
-				event = new WaitEventComplete(genericElement[i]);
+				event = new this.WaitEventComplete(genericElement[i]);
 			}
-			else if (Bridge.name.toLowerCase() == eventType.toLowerCase())
+			else if ("Bridge".toLowerCase() == eventType.toLowerCase())
 			{
-				event = new Bridge(genericElement[i]);
-			}
-			// 1.4 support now replaced by Bridge
-			else if (Link.name.toLowerCase() == eventType.toLowerCase())
-			{
-				event = new Link(genericElement[i]);
+				event = new this.Bridge(genericElement[i]);
 			}
 			// 1.4 support now replaced by Bridge
-			else if (Unlink.name.toLowerCase() == eventType.toLowerCase())
+			else if ("Link".toLowerCase() == eventType.toLowerCase())
 			{
-				event = new Unlink(genericElement[i]);
+				event = new this.Link(genericElement[i]);
 			}
-			else if (Hangup.name.toLowerCase() == eventType.toLowerCase())
+			// 1.4 support now replaced by Bridge
+			else if ("Unlink".toLowerCase() == eventType.toLowerCase())
 			{
-				event = new Hangup(genericElement[i]);
+				event = new this.Unlink(genericElement[i]);
+			}
+			else if ("Hangup".toLowerCase() == eventType.toLowerCase())
+			{
+				event = new this.Hangup(genericElement[i]);
 			}
 			else
-				njdebug("event.low", "Unknown event=" + eventType);
+				theApp.util.njdebug("event.low", "Unknown event=" + eventType);
 			
 			if (event != null)
 				events[j++] = event;
 		}
 	}
 	
-	if (getBoolValue("enableDebugging") == true)
+	if (theApp.prefs.getBoolValue("enableDebugging") == true)
 	{
-		njdebug("event.low", events.length + " events found");
-		njdebug("event.low", "events=" + events);
+		theApp.util.njdebug("event.low", events.length + " events found");
+		theApp.util.njdebug("event.low", "events=" + events);
 		for (var i = 0; i < events.length; i++)
 		{
-			njdebug("event.low", "events[i]=" + getObjectClass(events[i]));
+			theApp.util.njdebug("event.low", "events[i]=" + theApp.util.getObjectClass(events[i]));
 		}
 	}
 
 	return events;
-}
+},
  
 // <response type='object' id='unknown'><generic event='Newchannel'
 // privilege='call,all' channel='SIP/115-08239ca8' state='Down'
@@ -84,7 +89,7 @@ function eventFactory(xmlDoc)
 // <response type='object' id='unknown'><generic event='WaitEventComplete'
 // /></response>
 
-function NewChannel(response)
+NewChannel: function (response)
 {
 	this.channel = response.getAttribute("channel");
 
@@ -102,15 +107,15 @@ function NewChannel(response)
 	this.apply = function(asterisk)
 	{
 		
-		if (isLocalChannel(this.channel))
+		if (theApp.util.isLocalChannel(this.channel))
 		{
-			njdebug("event.high", "NewChannel received for local channel=" + this.channel + " state=" + this.state);
-			njdebug("event.high", "extractChannel=" + extractChannel(this.channel).toLowerCase());
-			njdebug("event.high", "getLocalChannel()=" + getLocalChannel().toLowerCase());
+			theApp.util.njdebug("event.high", "NewChannel received for local channel=" + this.channel + " state=" + this.state);
+			theApp.util.njdebug("event.high", "extractChannel=" + theApp.util.extractChannel(this.channel).toLowerCase());
+			theApp.util.njdebug("event.high", "getLocalChannel()=" + theApp.util.getLocalChannel().toLowerCase());
 			asterisk.channel = this.channel;
 			
 			if (this.state == "Down")
-				asterisk.updateState("Ringing: " + getValue("extension"));
+				asterisk.updateState("Ringing: " + theApp.prefs.getValue("extension"));
 			else
 				asterisk.updateState(this.state);
 		}
@@ -118,28 +123,28 @@ function NewChannel(response)
 		
 		if (asterisk.isRemoteChannel(this.channel))
 		{
-			njdebug("event.high", "NewChannel received for Remote channel=" + this.channel + " state=" + this.state);
+			theApp.util.njdebug("event.high", "NewChannel received for Remote channel=" + this.channel + " state=" + this.state);
 			asterisk.updateState(this.state);
 		}
 	
 	}
-}
+},
 
-function WaitEventComplete(response)
+WaitEventComplete: function (response)
 {
-	njdebug("event.low", "WaitEventComplete received.");
+	theApp.util.njdebug("event.low", "WaitEventComplete received.");
 
 	this.apply = function(asterisk)
 	{
 	}
-}
+},
 
 
 /* New in 1.6. Replaces Link and Unlink.
  * we just chain to the old functions once we determine whether
  * its a link or unlink
  */
-function Bridge(response)
+Bridge: function (response)
 {
 	var bridgestate = response.getAttribute("bridgestate");
 
@@ -157,7 +162,7 @@ function Bridge(response)
 		}
 	}
 	
-}
+},
 
 /*
 <generic event='Link' privilege='call,all' 
@@ -168,7 +173,7 @@ uniqueid2='1236159646.512'
 callerid1='' 
 callerid2='0438428038' />
  */
-function Link(response)
+Link: function (response)
 {
 	this.channel = response.getAttribute("channel1");
 	this.remoteChannel = response.getAttribute("channel2");
@@ -178,15 +183,15 @@ function Link(response)
 	this.apply = function(asterisk)
 	{
 		// First check that the event is ours
-		if (isLocalChannel(this.channel))
+		if (theApp.util.isLocalChannel(this.channel))
 		{
-			njdebug("event.high", "Link event received.");
+			theApp.util.njdebug("event.high", "Link event received.");
 
 			asterisk.remoteChannel = this.remoteChannel;
 			asterisk.updateState("Connected");
 		}
 	}
-}
+},
 
 
 /*
@@ -199,7 +204,7 @@ uniqueid2='1236159646.512'
 callerid1='' 
 callerid2='0438428038'/>
  */
-function Unlink(response)
+Unlink: function (response)
 {
 	this.channel = response.getAttribute("channel1");
 	this.remoteChannel = response.getAttribute("channel2");
@@ -209,18 +214,18 @@ function Unlink(response)
 	this.apply = function(asterisk)
 	{
 		// First check that the event is ours
-		if (isLocalChannel(this.channel))
+		if (theApp.util.isLocalChannel(this.channel))
 		{
-			njdebug("event.high", "Unlink event received.");
+			theApp.util.njdebug("event.high", "Unlink event received.");
 			asterisk.remoteChannel = this.remoteChannel;
 			asterisk.updateState("Disconnected");
-			resetIcon();
-			setTimeout("gAsterisk.updateState('');", 3000);
+			theApp.noojeeclick.resetIcon();
+			window.setTimeout("noojeeClick.asterisk.getInstance().updateState('');", 3000);
 		}
 	}
-}
+},
 
-function Hangup(response)
+Hangup: function (response)
 {
 	this.channel = response.getAttribute("channel");
 	this.uniqueid = response.getAttribute("uniqueid");
@@ -230,23 +235,24 @@ function Hangup(response)
 
 	this.apply = function(asterisk)
 	{
-		if (isLocalChannel(this.channel))
+		if (theApp.util.isLocalChannel(this.channel))
 		{
-			njdebug("event.high", "Hangup event received for channel=" + this.channel + " cause=" + this.causeText);
+			theApp.util.njdebug("event.high", "Hangup event received for channel=" + this.channel + " cause=" + this.causeText);
 			asterisk.cause = this.cause;
 			asterisk.causeText = this.causeText;
 /*			if (asterisk.isRemoteDialCommenced())
 				asterisk.updateState("Hangup: " + asterisk.dialing);
 			else
-				asterisk.updateState("Hangup: " + getValue("extension"));
+				asterisk.updateState("Hangup: " + theApp.prefs.getValue("extension"));
 */
 			asterisk.updateState("Disconnected");
-			resetIcon();
-			setTimeout("gAsterisk.updateState('');", 3000);
+			theApp.noojeeclick.resetIcon();
+			
+			window.setTimeout("noojeeClick.asterisk.getInstance().updateState('');", 3000);
 		}
 	
 	}
-}
+},
 
 
 /*
@@ -260,7 +266,7 @@ function Hangup(response)
  	destuniqueid='1236160329.522' /></response>
  */
 
-function DialEvent(response)
+DialEvent: function (response)
 {
 	this.channel = response.getAttribute("channel");
 
@@ -281,19 +287,19 @@ function DialEvent(response)
 
 	this.apply = function(asterisk)
 	{
-		njdebug("event.high", "Dial event received.");
+		theApp.util.njdebug("event.high", "Dial event received.");
 		
 		// First check that the event is ours
-		if (isLocalChannel(this.channel))
+		if (theApp.util.isLocalChannel(this.channel))
 		{
 			asterisk.remoteChannel = this.remoteChannel;
 			asterisk.setRemoteDialCommenced(true);
 			asterisk.updateState("Dialing: " + asterisk.dialing );
 		}
 	}
-}
+},
 
-function Newstate(response)
+Newstate: function (response)
 {
 	this.channel = response.getAttribute("channel");
 	this.uniqueid = response.getAttribute("uniqueid");
@@ -310,17 +316,17 @@ function Newstate(response)
 	
 	this.apply = function(asterisk)
 	{
-		njdebug("event.low", "Newstate event received for channel=" + this.channel + " state=" + this.state);
+		theApp.util.njdebug("event.low", "Newstate event received for channel=" + this.channel + " state=" + this.state);
 
 		if (this.channel == asterisk.remoteChannel)
 		{
-			njdebug("event.high", "NewState updated asterisk state to " + asterisk.state);
+			theApp.util.njdebug("event.high", "NewState updated asterisk state to " + asterisk.state);
 			asterisk.updateState(this.state);
 		}
 	}
-}
+},
 
-function Newcallerid(response)
+Newcallerid: function (response)
 {
 	this.channel = response.getAttribute("channel");
 	this.uniqueid = response.getAttribute("uniqueid");
@@ -336,14 +342,19 @@ function Newcallerid(response)
 	{
 		if (this.channel == asterisk.remoteChannel)
 		{
-			njdebug("event.high", "Newcallerid event received for channel=" + this.channel + " callerid=" + this.callerid);
+			theApp.util.njdebug("event.high", "Newcallerid event received for channel=" + this.channel + " callerid=" + this.callerid);
 
 			asterisk.calleridname = this.calleridname;
 			asterisk.callerid = this.callerid;
 		}
 	
 	}
+},
+
+
+
+
+
 }
 
-
-
+}});

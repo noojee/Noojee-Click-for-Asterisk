@@ -1,5 +1,10 @@
 
-function onDiagnoseLoaded()
+noojeeClick.ns(function() { with (noojeeClick.LIB) {
+
+theApp.diagnose =
+{
+
+onDiagnoseLoaded: function ()
 {
 	var diagConsole = window.document.getElementById('njDiagConsole');
 	
@@ -7,3 +12,8 @@ function onDiagnoseLoaded()
 	//Asterisk.test()
 
 }
+
+
+}
+
+}});

@@ -4,7 +4,13 @@
 *  Originally published and documented at http://www.dhtmlab.com/
 */
 
-function dltypeof( vExpression )
+
+noojeeClick.ns(function() { with (noojeeClick.LIB) {
+
+theApp.typeof =
+{
+
+dltypeof: function ( vExpression )
 {
     var sTypeOf = typeof vExpression;
     if( sTypeOf == "function" )
@@ -128,5 +134,9 @@ function dltypeof( vExpression )
     return sTypeOf;
 }
 
+
+}
+
+}});
 // end
 

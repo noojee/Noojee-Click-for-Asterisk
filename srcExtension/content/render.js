@@ -1,32 +1,37 @@
+noojeeClick.ns(function() { with (noojeeClick.LIB) {
+
+theApp.render =
+{
+
 // List of tags whose children we will scan looking for phone numbers
-const
-tagsOfInterest = [ "a", "abbr", "acronym", "address", "applet", "b", "bdo",
+tagsOfInterest: [ "a", "abbr", "acronym", "address", "applet", "b", "bdo",
 		"big", "blockquote", "body", "caption", "center", "cite", "code", "dd",
 		"del", "div", "dfn", "dt", "em", "fieldset", "font", "form", "h1",
 		"h2", "h3", "h4", "h5", "h6", "i", "iframe", "ins", "kdb", "li",
 		"object", "pre", "p", "q", "samp", "small", "span", "strike", "s",
-		"strong", "sub", "sup", "td", "th", "tt", "u", "var" ];
+		"strong", "sub", "sup", "td", "th", "tt", "u", "var" ],
 
-var xpath = "//text()[(parent::" + tagsOfInterest.join(" or parent::") + ")]";
 
-function onRefresh()
+
+onRefresh: function()
 {
-	var documentList = getWindowList();
+	var documentList = theApp.util.getWindowList();
 
 	for ( var i = 0; i < documentList.length; i++)
-		onRefreshOne(documentList[i]);
+		this.onRefreshOne(documentList[i]);
 
-}
+},
 
-function onRefreshOne(doc)
+
+onRefreshOne: function (doc)
 {
-	njdebug("render", "onRefresh called for doc=" + doc);
+	theApp.util.njdebug("render", "onRefresh called for doc=" + doc);
 	try
 	{
 		// First remove any clicks.
 		var spans = doc.getElementsByName("noojeeClick");
-		njdebug("render", "spans=" + spans);
-		njdebug("render", "span.length=" + spans.length);
+		theApp.util.njdebug("render", "spans=" + spans);
+		theApp.util.njdebug("render", "span.length=" + spans.length);
 
 		var removalSpanArray = [];
 		var removedSpanItemCount = 0;
@@ -70,55 +75,57 @@ function onRefreshOne(doc)
 			if (removalSpanArray[l].parentNode != null)
 				removalSpanArray[l].parentNode.removeChild(removalSpanArray[l]);
 			else
-				njdebug("render", "unexpected null parentNode for: "
+				theApp.util.njdebug("render", "unexpected null parentNode for: "
 						+ removalSpanArray[l]);
 		}
 
 		// Now add the Noojee Dial icons back in.
-		if (getBoolValue("enabled") == true)
+		if (theApp.prefs.getBoolValue("enabled") == true)
 		{
-			addClickToDialLinks(doc);
+			this.addClickToDialLinks(doc);
 		}
 
 	} catch (e)
 	{
-		njlog(e);
-		showException("onRefreshOne", e);
+		theApp.util.njlog(e);
+		theApp.util.showException("onRefreshOne", e);
 	}
-}
+},
 
-function addClickToDialLinks(document)
+
+addClickToDialLinks: function (document)
 {
-	if (excluded(document) == true)
-		njdebug("render", "excluded=" + document.location.href);
+	if (this.excluded(document) == true)
+		theApp.util.njdebug("render", "excluded=" + document.location.href);
 	else
 	{
-		njdebug("render", "rendering: "
+		theApp.util.njdebug("render", "rendering: "
 				+ (document.location ? document.location.href : document));
 
-		var pattern = getValue("pattern");
-		var delimiters = getValue("delimiters");
-		njdebug("render", "pattern =" + pattern);
+		var pattern = theApp.prefs.getValue("pattern");
+		var delimiters = theApp.prefs.getValue("delimiters");
+		theApp.util.njdebug("render", "pattern =" + pattern);
 
-		if (pattern != null && trim(pattern).length != 0)
+		if (pattern != null && theApp.util.trim(pattern).length != 0)
 		{
 			// Get the list of tags that we are gong to search for matching
 			// phone numbers.
+			var xpath = "//text()[(parent::" + this.tagsOfInterest.join(" or parent::") + ")]";
 			var candidates = document.evaluate(xpath, document, null,
 					XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null);
 
 			// Get the list of regex patterns we are to match on.
-			var trackRegex = new RegExp(transposePattern(pattern), "ig");
-			njdebug("render", "regex=" + trackRegex);
+			var trackRegex = new RegExp(theApp.phonepatterns.transposePattern(pattern), "ig");
+			theApp.util.njdebug("render", "regex=" + trackRegex);
 
 			// Loop through and test every candidate for a match.
 			for ( var cand = null, i = 0; (cand = candidates.snapshotItem(i)); i++)
 			{
 
-				njdebug("render", "examining node=" + cand.nodeValue);
+				theApp.util.njdebug("render", "examining node=" + cand.nodeValue);
 				if (trackRegex.test(cand.nodeValue))
 				{
-					njdebug("render", "cand=" + cand);
+					theApp.util.njdebug("render", "cand=" + cand);
 
 					// Check that the node isn't owned by a document which is in
 					// design mode (i.e. an editor).
@@ -128,12 +135,12 @@ function addClickToDialLinks(document)
 						var owner = document.getElementById(cand.id).ownerDocument;
 						if (owner.designMode == "on" || owner.contentEditable == "on")
 						{
-							njdebug("render", "Found node in designMode, skipping");
+							theApp.util.njdebug("render", "Found node in designMode, skipping");
 							continue;
 						}
 					}
 					else
-						njdebug("render", "Can't find owner for cand");
+						theApp.util.njdebug("render", "Can't find owner for cand");
 
 					// First check that the parent isn't already a noojeeClick
 					// element
@@ -150,7 +157,7 @@ function addClickToDialLinks(document)
 						span.setAttribute("name", "noojeeClick");
 
 						var source = cand.nodeValue;
-						njdebug("render", "source=" + source);
+						theApp.util.njdebug("render", "source=" + source);
 						cand.parentNode.replaceChild(span, cand);
 						trackRegex.lastIndex = 0;
 
@@ -170,7 +177,7 @@ function addClickToDialLinks(document)
 								.exec(source));)
 						{
 							// OK so we having a matching string
-							njdebug("render", "match=" + match);
+							theApp.util.njdebug("render", "match=" + match);
 
 							// rebuild the original source string as we go by
 							// adding the non-matching substrings
@@ -236,7 +243,7 @@ function addClickToDialLinks(document)
 								}
 
 							}
-							njdebug("render", "match is good");
+							theApp.util.njdebug("render", "match is good");
 
 							span.appendChild(document
 									.createTextNode(nonMatching));
@@ -247,7 +254,7 @@ function addClickToDialLinks(document)
 									"white-space:nowrap");
 							clickSpan.setAttribute("name", "noojeeClick");
 
-							njdebug("render", "match[0]=" + match[0]);
+							theApp.util.njdebug("render", "match[0]=" + match[0]);
 							var text = document.createTextNode(match[0]);
 							var img = document.createElement("img");
 							img
@@ -255,12 +262,12 @@ function addClickToDialLinks(document)
 											"chrome://noojeeclick/content/images/micro.png");
 							img.setAttribute("name", "noojeeClickImg");
 							img.setAttribute("title", match[0]);
-							img.addEventListener("onmouseover", onMouseOver,
+							img.addEventListener("onmouseover", theApp.handlers.onMouseOver,
 									true);
 							img
-									.addEventListener("onmouseout", onMouseOut,
+									.addEventListener("onmouseout", theApp.handlers.onMouseOut,
 											true);
-							img.addEventListener("click", onDialHandler, true);
+							img.addEventListener("click", theApp.handlers.onDialHandler, true);
 							img.setAttribute("PhoneNo", match[0]);
 							clickSpan.appendChild(text);
 							clickSpan.appendChild(img);
@@ -274,43 +281,47 @@ function addClickToDialLinks(document)
 				}
 			}
 		}
-		njdebug("render", "rendering complete:" + new Date());
+		theApp.util.njdebug("render", "rendering complete:" + new Date());
 	}
-}
+},
 
 /*
  * Determines if a document should be excluded by check if its URL matches any
- * of the URLs laid out in the excuded preferences.
+ * of the URLs laid out in the excluded preferences.
  */
-function excluded(doc)
+excluded: function (doc)
 {
 	var excluded = false;
 
 	if (doc.location != null)
 	{
-		njdebug("render", "checking exclusion for url=" + doc.location.href);
+		theApp.util.njdebug("render", "checking exclusion for url=" + doc.location.href);
 
-		var exclusions = getValue("exclusions");
+		var exclusions = theApp.prefs.getValue("exclusions");
 		if (exclusions != null && exclusions.length != 0)
 		{
-			njdebug("render", "exclusions=" + exclusions);
+			theApp.util.njdebug("render", "exclusions=" + exclusions);
 			exclusions = exclusions.split("\n");
 			for ( var i = 0; i < exclusions.length; i++)
 			{
-				var exclusion = trim(exclusions[i]);
+				var exclusion = theApp.util.trim(exclusions[i]);
 				if (exclusion.length > 0)
 				{
 					if (doc.location.href.indexOf(exclusion) == 0)
 					{
-						njdebug("render", "excluded: " + doc.location.href);
+						theApp.util.njdebug("render", "excluded: " + doc.location.href);
 						excluded = true;
 						break;
 					}
 				}
 			}
 		} else
-			njdebug("render", "No Exclusions.");
+			theApp.util.njdebug("render", "No Exclusions.");
 	}
 
 	return excluded;
+},
+
 }
+
+}});

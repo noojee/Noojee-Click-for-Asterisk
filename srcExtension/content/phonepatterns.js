@@ -2,15 +2,22 @@
  * normalisePhoneNo non-numeric characters from the phone number ready to use in
  * dial string
  */
-function normalisePhoneNo(phoneNo)
+ 
+ 
+noojeeClick.ns(function() { with (noojeeClick.LIB) {
+
+theApp.phonepatterns =
 {
-	njdebug("phonepatterns", "normalizePhoneNo for " + phoneNo);
-	if ((getValue("internationalPrefix") == null 
-			|| trim(getValue("internationalPrefix")).length == 0)
+ 
+normalisePhoneNo: function (phoneNo)
+{
+	theApp.util.njdebug("phonepatterns", "normalizePhoneNo for " + phoneNo);
+	if ((theApp.prefs.getValue("internationalPrefix") == null 
+			|| theApp.util.trim(theApp.prefs.getValue("internationalPrefix")).length == 0)
 	        && phoneNo.indexOf("+") >= 0)
 	{
-		njlog("The International Prefix has not been set. Please set it via the configuration panel before trying again");
-		njAlert("The International Prefix has not been set. Please set it via the configuration panel before trying again");
+		theApp.util.njlog("The International Prefix has not been set. Please set it via the configuration panel before trying again");
+		theApp.prompts.njAlert("The International Prefix has not been set. Please set it via the configuration panel before trying again");
 		throw "Invalid Configuration";
 	}
 
@@ -18,7 +25,7 @@ function normalisePhoneNo(phoneNo)
 	phoneNo = phoneNo.replace(/\ /g, "");
 
 	
-	var delimiters = getValue("delimiters");
+	var delimiters = theApp.prefs.getValue("delimiters");
 	if (delimiters == null)
 		delimiters = "";
 	
@@ -26,36 +33,37 @@ function normalisePhoneNo(phoneNo)
 	delimiters = delimiters.replace(/\ /g, "");
 
 	// Now strip all of the delimiters from the phone no.
-	njdebug("phonepatterns", "delimiters=" + delimiters);
+	theApp.util.njdebug("phonepatterns", "delimiters=" + delimiters);
 	for (var i = 0; i < delimiters.length; i++)
 		phoneNo = phoneNo.replace(new RegExp("\\" + delimiters.charAt(i), "g"), "");
 
 	// Check if we have a local prefix which needs to be substituted.
 	// eg. +613 becomes 03
-	if ((getValue("localPrefix") != null 
-			&& trim(getValue("localPrefix")).length > 0)
-	        && phoneNo.indexOf(trim(getValue("localPrefix"))) == 0)
+	if ((theApp.prefs.getValue("localPrefix") != null 
+			&& theApp.util.trim(theApp.prefs.getValue("localPrefix")).length > 0)
+	        && phoneNo.indexOf(theApp.util.trim(theApp.prefs.getValue("localPrefix"))) == 0)
 	{
-		phoneNo = phoneNo.replace(trim(getValue("localPrefix")), trim(getValue("localPrefixSubstitution")))
+		phoneNo = phoneNo.replace(theApp.util.trim(theApp.prefs.getValue("localPrefix"))
+			, theApp.util.trim(theApp.prefs.getValue("localPrefixSubstitution")))
 	}
 
 	// Finally expand the international prefix
-	phoneNo = phoneNo.replace(/^\+/, getValue("internationalPrefix"));
+	phoneNo = phoneNo.replace(/^\+/, theApp.prefs.getValue("internationalPrefix"));
 	
-	dialPrefix = getValue("dialPrefix");
-	njdebug("phonepatterns", "dialPrefix=" + dialPrefix);
+	var dialPrefix = theApp.prefs.getValue("dialPrefix");
+	theApp.util.njdebug("phonepatterns", "dialPrefix=" + dialPrefix);
 	if (dialPrefix != null)
 		phoneNo = dialPrefix + phoneNo;
 	
-	njlog("normalised: " + phoneNo);
+	theApp.util.njlog("normalised: " + phoneNo);
 	return phoneNo;
-}
+},
 
 
 //Translates phone words into real phone numbers.
 //If the passed phoneword is already a valid number then the original number is
 //simply returned.
-function prepPhoneWords(phoneword)
+prepPhoneWords: function (phoneword)
 {
 	// handles phone words
 	var number = String(phoneword).replace(/[\)\s-]/g, '').replace(/[abc]/ig, '2').replace(/[def]/ig, '3').replace(
@@ -63,22 +71,22 @@ function prepPhoneWords(phoneword)
 	        '8').replace(/[wxyz]/ig, '9');
 
 	return number;
-}
+},
 
 /**
  * comparision function used to sort string by length descending.
  */
-function sortByLengthDesc(a, b)
+sortByLengthDesc: function (a, b)
 {
 	return b.length - a.length;
-}
+},
 
 /*
  * Transposes a dial pattern into regex
  */
-function transposePattern(pattern)
+transposePattern: function (pattern)
 {
-	njdebug("phonepatterns", "transposing pattern=" + pattern);
+	theApp.util.njdebug("phonepatterns", "transposing pattern=" + pattern);
 	var regex = new String();
 	var regIndex = 0;
 	var builder = new String();
@@ -87,24 +95,24 @@ function transposePattern(pattern)
 	// pattern will
 	// match first when patterns overlap.
 	var patterns = pattern.split("\n");
-	patterns.sort(sortByLengthDesc);
+	patterns.sort(this.sortByLengthDesc);
 	pattern = "";
 	for ( var i = 0; i < patterns.length; i++)
 	{
 		// We also take the opportunity to remove leading and trailing
 		// whitespace
 		// as due to the regex \b it will never match.
-		pattern += trim(patterns[i]) + "\n";
+		pattern += theApp.util.trim(patterns[i]) + "\n";
 	}
 
-	njdebug("phonepatterns", "sorted patterns=" + pattern);
+	theApp.util.njdebug("phonepatterns", "sorted patterns=" + pattern);
 
 	var inBrackets = false;
 
 	// Make the match case-insensative.
 	pattern = pattern.toUpperCase();
 	
-	var delimiters = getValue("delimiters");
+	var delimiters = theApp.prefs.getValue("delimiters");
 
 	var len = pattern.length;
 
@@ -119,7 +127,7 @@ function transposePattern(pattern)
 		{
 			builder += "[1-9]";
 		}
-		else if (isDigit(pattern[i]))
+		else if (theApp.util.isDigit(pattern[i]))
 		{
 			builder += pattern[i];
 		}
@@ -171,7 +179,7 @@ function transposePattern(pattern)
 				var word;
 				// Add in word boundaries
 				if (builder.length > 1 && (builder[1] == '(' || builder[1] == '+'))
-					word = "[\\b" + Left(builder, 2) + "]" + builder.substring(2) + "\\b";
+					word = "[\\b" + theApp.util.Left(builder, 2) + "]" + builder.substring(2) + "\\b";
 				else
 					word = "\\b" + builder + "\\b";
 				// Now add exclusion characters to the start and end of the
@@ -184,8 +192,8 @@ function transposePattern(pattern)
 		}
 		else
 		{
-			njlog("Unrecognized character '" + pattern[i] + "' found in pattern at pos=" + i);
-			njAlert("Unrecognized character '" + pattern[i] + "' found in pattern at pos=" + i);
+			theApp.util.njlog("Unrecognized character '" + pattern[i] + "' found in pattern at pos=" + i);
+			theApp.prompts.njAlert("Unrecognized character '" + pattern[i] + "' found in pattern at pos=" + i);
 			regex = null;
 			break;
 		}
@@ -200,7 +208,7 @@ function transposePattern(pattern)
 
 			var word;
 			if (builder.length > 1 && (builder[1] == '(' || builder[1] == '+'))
-				word = "[\\b" + Left(builder, 2) + "]" + builder.substring(2) + "\\b";
+				word = "[\\b" + theApp.util.Left(builder, 2) + "]" + builder.substring(2) + "\\b";
 			else
 				word = "\\b" + builder + "\\b";
 			// Now add exclusion characters to the start and end of the pattern
@@ -211,17 +219,17 @@ function transposePattern(pattern)
 
 	if (inBrackets == true)
 	{
-		njlog("Invalid pattern " + pattern + " missing close bracket ']'.");
-		njAlert("Invalid pattern " + pattern + " missing close bracket ']'.");
+		theApp.util.njlog("Invalid pattern " + pattern + " missing close bracket ']'.");
+		theApp.prompts.njAlert("Invalid pattern " + pattern + " missing close bracket ']'.");
 		regex = null;
 	}
 
-	njdebug("phonepatterns", "regex=" + regex);
+	theApp.util.njdebug("phonepatterns", "regex=" + regex);
 	return regex;
-}
+},
 
 
-function extractPhoneNo(text)
+extractPhoneNo: function (text)
 {
 	var phone = "";
 
@@ -230,9 +238,14 @@ function extractPhoneNo(text)
 	for ( var i = 0; i < text.length; i++)
 	{
 		var firstDigitSeen = false;
-		if (isDigit(text.charAt(i)) || text.charAt(i) == ' ' || (!firstDigitSeen && text.charAt(i) == '+'))
+		if (theApp.util.isDigit(text.charAt(i)) || text.charAt(i) == ' ' || (!firstDigitSeen && text.charAt(i) == '+'))
 			phone += text.charAt(i);
 	}
 
 	return phone;
 }
+
+
+}
+
+}});

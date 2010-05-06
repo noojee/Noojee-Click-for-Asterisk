@@ -1,67 +1,88 @@
-// Display tooltip
-function onMouseOver(e)
+
+noojeeClick.ns(function() { with (noojeeClick.LIB) {
+
+theApp.handlers =
 {
-	njdebug("handlers", "onMouseOver");
-}
+
 
 // Display tooltip
-function onMouseOut(e)
+onMouseOver: function (e)
 {
-	njdebug("handlers", "onMouseOut");
-}
+	theApp.util.njdebug("handlers", "onMouseOver");
+},
+
+// Display tooltip
+onMouseOut: function (e)
+{
+	theApp.util.njdebug("handlers", "onMouseOut");
+},
+
+onDial: function (e)
+{
+	theApp.util.njlog("handlers", "onDial");
+	var obj = theApp.noojeeclick.ns6 ? e.target : event.srcElement;
+	var phoneNo = obj.getAttribute("phoneNo");
+
+	if (phoneNo == null || phoneNo.length == 0)
+		theApp.util.njAlert("Please enter a phone number.");
+	else
+		theApp.asterisk.getInstance().dial(phoneNo);
+
+	return true;
+},
+
+/*
+* Called when the users clicks the 'Hangup' button on the status bar
+* 
+*/
+onHangup: function ()
+{
+	theApp.util.njlog("onHangup");
+	theApp.asterisk.getInstance().hangup();
+	theApp.noojeeclick.resetIcon();
+
+},
+
 
 // Just do the simple dial
-function onDialHandler(e)
+onDialHandler: function (e)
 {
-	njdebug("handlers", "onDialHandler");
+	theApp.util.njdebug("handlers", "onDialHandler");
 	try
 	{
-		njdebug("onDialHandler");
+		theApp.util.njdebug("onDialHandler");
 
 		if (!e)
 			e = window.event;
-		if (!isRClick(e))
+		if (!theApp.util.isRClick(e))
 		{
-			onDial(e);
+			theApp.handlers.onDial(e);
 		}
 	}
 	catch (e)
 	{
-		njlog(e);
-		showException("onDialHandler", e);
+		theApp.util.njlog(e);
+		theApp.util.showException("onDialHandler", e);
 	}
-}
+},
 
 
-function onDialDifferently(e)
+onDialDifferently: function (e)
 {
-	njlog("handlers", 'Dial differently');
+	theApp.util.njlog("handlers", 'Dial differently');
 
 	var obj = ns6 ? e.target : event.srcElement;
-	doDialDifferently(obj);
-}
+	this.doDialDifferently(obj);
+},
 
-function onDial(e)
+
+dialSelectionMenuAction: function ()
 {
-	njlog("handlers", "onDial");
-	var obj = ns6 ? e.target : event.srcElement;
-	var phoneNo = obj.getAttribute("phoneNo");
-
-	if (phoneNo == null || phoneNo.length == 0)
-		njAlert("Please enter a phone number.");
-	else
-		gAsterisk.dial(phoneNo);
-
-	return true;
-}
-
-function dialSelectionMenuAction()
-{
-	njdebug("handlers", "dialSelectionMenuAction called");
+	theApp.util.njdebug("handlers", "dialSelectionMenuAction called");
 	var phoneNo = getSelectedText();
 	if (phoneNo == null || phoneNo.length == 0)
 	{
-		njAlert("Please select a phone number first");
+		theApp.prompts.njAlert("Please select a phone number first");
 		return;
 	}
 
@@ -70,41 +91,41 @@ function dialSelectionMenuAction()
 	{
 		phoneNo = result.value;
 		if (phoneNo.length == 0)
-			njAlert("Please enter a phone number.");
+			theApp.prompts.njAlert("Please enter a phone number.");
 		else
-			gAsterisk.dial(phoneNo);
+			theApp.asterisk.getInstance().dial(phoneNo);
 	}
-}
+},
 
-function dialFromClipboardMenuAction()
+dialFromClipboardMenuAction: function ()
 {
-	var phoneNo = getClipboardText();
+	var phoneNo = theApp.util.trim(theApp.phonepatterns.extractPhoneNo(theApp.util.getClipboardText()));
 
-	var result = njPrompt("Confirm number to dial.", phoneNo);
+	var result = theApp.prompts.njPrompt("Confirm number to dial.", phoneNo);
 	if (result.OK == true && result.value != null)
 	{
 		phoneNo = result.value;
 		if (phoneNo.length == 0)
-			njAlert("Please enter a phone number.");
+			theApp.prompts.njAlert("Please enter a phone number.");
 		else
-			gAsterisk.dial(phoneNo);
+			theApp.asterisk.getInstance().dial(phoneNo);
 	}
-}
+},
 
-function dialDifferentlyMenuAction(target)
+dialDifferentlyMenuAction: function (target)
 {
 	target = document.popupNode;
-	njdebug("handlers", "target=" + target);
+	theApp.util.njdebug("handlers", "target=" + target);
 
 	// if (target.onImage)
 	{
-		doDialDifferently(target);
+		this.doDialDifferently(target);
 	}
 	// else
 	// njAlert("Dial differently only works on the Noojee Click dial icon");
-}
+},
 
-function doDialDifferently(target)
+doDialDifferently: function (target)
 {
 	var phoneNo = target.getAttribute("phoneNo");
 	var result = njPrompt("Enter number to dial.", phoneNo);
@@ -112,52 +133,52 @@ function doDialDifferently(target)
 	{
 		phoneNo = result.value;
 		if (phoneNo.length == 0)
-			njAlert("Please enter a phone number.");
+			theApp.prompts.njAlert("Please enter a phone number.");
 		else
-			gAsterisk.dial(phoneNo);
+			theApp.asterisk.getInstance().dial(phoneNo);
 	}
-}
+},
 
-function dialMenuAction()
+dialMenuAction: function ()
 {
 	var phoneNo = "";
-	var result = njPrompt("Enter number to dial.", phoneNo);
+	var result = theApp.prompts.njPrompt("Enter number to dial.", phoneNo);
 	if (result.OK == true && result.value != null)
 	{
 		phoneNo = result.value;
 		if (phoneNo.length == 0)
-			njAlert("Please enter a phone number.");
+			theApp.prompts.njAlert("Please enter a phone number.");
 		else
-			gAsterisk.dial(phoneNo);
+			theApp.asterisk.getInstance().dial(phoneNo);
 	}
-}
+},
 
-function redialMenuAction()
+redialMenuAction: function ()
 {
-	njdebug("handlers", "redialMenuAction called");
-	var phoneNo = getValue("lastDialed");
+	theApp.util.njdebug("handlers", "redialMenuAction called");
+	var phoneNo = theApp.prefs.getValue("lastDialed");
 	if (phoneNo != null && phoneNo.length > 0)
 	{
-		gAsterisk.dial(phoneNo);
+		theApp.asterisk.getInstance().dial(phoneNo);
 	}
 	else
-		njAlert("Redial string is empty."); // this shouldn't happen.
-}
+		theApp.prompts.njAlert("Redial string is empty."); // this shouldn't happen.
+},
 
-function onAddDialPatternMenuAction()
+onAddDialPatternMenuAction: function ()
 {
 	var fault = false;
-	var phoneNo = getRawSelectedText();
-	if (phoneNo == null || trim(phoneNo).length == 0)
+	var phoneNo = theApp.util.getRawSelectedText();
+	if (phoneNo == null || theApp.util.trim(phoneNo).length == 0)
 	{
-		njAlert("Please select a phone number first");
+		theApp.promptsnjAlert("Please select a phone number first");
 		return;
 	}
 
 	// transpose the phone number into a pattern
-	phoneNo = trim(phoneNo);
+	phoneNo = theApp.util.trim(phoneNo);
 	var newPattern = "";
-	var delimiters = getValue("delimiters");
+	var delimiters = theApp.prefs.getValue("delimiters");
 	for ( var i = 0; i < phoneNo.length; i++)
 	{
 		if (delimiters.indexOf(phoneNo[i]) != -1)
@@ -188,7 +209,7 @@ function onAddDialPatternMenuAction()
 					newPattern += ' ';
 					break;
 				default:
-					njAlert("Unsupported character found in phone number: '" + phoneNo[i] + "'");
+					theApp.prompts.njAlert("Unsupported character found in phone number: '" + phoneNo[i] + "'");
 					fault = true;
 					break;
 
@@ -205,12 +226,29 @@ function onAddDialPatternMenuAction()
 
 			if (newPattern.length != 0)
 			{
-				var patternList = getValue("pattern");
+				var patternList = theApp.prefs.getValue("pattern");
 				patternList += "\n" + newPattern;
-				setValue("pattern", patternList);
+				theApp.prefs.setValue("pattern", patternList);
 				pattern = newPattern;
-				onRefresh();
+				theApp.render.onRefresh();
 			}
 		}
 	}
+},
+
+onEnable: function ()
+{
+	var enabled = theApp.prefs.getBoolValue("enabled");
+	enabled = !enabled;
+	theApp.prefs.setBoolValue("enabled", enabled);
+	theApp.render.onRefresh();
+	if (enabled == true)
+		theApp.asterisk.getInstance().init();
+},
+
+
+
+
 }
+
+}});

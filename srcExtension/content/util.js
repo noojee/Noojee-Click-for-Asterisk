@@ -1,22 +1,31 @@
-function njlog(msg)
+noojeeClick.ns(function() { with (noojeeClick.LIB) {
+
+theApp.util =
 {
-	if (getBoolValue("enableLogging") == true)
+
+
+consoleService: Components.classes["@mozilla.org/consoleservice;1"]
+        .getService(Components.interfaces.nsIConsoleService),
+        
+njlog: function (msg)
+{
+	if (theApp.prefs.getBoolValue("enableLogging") == true)
 	{
 		var now = new Date();
 		var hour = now.getHours();
 		var min = now.getMinutes();
 		var sec = now.getSeconds();
 		var mil = now.getMilliseconds();
-		consoleService.logStringMessage(hour + ":" + min + ":" + sec + ":" + mil + " info: " + msg);
+		this.consoleService.logStringMessage(hour + ":" + min + ":" + sec + ":" + mil + " info: " + msg);
 	}
-}
+},
 
-function njdebug(module, msg)
+njdebug: function (module, msg)
 {
 
-	if (getBoolValue("enableDebugging") == true)
+	if (theApp.prefs.getBoolValue("enableDebugging") == true)
 	{
-		var filter = getValue("debugFilter");
+		var filter = theApp.prefs.getValue("debugFilter");
 
 		if (filter.search(module, "i") >= 0)
 		{
@@ -25,22 +34,22 @@ function njdebug(module, msg)
 			var min = now.getMinutes();
 			var sec = now.getSeconds();
 			var mil = now.getMilliseconds();
-			consoleService.logStringMessage(hour + ":" + min + ":" + sec + ":" + mil+ " debug (" + module + "): " + msg);
+			this.consoleService.logStringMessage(hour + ":" + min + ":" + sec + ":" + mil+ " debug (" + module + "): " + msg);
 		}
 	}
-}
+},
 
-function njerror(msg)
+njerror: function (msg)
 {
 		var now = new Date();
 		var hour = now.getHours();
 		var min = now.getMinutes();
 		var sec = now.getSeconds();
 		var mil = now.getMilliseconds();
-		consoleService.logStringMessage(hour + ":" + min + ":" + sec + ":" + mil + " error: " + msg);
-}
+		this.consoleService.logStringMessage(hour + ":" + min + ":" + sec + ":" + mil + " error: " + msg);
+},
 
-function Right(str, n)
+Right: function(str, n)
 {
 	if (n <= 0)
 		return "";
@@ -51,9 +60,9 @@ function Right(str, n)
 		var iLen = String(str).length;
 		return String(str).substring(iLen, iLen - n);
 	}
-}
+},
 
-function Left(str, n)
+Left: function(str, n)
 {
 	if (n <= 0)
 		return "";
@@ -64,30 +73,33 @@ function Left(str, n)
 		var iLen = String(str).length;
 		return String(str).substring(0, n);
 	}
-}
+},
 
-function trim(string)
+trim: function(string)
 {
 	return string.replace(/^\s+|\s+$/g, "");
-}
-function ltrim(string)
+},
+
+ltrim: function(string)
 {
 	return string.replace(/^\s+/, "");
-}
-function rtrim()
+},
+
+
+rtrim: function()
 {
 	return string.replace(/\s+$/, "");
-}
+},
 
-function isRClick(e)
+isRClick: function(e)
 {
 	var emod = (e) ? (e.eventPhase) ? "W3C" : "NN4" : (window.event) ? "IE4+" : "unknown";
 
 	return (emod == "NN4") ? (e.which > 1) : (e.button == 2);
-}
+},
 
 
-function addGlobalStyle(document, css)
+addGlobalStyle: function (document, css)
 {
 	var success = false;
 	var style = document.createElement("style");
@@ -103,69 +115,69 @@ function addGlobalStyle(document, css)
 	}
 
 	return success;
-}
+},
 
-function hasGlobalStyle(document)
+hasGlobalStyle: function (document)
 {
 	var hasStyle = false;
 
 	var noojeeStyle = document.getElementById("noojeeClickStyle");
 	if (noojeeStyle != null)
 		hasStyle = true;
-	njdebug("util", "hasStyle=" + hasStyle);
+	this.njdebug("util", "hasStyle=" + hasStyle);
 	return hasStyle;
-}
+},
 
-function showError(response, message)
+showError: function (response, message)
 {
-	njlog("showError r=" + response + " m=" + message);
-	njAlert(message);
-	//getStatusWindow().updateStatus(message);
-}
+	this.njlog("showError r=" + response + " m=" + message);
+	theApp.prompts.njAlert(message);
+	//theApp.dialstatus.getInstance().updateStatus(message);
+},
 
-function showException(method, e)
+showException: function (method, e)
 {
-	njdebug("util", "Exception caught in method '" + method + "' " + e);
+	this.njdebug("util", "Exception caught in method '" + method + "' " + e);
 	var message = "An exeption occured in method '" + method + "' " + e.name + ". Error description: " + e.description
 	        + ". Error number: " + e.number + ". Error message: " + e.message;
-	njlog(message);
+	this.njlog(message);
 
-	njdebug("util", stacktrace());
-	njAlert(message);
-}
+	this.njdebug("util", this.stacktrace());
+	theApp.prompts.njAlert(message);
+},
 
-function stacktrace()
+stacktrace: function ()
 {
-	var f = stacktrace;
+	var f = this.stacktrace;
 	var stack = "Stack trace:";
 	while (f)
 	{
-		if (f != stacktrace)
+		if (f != this.stacktrace)
 			stack += "\n" + f.name;
 		f = f.caller;
 	}
 	return stack;
 
-}
+},
 
-function showTree(node)
+showTree: function (node)
 {
-	njdebug("util", "showTree");
+	this.njdebug("util", "showTree");
 	while (node != null)
 	{
-		njdebug("util", node + ":" + node.nodeName + ":" + node.nodeValue + (node.text != undefined ? (":" + node.text) : ""));
+		this.njdebug("util", node + ":" + node.nodeName + ":" + node.nodeValue + (node.text != undefined ? (":" + node.text) : ""));
 		node = node.parentNode;
 	}
-}
+},
 
 
 
-function getWindowList()
+getWindowList: function ()
 {
 	var documentList = [];
 	var count = 0;
 
-	njdebug("util", "getWindowList a");
+	this.njdebug("util", "getWindowList a");
 	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
 	        .getService(Components.interfaces.nsIWindowMediator);
 	var enumerator = wm.getEnumerator(null);
@@ -173,24 +185,24 @@ function getWindowList()
 	{
 		var win = enumerator.getNext();
 
-		njdebug("util", win);
-		if (win.content != undefined && isHtmlDocument(win.content.document))
+		this.njdebug("util", win);
+		if (win.content != undefined && this.isHtmlDocument(win.content.document))
 		{
 			documentList[count++] = win.content.document;
-			njdebug("util", "added=" + win.content.document);
+			this.njdebug("util", "added=" + win.content.document);
 
 		}
 	}
 
-	njdebug("util", "winList count=" + count);
+	this.njdebug("util", "winList count=" + count);
 	return documentList;
-}
+},
 
 /*
  * Returns the class name of the argument or undefined if it's not a valid
  * JavaScript object.
  */
-function getObjectClass(obj)
+getObjectClass: function (obj)
 {
 	if (obj && obj.constructor && obj.constructor.toString)
 	{
@@ -203,10 +215,10 @@ function getObjectClass(obj)
 	}
 
 	return undefined;
-}
+},
 
 
-function isHtmlDocument(object)
+isHtmlDocument: function (object)
 {
 	var isHtml = false;
 	var name = object.toString();
@@ -216,9 +228,9 @@ function isHtmlDocument(object)
 		isHtml = true;
 	}
 	return isHtml;
-}
+},
 
-function isDigit(str)
+isDigit: function (str)
 {
 	var isDigit = false;
 
@@ -229,26 +241,26 @@ function isDigit(str)
 			isDigit = true;
 	}
 	return isDigit;
-}
+},
 
-function getParentDocument(element)
+getParentDocument: function (element)
 {
-	njdebug("util", "element=" + element);
+	this.njdebug("util", "element=" + element);
 	var doc = element;
 	while (!(doc instanceof HTMLDocument))
 	{
 		doc = doc.parentNode;
-		njdebug("util", "doc=" + doc);
+		this.njdebug("util", "doc=" + doc);
 	}
 	return doc;
-}
+},
 
 // Retrieves the channel name of the users own extension (including technology)
 // from the Noojee Click configuration.
-function getLocalChannel()
+getLocalChannel: function ()
 {
 	var channel = null;
-	var extension = getValue("extension");
+	var extension = theApp.prefs.getValue("extension");
 	
 	if (extension != null)
 	{
@@ -263,9 +275,9 @@ function getLocalChannel()
 	}
 	return channel;
 
-}
+},
 
-function extractChannel(uniqueChannel)
+extractChannel: function (uniqueChannel)
 {
 	var channel = uniqueChannel;
 
@@ -275,43 +287,33 @@ function extractChannel(uniqueChannel)
 		channel = uniqueChannel.substring(0, index);
 	}
 	return channel;
-}	
+}	,
 	
 //Tests if the given channel (from an event usually) matches the users
 //local channel from Noojee Click's configuration.
-function isLocalChannel(channel)
+isLocalChannel: function (channel)
 {
-	return extractChannel(channel).toLowerCase() == getLocalChannel().toLowerCase();
-}
+	return this.extractChannel(channel).toLowerCase() == this.getLocalChannel().toLowerCase();
+},
 
 	
-function getStatusWindow()
-{
-	if (statusWindow == null)
-	{
-		njdebug("util", "statusWindow=null");
-		stacktrace();
-	}
-	
-	return statusWindow;
-}
 
-function getSelectedText()
+getSelectedText: function ()
 {
-	var selectedText = extractPhoneNo(trim(getRawSelectedText()));
+	var selectedText = theApp.phonepatterns.extractPhoneNo(this.trim(getRawSelectedText()));
 
 	return selectedText;
-}
+},
 
 
-function getRawSelectedText()
+getRawSelectedText: function ()
 {
 	var selectedText = "";
 	selectedText = document.commandDispatcher.focusedWindow.getSelection().toString();
 	return selectedText;
-}
+},
 
-function getClipboardText()
+getClipboardText: function ()
 {
 	var pasteText = "";
 	var clip = Components.classes["@mozilla.org/widget/clipboard;1"].getService(Components.interfaces.nsIClipboard);
@@ -330,24 +332,32 @@ function getClipboardText()
 	try
 	{
 		trans.getTransferData("text/unicode", str, strLength);
-		if (str)
-			str = str.value.QueryInterface(Components.interfaces.nsISupportsString);
-
 		var temp = "";
+		
 		if (str)
+		{
+			str = str.value.QueryInterface(Components.interfaces.nsISupportsString);
 			temp = str.data.substring(0, strLength.value / 2);
+			
+			// remove duplicate strings
+			temp = temp.replace(/\ \ /g, " ");
+			this.njdebug("util", "clipboard: removed doublspaces" + temp);
+		}
 
-		pasteText = trim(extractPhoneNo(temp));
+		pasteText = temp;
 
 	}
 	catch (e)
 	{
 		// Clipboard is empty (we think)
-		njlog("clipboard access threw exception, may just be empty " + e);
+		this.njlog("clipboard access threw exception, may just be empty " + e);
 	}
 
 	return pasteText;
+},
+
 }
 
+}});
 
 

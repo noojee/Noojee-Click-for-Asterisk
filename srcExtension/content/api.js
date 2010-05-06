@@ -2,42 +2,46 @@
  * Set of API's which allows a web page to control NoojeeClck.
  */
 
+noojeeClick.ns(function() { with (noojeeClick.LIB) {
+
+theApp.api =
+{
 
 /*
  * Call the init method to make the api available to normal hTML pages.
  * 
  */
 
-var njClickAPI = new Object();
+njClickAPI: new Object(),
 
 
 /* This function must be called for each html page that needs access
  * 
  */
-function njAPIonLoad(document)
+njAPIonLoad: function (document)
 {
-	njdebug("api", "njAPIonLoad called");
+	theApp.util.njdebug("api", "njAPIonLoad called");
 	//var HTMLWin = document.getElementById("htmlIFrame").contentWindow; 
 	//HTMLWin.njClickAPI = njClickAPI;
 	
 	// disabled for the moment until I understand the security implications.
-	document.njClickAPI = njClickAPI;
-}
+	document.njClickAPI = this.njClickAPI;
+},
 
 /* Call this method to modify the current extension.
  * 
  */
-function njSetExtension(extension)
+njSetExtension: function (extension)
 {
 	setValue("extension", extension);
-}
+},
 
-function njAPIinit()
+njAPIinit: function ()
 {
-	njdebug("api", "njAPIinit called");
+	theApp.util.njdebug("api", "njAPIinit called");
 	// disabled until I understand the security implications.
-	njClickAPI.setExtension = njSetExtension;
-}
+	this.njClickAPI.setExtension = this.njSetExtension;
+},
 
 
 /**
@@ -53,3 +57,9 @@ eg: // in your XUL JS file Global = new Object(); Global.foo = function() { njAl
 	eg: // in your HTML file XULContext.foo();
 	
 */	 
+
+
+}
+
+}});
+

@@ -1,7 +1,24 @@
-var gAsterisk = null;
-var authRequired = false;
+noojeeClick.ns(function() { with (noojeeClick.LIB) {
 
-function Asterisk()
+theApp.asterisk =
+{
+
+gAsterisk: null,
+
+authRequired: false,
+
+getInstance: function ()
+{
+	if (this.gAsterisk == null)
+	{
+		this.gAsterisk = new this.Asterisk();
+		this.gAsterisk.init();
+	}
+		
+	return this.gAsterisk;
+},
+
+Asterisk: function ()
 {
 	this.dialing = null; 		// the phone no. which is currently being dialed.
 	this.remoteDialCommenced = false; // During a call tracks if we have started dialing the remote end.
@@ -20,10 +37,10 @@ function Asterisk()
 	
 	this.init = function()
 	{
-		njlog("initializing Asterisk");
-		if (getBoolValue("enabled") == true)
+		theApp.util.njlog("initializing Asterisk");
+		if (theApp.prefs.getBoolValue("enabled") == true)
 		{ 
-			var sequence = new Sequence( [ new Login(), new Wait(null) ], "", true);
+			var sequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.Wait(null) ], "", true);
 			sequence.run();
 		}
 	}
@@ -35,10 +52,10 @@ function Asterisk()
 
 	this.dial = function(phoneNo)
 	{
-		njdebug( "asterisk", "Asterisk.dial=" + phoneNo);
+		theApp.util.njdebug( "asterisk", "Asterisk.dial=" + phoneNo);
 		
 		// TODO: only set the lastDialed when we successfully dial
-		setValue("lastDialed", phoneNo);
+		theApp.prefs.setValue("lastDialed", phoneNo);
 		
 		this.remoteDialCommenced = false;
 		this.dialing = phoneNo;
@@ -51,35 +68,35 @@ function Asterisk()
 		var dialSequence = null;
 		
 		if (this.loggedIn)
-			dialSequence = new Sequence( [ new Dial(), new Complete() ], phoneNo, false);
+			dialSequence = new theApp.sequence.Sequence( [ new theApp.job.Dial(), new theApp.job.Complete() ], phoneNo, false);
 		else
-			dialSequence = new Sequence( [ new Login(), new Dial(), new Complete() ], phoneNo, false);
+			dialSequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.Dial(), new theApp.job.Complete() ], phoneNo, false);
 			
 		dialSequence.run();
 	}
 
 	this.answer = function()
 	{
-		njdebug("asterisk", "Asterisk.answer");
+		theApp.util.njdebug("asterisk", "Asterisk.answer");
 		
 		this.remoteDialCommenced = false;
 		this.state = null;	
 		
 		var answerSequence;
 		if (this.loggedIn)
-			answerSequence = new Sequence( [ new Answer(), new Complete() ], this.remoteChannel, false);
+			answerSequence = new theApp.sequence.Sequence( [ new theApp.job.Answer(), new theApp.job.Complete() ], this.remoteChannel, false);
 		else
-			answerSequence = new Sequence( [ new Login(), new Answer(), new Complete() ], this.remoteChannel, false);
+			answerSequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.Answer(), new theApp.job.Complete() ], this.remoteChannel, false);
 			
 		answerSequence.run();
 	}
 
 	this.hangup = function()
 	{
-		njdebug("asterisk", "Asterisk.hangup called channel=" + gAsterisk.channel);
+		theApp.util.njdebug("asterisk", "Asterisk.hangup called channel=" + theApp.asterisk.getInstance().channel);
 
 		// Hangup the our extension
-		var sequence = new Sequence( [ new HangupAction(gAsterisk.channel), new Complete() ], "", false);
+		var sequence = new theApp.sequence.Sequence( [ new theApp.job.HangupAction(theApp.asterisk.getInstance().channel), new theApp.job.Complete() ], "", false);
 		sequence.run();
 
 		this.channel = null;
@@ -92,30 +109,30 @@ function Asterisk()
 
 	this.logoff = function()
 	{
-		var sequence = new Sequence( [ new Logoff(), new Complete() ], "", false);
+		var sequence = new theApp.sequence.Sequence( [ new theApp.sequence.Logoff(), new theApp.sequence.Complete() ], "", false);
 		sequence.run();
 	}
 
 	this.processEvent = function(events)
 	{
-		njdebug("asterisk", "Asterisk.processEventCalled");
+		theApp.util.njdebug("asterisk", "Asterisk.processEventCalled");
 		// <response type='object' id='unknown'><generic event='Newchannel'
 		// privilege='call,all' channel='SIP/115-08239ca8' state='Down'
 		// calleridnum='&lt;unknown&gt;' calleridname='&lt;unknown&gt;'
 		// uniqueid='1224888384.18' /></response>
 
-		njdebug("asterisk", events.length + " events found");
+		theApp.util.njdebug("asterisk", events.length + " events found");
 		for (var i = 0; i < events.length; i++)
 		{
-			njdebug("asterisk", "applying events[i]=" + getObjectClass(events[i]));
-			events[i].apply(gAsterisk);
+			theApp.util.njdebug("asterisk", "applying events[i]=" + theApp.util.getObjectClass(events[i]));
+			events[i].apply(theApp.asterisk.getInstance());
 		}
 	}
 	
 	this.updateState = function(state)
 	{
 		this.state = state;
-		getStatusWindow().updateStatus(state);
+		theApp.dialstatus.getInstance().updateStatus(state);
 	}
 	
 	this.parseResponse = function (responseText)
@@ -133,13 +150,14 @@ function Asterisk()
 				var message = "none";
 				var response;
 
-				njdebug("asterisk", "Parsing:" + responseText);
+				theApp.util.njdebug("asterisk", "Parsing:" + responseText);
 				var parser = new DOMParser();
 				xmlDoc = parser.parseFromString(responseText, "application/xhtml+xml");
 
-				if (serverType == serverTypeList[0].type)
+				var serverType = theApp.prefs.getValue("serverType"); 
+				if (serverType == theApp.noojeeclick.serverTypeList[0].type)
 				{
-					njdebug("asterisk", "running AstmanProxy");
+					theApp.util.njdebug("asterisk", "running AstmanProxy");
 					var tag = xmlDoc.getElementsByTagName("Response");
 					if (tag[0] != null)
 						response = tag[0].getAttribute("Value");
@@ -153,9 +171,10 @@ function Asterisk()
 					    message :message
 					};
 				}
-				else if (serverType == serverTypeList[1].type || serverType == serverTypeList[2].type)
+				else if (serverType == theApp.noojeeclick.serverTypeList[1].type 
+				|| serverType == theApp.noojeeclick.serverTypeList[2].type)
 				{
-					njdebug("asterisk", "running AJAM or NJVision");
+					theApp.util.njdebug("asterisk", "running AJAM or NJVision");
 					var generic = xmlDoc.getElementsByTagName("generic");
 
 					if (generic.length > 0)
@@ -173,10 +192,10 @@ function Asterisk()
 				if (result.response == "Success")
 				{
 					// Check for any events
-					var events = eventFactory(xmlDoc);
+					var events = theApp.event.eventFactory(xmlDoc);
 					if (events != null && events.length > 0)
 					{
-						gAsterisk.processEvent(events);
+						theApp.asterisk.getInstance().processEvent(events);
 					}
 				}
 
@@ -185,8 +204,8 @@ function Asterisk()
 		}
 		catch (e)
 		{
-			njerror(e);
-			showException("parseResponse", e);
+			theApp.util.njerror(e);
+			theApp.util.showException("parseResponse", e);
 		}
 		return result;
 	}
@@ -197,7 +216,7 @@ function Asterisk()
 	{
 		var matches = false;
 		if (this.remoteChannel != null)
-			matches = extractChannel(channel).toLowerCase() == extractChannel(this.remoteChannel).toLowerCase();
+			matches = theApp.util.extractChannel(channel).toLowerCase() == theApp.util.extractChannel(this.remoteChannel).toLowerCase();
 		return matches;
 	}
 
@@ -221,3 +240,7 @@ function Asterisk()
 }
 
 
+
+}
+
+}});

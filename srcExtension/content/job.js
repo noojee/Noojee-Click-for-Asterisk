@@ -1,25 +1,30 @@
+noojeeClick.ns(function() { with (noojeeClick.LIB) {
+
+theApp.job =
+{
+
 // The Dial Job
-function Dial()
+Dial: function ()
 {
 	
 	this.run = function(sequence, phoneNo)
 	{
-		var normalised = normalisePhoneNo(phoneNo);
-		extension = getValue("extension");
-		context = getValue("context");
-		handsetType = getValue("handsetType");
+		var normalised = theApp.phonepatterns.normalisePhoneNo(phoneNo);
+		var extension = theApp.prefs.getValue("extension");
+		var context = theApp.prefs.getValue("context");
+		var handsetType = theApp.prefs.getValue("handsetType");
 		
-		showHangupIcon();
+		theApp.noojeeclick.showHangupIcon();
 
 		if (extension == null)
 		{
-			njAlert("Please enter your extension via the configuration panel first.");
+			theApp.prompts.njAlert("Please enter your extension via the configuration panel first.");
 			return;
 		}
 
 		if (context == null)
 		{
-			njAlert("Please enter the context via the configuration panel first.");
+			theApp.prompts.njAlert("Please enter the context via the configuration panel first.");
 			return;
 		}
 
@@ -34,10 +39,10 @@ function Dial()
 			channel += extension;
 		}
 
-		njdebug("job", "Channel=" + channel);
+		theApp.util.njdebug("job", "Channel=" + channel);
 
 		// dial
-		var url = genURL("Originate");
+		var url = theApp.job.genURL("Originate");
 		url += channel;
 		url += "&Exten=" + normalised;
 		url += "&Context=" + context;
@@ -53,7 +58,7 @@ function Dial()
 		// If the user has configured the callerId then lets set it.
 		// We try to control the callerID that is presented to the 
 		// far end by setting CallerID(Num).
-		var callerID = getValue("callerId");
+		var callerID = theApp.prefs.getValue("callerId");
 		if (callerID != null)
 		{
 			url += "&CallerId=" + callerID;
@@ -62,20 +67,20 @@ function Dial()
 			url += "&CallerId=" + normalised; // no caller id so we like to display the number we dialling
 												// on the users handset.
 
-		njdebug("job", "url=" + url);
+		theApp.util.njdebug("job", "url=" + url);
 
 		// Get the auto answer header if there is one
-		enableAutoAnswer = getBoolValue("enableAutoAnswer");
-		njdebug("job", "AutoAnswer=" + enableAutoAnswer + " handsetType=" + handsetType);
+		var enableAutoAnswer = theApp.prefs.getBoolValue("enableAutoAnswer");
+		theApp.util.njdebug("job", "AutoAnswer=" + enableAutoAnswer + " handsetType=" + handsetType);
 		if (enableAutoAnswer)
 		{
 			var i = 0;
-			for (i = 0; i < autoAnswerList.length; i++)
+			for (i = 0; i < theApp.noojeeclick.autoAnswerList.length; i++)
 			{
-				njdebug("job", "manufacturer(i)=" + autoAnswerList[i].manufacturer);
-				if (handsetType == autoAnswerList[i].manufacturer)
+				theApp.util.njdebug("job", "manufacturer(i)=" + theApp.noojeeclick.autoAnswerList[i].manufacturer);
+				if (handsetType == theApp.noojeeclick.autoAnswerList[i].manufacturer)
 				{
-					url += "&Variable=" + "SIPAddHeader=" + autoAnswerList[i].header;
+					url += "&Variable=" + "SIPAddHeader=" + theApp.noojeeclick.autoAnswerList[i].header;
 					break;
 				}
 			}
@@ -83,43 +88,43 @@ function Dial()
 
 		url += "&Priority=1";
 
-		njdebug("job", "Dialing");
+		theApp.util.njdebug("job", "Dialing");
 
 		this.status = function()
 		{
-			njlog("Dialing: " + phoneNo + " (" + normalised + ")");
+			theApp.util.njlog("Dialing: " + phoneNo + " (" + normalised + ")");
 		}
 
-		getStatusWindow().updateStatus("Dialing: " + phoneNo);
-		njdebug("job", "dialurl=" + url);
+		theApp.dialstatus.getInstance().updateStatus("Dialing: " + phoneNo);
+		theApp.util.njdebug("job", "dialurl=" + url);
 		sequence.request(url);
 	}
 
 	this.handleResponse = function(result)
 	{
 		var abort = false;
-		authRequired = false;
+		var authRequired = false;
 		if (result.response != "Success")
 		{
-			njlog("Dial Failed");
-			gAsterisk.updateState("");
-			resetIcon();
+			theApp.util.njlog("Dial Failed");
+			theApp.asterisk.getInstance().updateState("");
+			theApp.noojeeclick.resetIcon();
 			if (result.message == "Authentication Required")
 			{
-				showError(result.response, "The connection to Asterisk was lost, a reconnect will be initiated. Wait a moment and then dial again.");
+				theApp.util.showError(result.response, "The connection to Asterisk was lost, a reconnect will be initiated. Wait a moment and then dial again.");
 		
-				var sequence = new Sequence( [ new Login(), new Wait(null) ], "", false);
+				var sequence = new theApp.sequence.Sequence( [ new Login(), new Wait(null) ], "", false);
 				sequence.run();
 			}
 			else if (result.message.indexOf("Permission denied") == 0)
 			{
-				gAsterisk.setLoggedIn(false);
+				theApp.asterisk.getInstance().setLoggedIn(false);
 				if (result.message == "Permission denied: please login first.")
 				{
-					showError(result.response, "Invalid Username/Password. Please check your Noojee Click configuration against manager.conf.");
+					theApp.util.showError(result.response, "Invalid Username/Password. Please check your Noojee Click configuration against manager.conf.");
 				}
 				else
-					showError(result.response, "Permission Denied, please check the read/write options in manager.conf.");
+					theApp.util.showError(result.response, "Permission Denied, please check the read/write options in manager.conf.");
 			}
 			else
 			{
@@ -127,8 +132,8 @@ function Dial()
 				// care that the dial failed.
 				// This can happen if the user hangs up a call just after
 				// starting to dial it.
-				if (gAsterisk.isLocalDialInProgress())
-					showError(result.response, "Dial failed: " + result.message);
+				if (theApp.asterisk.getInstance().isLocalDialInProgress())
+					theApp.util.showError(result.response, "Dial failed: " + result.message);
 			}
 			
 			abort = true;
@@ -142,33 +147,33 @@ function Dial()
 	}
 	this.parseResponse = function(responseText)
 	{
-		return gAsterisk.parseResponse(responseText);
+		return theApp.asterisk.getInstance().parseResponse(responseText);
 	}
-}
+},
 
 //The Answer Job
-function Answer(channel)
+Answer: function (channel)
 {
 	this.channel = channel;
 	
 	this.run = function(sequence, phoneNo)
 	{
-		var normalised = normalisePhoneNo(phoneNo);
-		extension = getValue("extension");
-		context = getValue("context");
-		handsetType = getValue("handsetType");
+		var normalised = theApp.phonepatterns.normalisePhoneNo(phoneNo);
+		var extension = theApp.prefs.getValue("extension");
+		var context = theApp.prefs.getValue("context");
+		var handsetType = theApp.prefs.getValue("handsetType");
 		
-		showHangupIcon();
+		theApp.noojeeclick.showHangupIcon();
 
 		if (extension == null)
 		{
-			njAlert("Please enter your extension via the configuration panel first.");
+			theApp.prompts.njAlert("Please enter your extension via the configuration panel first.");
 			return;
 		}
 
 		if (context == null)
 		{
-			njAlert("Please enter the context via the configuration panel first.");
+			theApp.prompts.njAlert("Please enter the context via the configuration panel first.");
 			return;
 		}
 
@@ -183,33 +188,33 @@ function Answer(channel)
 			localChannel += extension;
 		}
 
-		njdebug("job", "LocalChannel=" + localChannel);
+		theApp.util.njdebug("job", "LocalChannel=" + localChannel);
 
-		var callerID = getValue("callerID");
+		var callerID = theApp.prefs.getValue("callerID");
 
 
 		
 		// dial
-		var url = genURL("Redirect");
+		var url = theApp.job.genURL("Redirect");
 		url += localChannel;
 		url += "&Exten=" + this.channel;
 		url += "&Context=" + context;
 		url += "&CallerId=" + phoneNo; // + "-NoojeeClick";
 	
-		njdebug("job", "url=" + url);
+		theApp.util.njdebug("job", "url=" + url);
 
 		// Get the auto answer header if there is one
-		enableAutoAnswer = getBoolValue("enableAutoAnswer");
-		njdebug("job", "AutoAnswer=" + enableAutoAnswer + " handsetType=" + handsetType);
+		enableAutoAnswer = theApp.prefs.getBoolValue("enableAutoAnswer");
+		theApp.util.njdebug("job", "AutoAnswer=" + enableAutoAnswer + " handsetType=" + handsetType);
 		if (enableAutoAnswer)
 		{
 			var i = 0;
-			for (i = 0; i < autoAnswerList.length; i++)
+			for (i = 0; i < theApp.noojeeclick.autoAnswerList.length; i++)
 			{
-				njdebug("job", "manufacturer(i)=" + autoAnswerList[i].manufacturer);
-				if (handsetType == autoAnswerList[i].manufacturer)
+				theApp.util.njdebug("job", "manufacturer(i)=" + theApp.noojeeclick.autoAnswerList[i].manufacturer);
+				if (handsetType == theApp.noojeeclick.autoAnswerList[i].manufacturer)
 				{
-					url += "&Variable=" + "SIPAddHeader=" + autoAnswerList[i].header;
+					url += "&Variable=" + "SIPAddHeader=" + theApp.noojeeclick.autoAnswerList[i].header;
 					break;
 				}
 			}
@@ -217,15 +222,15 @@ function Answer(channel)
 
 		url += "&Priority=1";
 
-		njdebug("job", "Answering");
+		theApp.util.njdebug("job", "Answering");
 
 		this.status = function()
 		{
-			njlog("Answering: " + phoneNo + " (" + normalised + ")");
+			theApp.util.njlog("Answering: " + phoneNo + " (" + normalised + ")");
 		}
 
-		getStatusWindow().updateStatus("Answering: " + phoneNo);
-		njdebug("job", "answerurl=" + url);
+		theApp.dialstatus.getInstance().updateStatus("Answering: " + phoneNo);
+		theApp.util.njdebug("job", "answerurl=" + url);
 		sequence.request(url);
 	}
 
@@ -235,25 +240,25 @@ function Answer(channel)
 		authRequired = false;
 		if (result.response != "Success")
 		{
-			njlog("Answer Failed");
-			gAsterisk.updateState("");
-			resetIcon();
+			theApp.util.njlog("Answer Failed");
+			theApp.asterisk.getInstance().updateState("");
+			theApp.noojeeclick.resetIcon();
 			if (result.message == "Authentication Required")
 			{
-				showError(result.response, "The connection to Asterisk was lost, a reconnect will be initiated. Wait a moment and then dial again.");
+				theApp.util.showError(result.response, "The connection to Asterisk was lost, a reconnect will be initiated. Wait a moment and then dial again.");
 		
-				var sequence = new Sequence( [ new Login(), new Wait(null) ], "", false);
+				var sequence = new theApp.sequence.Sequence( [ new this.Login(), new this.Wait(null) ], "", false);
 				sequence.run();
 			}
 			else if (result.message.indexOf("Permission denied") == 0)
 			{
-				gAsterisk.setLoggedIn(false);
+				theApp.asterisk.getInstance().setLoggedIn(false);
 				if (result.message == "Permission denied: please login first.")
 				{
-					showError(result.response, "Invalid Username/Password. Please check your Noojee Click configuration against manager.conf.");
+					theApp.util.showError(result.response, "Invalid Username/Password. Please check your Noojee Click configuration against manager.conf.");
 				}
 				else
-					showError(result.response, "Permission Denied, please check the read/write options in manager.conf.");
+					theApp.util.showError(result.response, "Permission Denied, please check the read/write options in manager.conf.");
 			}
 			else
 			{
@@ -261,8 +266,8 @@ function Answer(channel)
 				// care that the dial failed.
 				// This can happen if the user hangs up a call just after
 				// starting to dial it.
-				if (gAsterisk.isLocalDialInProgress())
-					showError(result.response, "Dial failed: " + result.message);
+				if (theApp.asterisk.getInstance().isLocalDialInProgress())
+					theApp.util.showError(result.response, "Dial failed: " + result.message);
 			}
 			
 			abort = true;
@@ -276,13 +281,13 @@ function Answer(channel)
 	}
 	this.parseResponse = function(responseText)
 	{
-		return gAsterisk.parseResponse(responseText);
+		return theApp.asterisk.getInstance().parseResponse(responseText);
 	}
-}
+},
 
 
 // Wait Job
-function Wait(subSequence)
+Wait: function (subSequence)
 {
 	this.ranOnce = false;
 	this.subSequence = subSequence;
@@ -290,7 +295,7 @@ function Wait(subSequence)
 	this.run = function(sequence, param)
 	{
 		// Start monitoring events
-		var url = genURL("WaitEvent");
+		var url = theApp.job.genURL("WaitEvent");
 		// The first time through we want wait to return immediately so we can
 		// start the subSequence
 		if (this.ranOnce == false && this.subSequence != null)
@@ -298,16 +303,16 @@ function Wait(subSequence)
 		else
 			url += "&Timeout=30";
 
-		njdebug("job", "url=" + url);
+		theApp.util.njdebug("job", "url=" + url);
 
-		njdebug("job", "starting event monitoring");
+		theApp.util.njdebug("job", "starting event monitoring");
 
 		this.status = function()
 		{
-			njlog("WaitEvent: event monitoring initialised.");
+			theApp.util.njlog("WaitEvent: event monitoring initialised.");
 		}
 
-		njdebug("job", "waitEventurl=" + url);
+		theApp.util.njdebug("job", "waitEventurl=" + url);
 		sequence.request(url);
 	}
 
@@ -318,17 +323,17 @@ function Wait(subSequence)
 	
 	this.parseResponse = function(responseText)
 	{
-		return gAsterisk.parseResponse(responseText);
+		return theApp.asterisk.getInstance().parseResponse(responseText);
 	}
 	
 	this.handleResponse = function(result)
 	{
 		var abort = false;
 
-		njdebug("job", "waitEvent has returned, result=" + result);
+		theApp.util.njdebug("job", "waitEvent has returned, result=" + result);
 		if (result.response != "Success")
 		{
-			showError(result.response, result.message);
+			theApp.util.showError(result.response, result.message);
 			abort = true;
 		}
 		else
@@ -359,71 +364,71 @@ function Wait(subSequence)
 	
 	this.error = function(responseText)
 	{
-		resetIcon();
-		gAsterisk.updateState("");
+		theApp.noojeeclick.resetIcon();
+		theApp.asterisk.getInstance().updateState("");
 		
 		if (responseText == null || responseText.length == 0)
 		{
-			njlog("Unexpected error responseText is empty, asterisk may be down.");
-			showError(responseText, "Unable to connect to Asterisk.");
+			theApp.util.njlog("Unexpected error responseText is empty, asterisk may be down.");
+			theApp.util.showError(responseText, "Unable to connect to Asterisk.");
 		}
 		else
 		{
 			var result = parseResponse(details.responseText);
-			njlog("Action failed " + result.message);
-			showError(result.response, result.message);
+			theApp.util.njlog("Action failed " + result.message);
+			theApp.util.showError(result.response, result.message);
 		}
 	}
 
-}
+},
 
-function HangupAction(channel)
+HangupAction: function (channel)
 {
 	this.channel = channel;
 	
 	this.run = function(sequence, dummy)
 	{
-		extension = getValue("extension");
-		context = getValue("context");
+		var extension = theApp.prefs.getValue("extension");
+		var context = theApp.prefs.getValue("context");
 
-		gAsterisk.updateState("");
-		resetIcon();
+		theApp.asterisk.getInstance().updateState("");
+		theApp.noojeeclick.resetIcon();
 
 		if (extension == null)
 		{
-			njAlert("Please enter your extension via the configuration panel first.");
+			theApp.prompts.njAlert("Please enter your extension via the configuration panel first.");
 			return;
 		}
 
 		if (context == null)
 		{
-			njAlert("Please enter the context via the configuration panel first.");
+			theApp.prompts.njAlert("Please enter the context via the configuration panel first.");
 			return;
 		}
 
 		// If no tech specified then add SIP/ otherwise use the selected tech.
 		var channel = "&Channel=" + this.channel;
 
-		njdebug("job", "hangup channel=" + this.channel);
+		theApp.util.njdebug("job", "hangup channel=" + this.channel);
 
 		// dial
-		var url = genURL("Hangup");
+		var url = theApp.job.genURL("Hangup");
 		url += channel;
 		url += "&Context=" + context;
 
-		njdebug("job", "url=" + url);
+		theApp.util.njdebug("job", "url=" + url);
 
 		url += "&Priority=1";
 
-		njdebug("job", "Hangup");
+		theApp.util.njdebug("job", "Hangup");
 
 		this.status = function()
 		{
-			njlog("Hangup: " + extension);
+			theApp.util.njlog("Hangup: " + extension);
 		}
 
-		//getStatusWindow().updateStatus("Hangup: " + extension);
-		njdebug("job", "hangup url=" + url);
+		//theApp.dialstatus.getInstance().updateStatus("Hangup: " + extension);
+		theApp.util.njdebug("job", "hangup url=" + url);
 		sequence.request(url);
 	}
 
@@ -437,7 +442,7 @@ function HangupAction(channel)
 		var abort = false;
 		if (result.response != "Success")
 		{
-			showError(result.response, result.message);
+			theApp.util.showError(result.response, result.message);
 			abort = true;
 		}
 		return abort;
@@ -446,23 +451,23 @@ function HangupAction(channel)
 
 	this.parseResponse = function(responseText)
 	{
-		return gAsterisk.parseResponse(responseText);
+		return theApp.asterisk.getInstance().parseResponse(responseText);
 	}
 	
-}
+},
 
 // Ping Job
-function Ping()
+Ping: function ()
 {
 	this.run = function(sequence, param)
 	{
-		njlog("ping");
+		theApp.util.njlog("ping");
 		// ping
-		var url = genURL("Ping");
+		var url = theApp.job.genURL("Ping");
 
 		this.status = function()
 		{
-			njlog("Pinging");
+			theApp.util.njlog("Pinging");
 		}
 
 		sequence.request(url);
@@ -478,7 +483,7 @@ function Ping()
 		var abort = false;
 		if (result.response != "Success")
 		{
-			showError(result.response, result.message);
+			theApp.util.showError(result.response, result.message);
 			abort = true;
 		}
 		return abort;
@@ -486,23 +491,23 @@ function Ping()
 
 	this.parseResponse = function(responseText)
 	{
-		return gAsterisk.parseResponse(responseText);
+		return theApp.asterisk.getInstance().parseResponse(responseText);
 	}
 	
-}
+},
 
 // Status Job
-function Status()
+Status: function ()
 {
 	this.run = function(sequence, param)
 	{
-		njlog("status");
+		theApp.util.njlog("status");
 		// status
-		var url = genURL("Status");
+		var url = theApp.job.genURL("Status");
 
 		this.status = function()
 		{
-			njlog("Checking Asterisk Status");
+			theApp.util.njlog("Checking Asterisk Status");
 		}
 
 		sequence.request(url);
@@ -518,7 +523,7 @@ function Status()
 		var abort = false;
 		if (result.response != "Success")
 		{
-			showError(result.response, result.message);
+			theApp.util.showError(result.response, result.message);
 			abort = true;
 		}
 		return abort;
@@ -526,24 +531,24 @@ function Status()
 
 	this.parseResponse = function(responseText)
 	{
-		return gAsterisk.parseResponse(responseText);
+		return theApp.asterisk.getInstance().parseResponse(responseText);
 	}
 	
-}
+},
 
 // Complete Job
-function Complete()
+Complete: function ()
 {
 	this.run = function(sequence, param)
 	{
-		njdebug("job", "compete");
+		theApp.util.njdebug("job", "compete");
 		// status
 		this.status = function()
 		{
-			njdebug("job", "Checking Asterisk Status");
+			theApp.util.njdebug("job", "Checking Asterisk Status");
 		}
 
-		//getStatusWindow().updateStatus("Dialed: " + param);
+		//theApp.dialstatus.getInstance().updateStatus("Dialed: " + param);
 	}
 
 	this.doContinue = function()
@@ -556,7 +561,7 @@ function Complete()
 		var abort = false;
 		if (result.response != "Success")
 		{
-			showError(result.response, result.message);
+			theApp.util.showError(result.response, result.message);
 			abort = true;
 		}
 		return abort;
@@ -564,33 +569,33 @@ function Complete()
 
 	this.parseResponse = function(responseText)
 	{
-		return gAsterisk.parseResponse(responseText);
+		return theApp.asterisk.getInstance().parseResponse(responseText);
 	}
 	
-}
+},
 
 // Login Job
-function Login()
+Login: function ()
 {
 	this.run = function(sequence, phoneNo)
 	{
-		njdebug("job", "login");
-		var url = genURL("Login");
-		username = getValue("username");
-		password = getValue("password"); 
-		gAsterisk.setLoggedIn(false);
+		theApp.util.njdebug("job", "login");
+		var url = theApp.job.genURL("Login");
+		var username = theApp.prefs.getValue("username");
+		var password = theApp.prefs.getValue("password"); 
+		theApp.asterisk.getInstance().setLoggedIn(false);
 		
-		njdebug("job", "Username: " + username);
+		theApp.util.njdebug("job", "Username: " + username);
 		url += "&Username=" + username;
 		url += "&Secret=" + password;
 		url += "&Events=call";
 
 		this.status = function()
 		{
-			njlog("Authenticating");
+			theApp.util.njlog("Authenticating");
 		}
 
-		// getStatusWindow().updateStatus("Authenticating");
+		// theApp.dialstatus.getInstance().updateStatus("Authenticating");
 
 		sequence.request(url);
 	}
@@ -605,39 +610,39 @@ function Login()
 		var abort = false;
 		if (result.response != "Success")
 		{
-			gAsterisk.setLoggedIn(false);
-			showError(result.response, result.message);
+			theApp.asterisk.getInstance().setLoggedIn(false);
+			theApp.util.showError(result.response, result.message);
 			abort = true;
 		}
 		else
 		{
-			gAsterisk.setLoggedIn(true);
-			njlog("Login completed.");
+			theApp.asterisk.getInstance().setLoggedIn(true);
+			theApp.util.njlog("Login completed.");
 		}
 		return abort;
 	}
 
 	this.parseResponse = function(responseText)
 	{
-		return gAsterisk.parseResponse(responseText);
+		return theApp.asterisk.getInstance().parseResponse(responseText);
 	}
 	
-}
+},
 
 // Logoff Job
-function Logoff()
+Logoff: function ()
 {
 	this.run = function(sequence, phoneNo)
 	{
-		var url = genURL("Logoff");
-		gAsterisk.setLoggedIn(false);
+		var url = theApp.job.genURL("Logoff");
+		theApp.asterisk.getInstance().setLoggedIn(false);
 
 		this.status = function()
 		{
-			njlog("Logging off");
+			theApp.util.njlog("Logging off");
 		}
 
-		getStatusWindow().updateStatus("Logging Off");
+		theApp.dialstatus.getInstance().updateStatus("Logging Off");
 		sequence.request(url);
 
 	}
@@ -652,7 +657,7 @@ function Logoff()
 		var abort = false;
 		if (result.response != "Success")
 		{
-			showError(result.response, result.message);
+			theApp.util.showError(result.response, result.message);
 			abort = true;
 		}
 		return abort;
@@ -660,45 +665,49 @@ function Logoff()
 
 	this.parseResponse = function(responseText)
 	{
-		return gAsterisk.parseResponse(responseText);
+		return theApp.asterisk.getInstance().parseResponse(responseText);
 	}
 	
-}
+},
 
 // Returns the url to execute when the user clicks on the url
-function genURL(command)
+genURL: function (command)
 {
-	njdebug("job", "genURL(command)=" + command);
+	theApp.util.njdebug("job", "genURL(command)=" + command);
 	var url;
 
 	var protocol = "http://";
 	
-	var useHTTPS = getBoolValue("useHttps");
+	var useHTTPS = theApp.prefs.getBoolValue("useHttps");
 	if (useHTTPS == true)
 		protocol = "https://";
 	
-	var host = getValue("host");
-	var port = getValue("port");
-	serverType = getValue("serverType");
-	var httpPrefix = getValue("httpPrefix");
+	var host = theApp.prefs.getValue("host");
+	var port = theApp.prefs.getValue("port");
+	var serverType = theApp.prefs.getValue("serverType");
+	var httpPrefix = theApp.prefs.getValue("httpPrefix");
 	// The asterisk appliance doesn't allow a prefix so we need to support a null prefix
-	if (httpPrefix == null || trim(httpPrefix).length == 0)
+	if (httpPrefix == null || theApp.util.trim(httpPrefix).length == 0)
 		httpPrefix = "/";
 	else
-		httpPrefix = "/" + trim(httpPrefix) + "/";
-	njdebug("job", "serverType=" + serverType);
-	if (serverType == serverTypeList[0].type)
+		httpPrefix = "/" + theApp.util.trim(httpPrefix) + "/";
+	theApp.util.njdebug("job", "serverType=" + serverType);
+	if (serverType == theApp.noojeeclick.serverTypeList[0].type)
 		url = protocol + host + ":" + port + httpPrefix + "manager?action=" + command;
-	else if (serverType == serverTypeList[1].type)
+	else if (serverType == theApp.noojeeclick.serverTypeList[1].type)
 		url = protocol + host + ":" + port + httpPrefix + "mxml?action=" + command;
 	else
 	{
-		njlog("Error: Unknown server type selected =" + serverType);
-		njAlert("Unknown server type selected =" + serverType);
+		theApp.util.njlog("Error: Unknown server type selected =" + serverType);
+		theApp.prompts.njAlert("Unknown server type selected =" + serverType);
 	}
 
-	njdebug("job", "genURL ret=" + url);
+	theApp.util.njdebug("job", "genURL ret=" + url);
 	return url;
 }
 
 
+
+}
+
+}});
