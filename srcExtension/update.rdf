@@ -12,7 +12,7 @@
         <!-- Each li is a different version of the same add-on -->
         <RDF:li>
           <RDF:Description>
-            <em:version>1.5</em:version> <!-- This is the version number of the add-on -->
+            <em:version>1.5.1</em:version> <!-- This is the version number of the add-on -->
             <!-- One targetApplication for each application the add-on is compatible with -->
             <em:targetApplication>
               <RDF:Description>
@@ -24,7 +24,7 @@
 				<em:updateLink>https://www.noojee.com.au/downloads/noojeeclick.xpi</em:updateLink>
                
                 <!-- A page describing what is new in this updated version -->
-                <em:updateInfoURL>http://www.noojee.com.au/noojeeclick/updateinfo1.5.xml</em:updateInfoURL>
+                <em:updateInfoURL>http://www.noojee.com.au/noojeeclick/updateinfo1.5.1.xml</em:updateInfoURL>
               </RDF:Description>
             </em:targetApplication>
           </RDF:Description>
