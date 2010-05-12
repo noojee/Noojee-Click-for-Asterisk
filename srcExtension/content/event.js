@@ -152,12 +152,12 @@ Bridge: function (response)
 	{	
 		if (bridgestate == "Link")
 		{
-			var event = new this.Link(response);
-			event.apply(astersik);
+			var event = new theApp.event.Link(response);
+			event.apply(asterisk);
 		}
 		else 
 		{
-			var event = this.Unlink(response);
+			var event = theApp.event.Unlink(response);
 			event.apply(asterisk);
 		}
 	}
