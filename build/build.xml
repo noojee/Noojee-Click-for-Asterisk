@@ -42,6 +42,20 @@
 		</copy>
 	</target>
 
+	<target name="customFilter">
+		<description>
+			Sub target which is responsible for substituting tokens found in files
+		</description>
+		<mkdir dir="${versionDir}" />
+		<copy file="${build}/templates/2hippo/update.rdf" tofile="${src}/update.rdf" overwrite="True">
+			<filterchain>
+				<replacetokens>
+					<token key="version" value="${version}" />
+				</replacetokens>
+			</filterchain>
+		</copy>
+	</target>
+
 	<target name="installMozilla">
 		<description>
 			Sub target which is responsible for substituting tokens found in files
@@ -72,6 +86,21 @@
 		</copy>
 	</target>
 
+	<target name="installCustom">
+		<description>
+			Sub target which is responsible for substituting tokens found in files
+		</description>
+		<mkdir dir="${versionDir}" />
+		<copy file="${build}/templates/2hippo/install.rdf" tofile="${src}/install.rdf" overwrite="True">
+			<filterchain>
+				<replacetokens>
+					<token key="version" value="${version}" />
+					<token key="updateURL" value="" />
+				</replacetokens>
+			</filterchain>
+		</copy>
+	</target>
+
 	<target name="mozilla" depends="installMozilla">
 		<description>
 			Builds an xpi suitable for hosting on the mozilla plugin website.
@@ -96,7 +125,23 @@
 		</jar>
 	</target>
 
-	<target name="all" depends="init,local,mozilla">
+	<target name="2hippo" depends="customFilter,installCustom">
+		<description>
+			Builds an xpi suitable for hosting on the mozilla plugin website.
+		</description>
+		<echo>Building 2Hippo</echo>
+		<mkdir dir="${versionDir}/2hippo" />
+		<delete file="${versionDir}/2hippo/${xpiName}" />
+		<jar basedir="${src}" duplicate="fail" excludes="**/*" destfile="${versionDir}/2hippo/${xpiName}">
+			<fileset refid="includes" />
+		</jar>
+	</target>
+
+	<target name="all" depends="init,local,mozilla,2hippo">
+		<!-- Build each version of Noojee Click -->
+	</target>
+
+	<target name="install" depends="all">
 		<!-- Install noojee click into firefox -->
 		<exec dir="." executable="/bin/bash">
 			<arg value="--login" />
@@ -104,7 +149,6 @@
 			<arg value="-c" />
 			<arg value="cd /home/bsutton/dev/NoojeeClick/; ./devinstall.sh" />
 		</exec>
-
 		<!-- kill firefox as we must restart after installing xul -->
 		<exec dir="." executable="/bin/bash">
 			<arg value="--login" />
@@ -119,12 +163,12 @@
 			<arg value="-c" />
 			<arg value="killall firefox-bin" />
 		</exec>
-
 		
 		<!-- now restart firefox -->
 		<exec dir="." executable="/bin/bash">
 			<arg value="/home/bsutton/dev/NoojeeClick/restartfirefox.sh" />
 		</exec>
-
 	</target>
+
+
 </project>
