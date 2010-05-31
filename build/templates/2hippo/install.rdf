@@ -9,10 +9,12 @@
         Noojee Click requires Asterisk 1.4 or 1.6 (you need at least 1.6.0.6)
         </em:description>
         <em:creator>Brett Sutton</em:creator>
-        <em:homepageURL>http://www.2hippo.com.au/noojeeclick.htm</em:homepageURL>
+        <em:homepageURL>http://www.2hippo.com/noojeeclick.htm</em:homepageURL>
         <em:optionsURL>chrome://noojeeclick/content/configuration.xul</em:optionsURL>
-        <!-- You can't do this when uploading to the mozilla add on site. -->
-		@updateURL@
+        
+        <!-- Specifies the update url which firefox uses to determine if a new update is available. -->
+		<em:updateURL>https://www.2hippo.com/noojeeclick/update.rdf</em:updateURL>
+		
     <!-- -->
         <em:iconURL>chrome://noojeeclick/content/noojeeclick.png</em:iconURL>
         <em:type>2</em:type> <!-- type=extension --> 

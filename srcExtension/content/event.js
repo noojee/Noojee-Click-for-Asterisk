@@ -247,7 +247,6 @@ Hangup: function (response)
 */
 			asterisk.updateState("Disconnected");
 			theApp.noojeeclick.resetIcon();
-			
 			window.setTimeout("noojeeClick.asterisk.getInstance().updateState('');", 3000);
 		}
 	

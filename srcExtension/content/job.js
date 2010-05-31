@@ -445,6 +445,13 @@ HangupAction: function (channel)
 			theApp.util.showError(result.response, result.message);
 			abort = true;
 		}
+		
+		// We have now hungup so make certain the status line
+		// is clear.
+		asterisk.updateState("Disconnecting");
+		theApp.noojeeclick.resetIcon();
+		window.setTimeout("noojeeClick.asterisk.getInstance().updateState('');", 3000);
+		
 		return abort;
 	}
 

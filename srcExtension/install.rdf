@@ -2,16 +2,18 @@
     <Description about="urn:mozilla:install-manifest">
         <em:id>noojeeclick@2hippo.com.au</em:id>
         <em:name>Noojee Click</em:name>
-        <em:version>1.5.2</em:version>
+        <em:version>1.5.4</em:version>
         <em:description>Noojee Click for Asterisk adds 'Click to Dial' to any Web Page that contains a phone number.
         As you browse, Noojee Click searches each page for phone numbers. An image is added after each phone number.
         To dial the phone number, simply click the image.
         Noojee Click requires Asterisk 1.4 or 1.6 (you need at least 1.6.0.6)
         </em:description>
         <em:creator>Brett Sutton</em:creator>
-        <em:homepageURL>http://www.2hippo.com.au/noojeeclick.htm</em:homepageURL>
+        <em:homepageURL>http://www.2hippo.com/noojeeclick.htm</em:homepageURL>
         <em:optionsURL>chrome://noojeeclick/content/configuration.xul</em:optionsURL>
-        <!-- You can't do this when uploading to the mozilla add on site. -->
+        
+        <!-- Specifies the update url which firefox uses to determine if a new update is available. -->
+		<em:updateURL>https://www.2hippo.com/noojeeclick/update.rdf</em:updateURL>
 		
     <!-- -->
         <em:iconURL>chrome://noojeeclick/content/noojeeclick.png</em:iconURL>

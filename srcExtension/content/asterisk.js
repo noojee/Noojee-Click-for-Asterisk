@@ -29,7 +29,12 @@ Asterisk: function ()
 	this.calleridname = null;
 	this.calleridnum = null;
 	this.uniqueid = null;
-	this.loggedIn = false;
+	// I've disabled this logic as the problem is that the we don't know what the httptimeout
+	// value is set to on the asterisk server (defaults to 60 seconds) so we don't
+	// actually know when we have to login again. This way we just login every time 
+	// we try to dial. For normal people this is probably right as they won't dial more than 
+	// once a minute so we are probably timed out.
+	this.loggedIn = false; 
 
 	this.inLocalDial = false; // Used when a dial is in progress 
 								// until the local dial is complete 
@@ -67,9 +72,9 @@ Asterisk: function ()
 		
 		var dialSequence = null;
 		
-		if (this.loggedIn)
-			dialSequence = new theApp.sequence.Sequence( [ new theApp.job.Dial(), new theApp.job.Complete() ], phoneNo, false);
-		else
+//		if (this.loggedIn)
+			//dialSequence = new theApp.sequence.Sequence( [ new theApp.job.Dial(), new theApp.job.Complete() ], phoneNo, false);
+		//else
 			dialSequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.Dial(), new theApp.job.Complete() ], phoneNo, false);
 			
 		dialSequence.run();
@@ -83,9 +88,9 @@ Asterisk: function ()
 		this.state = null;	
 		
 		var answerSequence;
-		if (this.loggedIn)
-			answerSequence = new theApp.sequence.Sequence( [ new theApp.job.Answer(), new theApp.job.Complete() ], this.remoteChannel, false);
-		else
+//		if (this.loggedIn)
+	//		answerSequence = new theApp.sequence.Sequence( [ new theApp.job.Answer(), new theApp.job.Complete() ], this.remoteChannel, false);
+		//else
 			answerSequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.Answer(), new theApp.job.Complete() ], this.remoteChannel, false);
 			
 		answerSequence.run();

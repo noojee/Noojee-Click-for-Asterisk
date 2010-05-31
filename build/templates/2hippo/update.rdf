@@ -24,7 +24,7 @@
 				<em:updateLink>http://www.2hippo.com.au/noojeeclick/noojeeclick@version@.xpi</em:updateLink>
                
                 <!-- A page describing what is new in this updated version -->
-                <em:updateInfoURL>http://www.2hippo.com.au/noojeeclick/updateinfo@version@.xml</em:updateInfoURL>
+                <em:updateInfoURL>http://www.2hippo.com/noojeeclick/updateinfo@version@.xml</em:updateInfoURL>
               </RDF:Description>
             </em:targetApplication>
           </RDF:Description>

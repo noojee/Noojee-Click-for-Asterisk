@@ -5,7 +5,7 @@
 
 	<property name="src" value="${basedir}/srcExtension" />
 	<property name="build" value="${basedir}/build" />
-	<property name="version" value="1.5.2" />
+	<property name="version" value="1.5.4" />
 	<property name="versionDir" value="${basedir}/versions/${version}" />
 	<property name="xpiName" value="noojeeclick-${version}.xpi" />
 	<property name="updateURL" value="&lt;em:updateURL&gt;https://www.noojee.com.au/noojeeclick/update.rdf&lt;/em:updateURL&gt;" />
@@ -33,13 +33,6 @@
 			Sub target which is responsible for substituting tokens found in files
 		</description>
 		<mkdir dir="${versionDir}" />
-		<copy file="${build}/templates/update.rdf" tofile="${src}/update.rdf" overwrite="True">
-			<filterchain>
-				<replacetokens>
-					<token key="version" value="${version}" />
-				</replacetokens>
-			</filterchain>
-		</copy>
 	</target>
 
 	<target name="customFilter">
@@ -47,13 +40,25 @@
 			Sub target which is responsible for substituting tokens found in files
 		</description>
 		<mkdir dir="${versionDir}" />
-		<copy file="${build}/templates/2hippo/update.rdf" tofile="${src}/update.rdf" overwrite="True">
+		<!-- create the update.rdf using the 2hippo specific setting -->
+		<copy file="${build}/templates/2hippo/update.rdf" tofile="${versionDir}/src/update.rdf" overwrite="True">
 			<filterchain>
 				<replacetokens>
 					<token key="version" value="${version}" />
 				</replacetokens>
 			</filterchain>
 		</copy>
+
+		<!-- copy all of the core files and update the version no. in the about box -->
+		<copy  todir="${versionDir}/2hippo/src" overwrite="True">
+			<fileset refid="includes"/>
+			<filterchain>
+				<replacetokens>
+					<token key="version" value="${version}" />
+				</replacetokens>
+			</filterchain>
+		</copy>
+		
 	</target>
 
 	<target name="installMozilla">
@@ -61,7 +66,9 @@
 			Sub target which is responsible for substituting tokens found in files
 		</description>
 		<mkdir dir="${versionDir}" />
-		<copy file="${build}/templates/install.rdf" tofile="${src}/install.rdf" overwrite="True">
+		<!-- create the install.rdf using the correct version number specific setting
+		  and with a blank updateURL -->
+		<copy file="${build}/templates/install.rdf" tofile="${versionDir}/src/install.rdf" overwrite="True">
 			<filterchain>
 				<replacetokens>
 					<token key="version" value="${version}" />
@@ -69,6 +76,16 @@
 				</replacetokens>
 			</filterchain>
 		</copy>
+			<!-- copy all of the core files and update the version no. in the about box -->
+			<copy  todir="${versionDir}/mozilla/src" overwrite="True">
+				<fileset refid="includes"/>
+				<filterchain>
+					<replacetokens>
+						<token key="version" value="${version}" />
+					</replacetokens>
+				</filterchain>
+			</copy>
+		
 	</target>
 
 	<target name="installLocal">
@@ -76,7 +93,10 @@
 			Sub target which is responsible for substituting tokens found in files
 		</description>
 		<mkdir dir="${versionDir}" />
-		<copy file="${build}/templates/install.rdf" tofile="${src}/install.rdf" overwrite="True">
+		<!-- create the install.rdf using the correct version number specific setting
+		  and with the correct updateURL -->
+
+		<copy file="${build}/templates/install.rdf" tofile="${versionDir}/src/install.rdf" overwrite="True">
 			<filterchain>
 				<replacetokens>
 					<token key="version" value="${version}" />
@@ -84,6 +104,16 @@
 				</replacetokens>
 			</filterchain>
 		</copy>
+			<!-- copy all of the core files and update the version no. in the about box -->
+			<copy  todir="${versionDir}/local/src" overwrite="True">
+				<fileset refid="includes"/>
+				<filterchain>
+					<replacetokens>
+						<token key="version" value="${version}" />
+					</replacetokens>
+				</filterchain>
+			</copy>
+		
 	</target>
 
 	<target name="installCustom">
@@ -91,7 +121,10 @@
 			Sub target which is responsible for substituting tokens found in files
 		</description>
 		<mkdir dir="${versionDir}" />
-		<copy file="${build}/templates/2hippo/install.rdf" tofile="${src}/install.rdf" overwrite="True">
+		<!-- create the install.rdf using the correct version number specific setting
+		  and with the correct updateURL for 2Hippo -->
+
+		<copy file="${build}/templates/2hippo/install.rdf" tofile="${versionDir}/src/install.rdf" overwrite="True">
 			<filterchain>
 				<replacetokens>
 					<token key="version" value="${version}" />
@@ -107,8 +140,9 @@
 		</description>
 		<echo>Building mozilla</echo>
 		<mkdir dir="${versionDir}/mozilla" />
+		<mkdir dir="${versionDir}/mozilla/src" />
 		<delete file="${versionDir}/mozilla/${xpiName}" />
-		<jar basedir="${src}" duplicate="fail" excludes="**/*" destfile="${versionDir}/mozilla/${xpiName}">
+		<jar basedir="${versionDir}/mozilla/src" duplicate="fail" excludes="**/*" destfile="${versionDir}/mozilla/${xpiName}">
 			<fileset refid="includes" />
 		</jar>
 	</target>
@@ -119,8 +153,9 @@
 		</description>
 		<echo>Building local</echo>
 		<mkdir dir="${versionDir}/local" />
+		<mkdir dir="${versionDir}/local/src" />
 		<delete file="${versionDir}/local/${xpiName}" />
-		<jar basedir="${src}" duplicate="fail" excludes="**/*" destfile="${versionDir}/local/${xpiName}">
+		<jar basedir="${versionDir}/local/src" duplicate="fail" excludes="**/*" destfile="${versionDir}/local/${xpiName}">
 			<fileset refid="includes" />
 		</jar>
 	</target>
@@ -131,8 +166,9 @@
 		</description>
 		<echo>Building 2Hippo</echo>
 		<mkdir dir="${versionDir}/2hippo" />
+		<mkdir dir="${versionDir}/2hippo/src" />
 		<delete file="${versionDir}/2hippo/${xpiName}" />
-		<jar basedir="${src}" duplicate="fail" excludes="**/*" destfile="${versionDir}/2hippo/${xpiName}">
+		<jar basedir="${versionDir}/2hippo/src" duplicate="fail" excludes="**/*" destfile="${versionDir}/2hippo/${xpiName}">
 			<fileset refid="includes" />
 		</jar>
 	</target>
