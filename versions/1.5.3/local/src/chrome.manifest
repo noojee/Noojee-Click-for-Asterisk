@@ -1,0 +1,9 @@
+content noojeeclick content/ 
+content noojeeclick content/ contentaccessible=yes
+resource noojeeclick modules/
+
+overlay chrome://browser/content/browser.xul chrome://noojeeclick/content/xul/overlay.xul
+
+
+
+

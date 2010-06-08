@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xhtml>
+<body>
+<h1>Release notes</h1>
+<p>Version 1.5.4 has moved Noojee Click into a namespace to eliminate namespace pollution as well as to remove conflicts with other addons such as Toddledo.
+
+Occasionally after loading a tab or restarting the browser the Noojee Click icons will fail to dial. Use the 'refresh' option on the Noojee Click menu to fix the problem without having to do a page reload (we are working on this problem).
+
+If you have feature requests or installation/configuration problems post them at http://forums.noojee.com.au</p>
+</body>
+</xhtml>
+~           
