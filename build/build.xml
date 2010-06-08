@@ -3,81 +3,39 @@
 		Builds the Noojee Click xpi file ready for deployment.
 	</description>
 
+	<property name="version" value="1.5.4" />
 	<property name="src" value="${basedir}/srcExtension" />
 	<property name="build" value="${basedir}/build" />
-	<property name="version" value="1.5.4" />
 	<property name="versionDir" value="${basedir}/versions/${version}" />
 	<property name="xpiName" value="noojeeclick-${version}.xpi" />
-	<property name="updateURL" value="&lt;em:updateURL&gt;https://www.noojee.com.au/noojeeclick/update.rdf&lt;/em:updateURL&gt;" />
+	<property name="zipName" value="noojeeclick-${version}.zip" />
 
-	<fileset id="includes" dir="${src}">
-		<include name="**/*.xml" />
-		<include name="**/*.js" />
-		<include name="**/*.png" />
-		<include name="**/*.manifest" />
-		<include name="**/*.xul" />
-		<include name="${versionDir}/updateinfo${version}.xml" />
-		<include name="update.rdf" />
-		<include name="install.rdf" />
-		<exclude name="**/*.xpi" />
-		<exclude name="**/.*" />
-	</fileset>
+	 <macrodef name="defineIncludes">
+	    <attribute name="path"/>
+	    <sequential>
+	    	<fileset id="includes" dir="${src}">
+	    		<include name="**/*.xml" />
+	    		<include name="**/*.js" />
+	    		<include name="**/*.manifest" />
+	    		<include name="**/*.xul" />
+	    		<exclude name="**/.*" />
+	    		<include name="${build}/templates/@{path}/updateinfo${version}.xml" />
+	    		<include name="${versionDir}/@{path}/src/update.rdf" />
+	    		<include name="${versionDir}/@{path}/src/install.rdf" />
+	    	</fileset>
+	   	</sequential>
+	 </macrodef>
 
-
-	<target name="init" depends="filter">
-		<tstamp />
-	</target>
-
-	<target name="filter">
-		<description>
-			Sub target which is responsible for substituting tokens found in files
-		</description>
-		<mkdir dir="${versionDir}" />
-	</target>
-
-	<target name="customFilter">
-		<description>
-			Sub target which is responsible for substituting tokens found in files
-		</description>
-		<mkdir dir="${versionDir}" />
-		<!-- create the update.rdf using the 2hippo specific setting -->
-		<copy file="${build}/templates/2hippo/update.rdf" tofile="${versionDir}/src/update.rdf" overwrite="True">
-			<filterchain>
-				<replacetokens>
-					<token key="version" value="${version}" />
-				</replacetokens>
-			</filterchain>
-		</copy>
-
-		<!-- copy all of the core files and update the version no. in the about box -->
-		<copy  todir="${versionDir}/2hippo/src" overwrite="True">
-			<fileset refid="includes"/>
-			<filterchain>
-				<replacetokens>
-					<token key="version" value="${version}" />
-				</replacetokens>
-			</filterchain>
-		</copy>
-		
-	</target>
-
-	<target name="installMozilla">
-		<description>
-			Sub target which is responsible for substituting tokens found in files
-		</description>
-		<mkdir dir="${versionDir}" />
-		<!-- create the install.rdf using the correct version number specific setting
-		  and with a blank updateURL -->
-		<copy file="${build}/templates/install.rdf" tofile="${versionDir}/src/install.rdf" overwrite="True">
-			<filterchain>
-				<replacetokens>
-					<token key="version" value="${version}" />
-					<token key="updateURL" value="" />
-				</replacetokens>
-			</filterchain>
-		</copy>
+	 <macrodef name="filterSrc">
+	    <attribute name="path"/>
+	    <attribute name="updateLink"/>
+	    <sequential>
+			<description>
+				Sub target which is responsible for substituting tokens found in files
+			</description>
+			<mkdir dir="${versionDir}" />
 			<!-- copy all of the core files and update the version no. in the about box -->
-			<copy  todir="${versionDir}/mozilla/src" overwrite="True">
+			<copy  todir="${versionDir}/@{path}/src" overwrite="True">
 				<fileset refid="includes"/>
 				<filterchain>
 					<replacetokens>
@@ -85,98 +43,114 @@
 					</replacetokens>
 				</filterchain>
 			</copy>
-		
-	</target>
+	
+	    	<!-- copy images with no filter as they are binary and filters corrupt them -->
+			<copy  todir="${versionDir}/@{path}/src" overwrite="True">
+				<fileset dir="${src}">
+					<include name="**/*.png" />
+					<exclude name="**/.*" />
+				</fileset>
+			</copy>
 
-	<target name="installLocal">
-		<description>
-			Sub target which is responsible for substituting tokens found in files
-		</description>
-		<mkdir dir="${versionDir}" />
-		<!-- create the install.rdf using the correct version number specific setting
-		  and with the correct updateURL -->
-
-		<copy file="${build}/templates/install.rdf" tofile="${versionDir}/src/install.rdf" overwrite="True">
-			<filterchain>
-				<replacetokens>
-					<token key="version" value="${version}" />
-					<token key="updateURL" value="${updateURL}" />
-				</replacetokens>
-			</filterchain>
-		</copy>
-			<!-- copy all of the core files and update the version no. in the about box -->
-			<copy  todir="${versionDir}/local/src" overwrite="True">
-				<fileset refid="includes"/>
+			<!-- create the update.rdf using the @{path} specific setting -->
+			<echo>Copy update.rdf</echo>
+			<copy file="${build}/templates/@{path}/update.rdf" tofile="${versionDir}/@{path}/src/update.rdf" overwrite="True">
 				<filterchain>
 					<replacetokens>
 						<token key="version" value="${version}" />
+						<token key="updateURL" value="@{updateLink}" />
 					</replacetokens>
 				</filterchain>
 			</copy>
-		
-	</target>
 
-	<target name="installCustom">
-		<description>
-			Sub target which is responsible for substituting tokens found in files
-		</description>
-		<mkdir dir="${versionDir}" />
-		<!-- create the install.rdf using the correct version number specific setting
-		  and with the correct updateURL for 2Hippo -->
+			<!-- create the install.rdf using the @{path} specific setting -->
+			<echo>Copy install.rdf</echo>
+			<copy file="${build}/templates/@{path}/install.rdf" tofile="${versionDir}/@{path}/src/install.rdf" overwrite="True">
+				
+				<filterchain>
+					<replacetokens>
+						<token key="version" value="${version}" />
+						<token key="updateURL" value="@{updateLink}" />
+					</replacetokens>
+				</filterchain>
+			</copy>
+	   	</sequential>
+	 </macrodef>
+	
+	 <macrodef name="createDirs">
+	    <attribute name="path"/>
+	    <sequential>
+			<echo>Building @{path}</echo>
+			<mkdir dir="${versionDir}/@{path}" />
+			<mkdir dir="${versionDir}/@{path}/src" />
+			<delete file="${versionDir}/@{path}/${xpiName}" />
+			<jar basedir="${versionDir}/@{path}/src" duplicate="fail" excludes="**/*" destfile="${versionDir}/@{path}/${xpiName}">
+		    	<fileset dir="${versionDir}/@{path}/src">
+		    		<include name="**/*.xml" />
+		    		<include name="**/*.js" />
+		    		<include name="**/*.png" />
+		    		<include name="**/*.manifest" />
+		    		<include name="**/*.rdf" />
+		    		<include name="**/*.xul" />
+		    		<exclude name="**/.*" />
+		    	</fileset>
+			</jar>
+			<copy file="${versionDir}/@{path}/src/update.rdf" tofile="${versionDir}/@{path}/update.rdf" overwrite="True">
+			</copy>
+			<copy file="${versionDir}/@{path}/src/update.rdf" tofile="${versionDir}/@{path}/update.rdf" overwrite="True">
+			</copy>
+			<copy file="${build}/templates/updateinfo/${version}/updateinfo${version}.xml" tofile="${versionDir}/@{path}/updateinfo${version}.xml" overwrite="True">
+			</copy>
+	    	
+			<zip basedir="${versionDir}/@{path}" duplicate="fail" excludes="**/*" destfile="${versionDir}/@{path}/${zipName}">
+		    	<fileset dir="${versionDir}/@{path}">
+		    		<include name="*.xml" />
+		    		<include name="*.rdf" />
+		    		<include name="*.htm" />
+		    		<include name="*.xpi" />
+		    		<exclude name="**/.*" />
+		    	</fileset>
+			</zip>
 
-		<copy file="${build}/templates/2hippo/install.rdf" tofile="${versionDir}/src/install.rdf" overwrite="True">
-			<filterchain>
-				<replacetokens>
-					<token key="version" value="${version}" />
-					<token key="updateURL" value="" />
-				</replacetokens>
-			</filterchain>
-		</copy>
-	</target>
+	   	</sequential>
+	 </macrodef>
 
-	<target name="mozilla" depends="installMozilla">
+
+	<target name="mozilla">
 		<description>
 			Builds an xpi suitable for hosting on the mozilla plugin website.
 		</description>
 		<echo>Building mozilla</echo>
-		<mkdir dir="${versionDir}/mozilla" />
-		<mkdir dir="${versionDir}/mozilla/src" />
-		<delete file="${versionDir}/mozilla/${xpiName}" />
-		<jar basedir="${versionDir}/mozilla/src" duplicate="fail" excludes="**/*" destfile="${versionDir}/mozilla/${xpiName}">
-			<fileset refid="includes" />
-		</jar>
+		<defineIncludes  path="mozilla" />
+		<filterSrc path="mozilla" updateLink=""/>
+		<createDirs  path="mozilla" />
 	</target>
-
-	<target name="local" depends="installLocal">
+	
+	<target name="local">
 		<description>
-			Builds an xpi suitable for hosting on the mozilla plugin website.
+			Builds an xpi suitable for hosting locally
 		</description>
-		<echo>Building local</echo>
-		<mkdir dir="${versionDir}/local" />
-		<mkdir dir="${versionDir}/local/src" />
-		<delete file="${versionDir}/local/${xpiName}" />
-		<jar basedir="${versionDir}/local/src" duplicate="fail" excludes="**/*" destfile="${versionDir}/local/${xpiName}">
-			<fileset refid="includes" />
-		</jar>
+		<echo>Building Local</echo>
+		<defineIncludes  path="local" />
+		<filterSrc path="local" updateLink="&lt;em:updateURL&gt;https://www.noojee.com.au/noojeeclick/update.rdf&lt;/em:updateURL&gt;"/>
+		<createDirs  path="local" />
 	</target>
 
-	<target name="2hippo" depends="customFilter,installCustom">
+	<target name="2hippo">
 		<description>
-			Builds an xpi suitable for hosting on the mozilla plugin website.
+			Builds an xpi suitable for 2hippo
 		</description>
 		<echo>Building 2Hippo</echo>
-		<mkdir dir="${versionDir}/2hippo" />
-		<mkdir dir="${versionDir}/2hippo/src" />
-		<delete file="${versionDir}/2hippo/${xpiName}" />
-		<jar basedir="${versionDir}/2hippo/src" duplicate="fail" excludes="**/*" destfile="${versionDir}/2hippo/${xpiName}">
-			<fileset refid="includes" />
-		</jar>
+		<defineIncludes  path="2hippo" />
+		<filterSrc path="2hippo" updateLink="&lt;em:updateURL&gt;https://www.2hippo.com/noojeeclick/update.rdf&lt;/em:updateURL&gt;"/>
+		<createDirs  path="2hippo" />
 	</target>
 
-	<target name="all" depends="init,local,mozilla,2hippo">
-		<!-- Build each version of Noojee Click -->
-	</target>
 
+	<target name="all" depends="mozilla,local,2hippo">
+	</target>
+	
+	
 	<target name="install" depends="all">
 		<!-- Install noojee click into firefox -->
 		<exec dir="." executable="/bin/bash">
@@ -208,3 +182,6 @@
 
 
 </project>
+	
+
+
