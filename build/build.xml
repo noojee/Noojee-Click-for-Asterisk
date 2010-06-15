@@ -19,7 +19,7 @@
 	    		<include name="**/*.manifest" />
 	    		<include name="**/*.xul" />
 	    		<exclude name="**/.*" />
-	    		<include name="${build}/templates/@{path}/updateinfo${version}.xml" />
+	    		<include name="${build}/templates/@{path}/updateinfo-${version}.xml" />
 	    		<include name="${versionDir}/@{path}/src/update.rdf" />
 	    		<include name="${versionDir}/@{path}/src/install.rdf" />
 	    	</fileset>
@@ -99,7 +99,7 @@
 			</copy>
 			<copy file="${versionDir}/@{path}/src/update.rdf" tofile="${versionDir}/@{path}/update.rdf" overwrite="True">
 			</copy>
-			<copy file="${build}/templates/updateinfo/${version}/updateinfo${version}.xml" tofile="${versionDir}/@{path}/updateinfo${version}.xml" overwrite="True">
+			<copy file="${build}/templates/updateinfo/${version}/updateinfo-${version}.xml" tofile="${versionDir}/@{path}/updateinfo-${version}.xml" overwrite="True">
 			</copy>
 	    	
 			<zip basedir="${versionDir}/@{path}" duplicate="fail" excludes="**/*" destfile="${versionDir}/@{path}/${zipName}">
