@@ -101,7 +101,8 @@ Asterisk: function ()
 		theApp.util.njdebug("asterisk", "Asterisk.hangup called channel=" + theApp.asterisk.getInstance().channel);
 
 		// Hangup the our extension
-		var sequence = new theApp.sequence.Sequence( [ new theApp.job.HangupAction(theApp.asterisk.getInstance().channel), new theApp.job.Complete() ], "", false);
+		// we must logon in case our session has timed out since we first logged on.
+		var sequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.HangupAction(theApp.asterisk.getInstance().channel), new theApp.job.Complete() ], "", false);
 		sequence.run();
 
 		this.channel = null;
