@@ -131,6 +131,27 @@ var noojeeClick = {};
 	 	}	
 	 	else
 	 		this.ns_debug("init", "asterisk tab enabled");
+	 		
+	 	 		
+ 		// retrieve the password
+ 		var password = theApp.prefs.getCredentials(theApp.prefs.getValue("host") theApp.prefs.getUsername());
+ 		var passwordField = window.document.getElementById('njConfigTabbox');
+ 		passwordField.setValue(password);
+	 	
+	};
+
+	this.onConfigurationClosed = function ()
+	{
+		theApp.util.njdebug("config", "onConfigurationClosed called");
+		var hostField = window.document.getElementById('extensions.noojeeclick.host');
+		var usernameField = window.document.getElementById('extensions.noojeeclick.username');
+		var passwordField = window.document.getElementById('extensions.noojeeclick.password');
+	
+		theApp.prefs.storeCredentials(hostField.getValue()
+			, usernameField.getValue()
+			, passwordField.getValue());
+		
+	    return false;
 	};
 	
 	/* Used to support the above function onConfigurationLoad.
