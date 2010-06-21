@@ -10,12 +10,8 @@
 	helpURI="http://www.noojee.com.au/Page/NoojeeClickHelp"
 	onload="noojeeClick.onConfigurationLoad();"
 	>
-	<!--            ondialoghelp="showHelpWindow();" -->
-<!-- 	 
-I can't get this to work as the namespace isn't being loaded. But then
-we just aren't using it at this point in time.
 	ondialogaccept="noojeeClick.configuration.onConfigurationClosed();"
--->
+	<!--            ondialoghelp="showHelpWindow();" -->
 
 	 <script type="application/x-javascript"
        src="chrome://global/content/globalOverlay.js"/>
