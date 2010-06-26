@@ -588,8 +588,8 @@ Login: function ()
 	{
 		theApp.util.njdebug("job", "login");
 		var url = theApp.job.genURL("Login");
-		var username = theApp.prefs.getUsername();
-		var password = theApp.prefs.getPassword();
+		var username = noojeeClick.getUsername();
+		var password = noojeeClick.retrieveCredentials(theApp.prefs.getValue("host"), username);
 		theApp.asterisk.getInstance().setLoggedIn(false);
 		
 		theApp.util.njdebug("job", "Username: " + username);

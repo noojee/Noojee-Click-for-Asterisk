@@ -3,10 +3,22 @@ var noojeeClick = {};
 
 (function() 
 {
-
 	// for debugging as we can't use njdebug during the initialisation.
 	var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
         .getService(Components.interfaces.nsIConsoleService);
+
+//passwordManager: Components.classes["@mozilla.org/login-manager;1"]
+//	.getService(Components.interfaces.nsIPrefService),
+
+	var nsLoginInfo = new Components.Constructor("@mozilla.org/login-manager/loginInfo;1",  
+                                              Components.interfaces.nsILoginInfo,  
+                                              "init");  
+	var nsLoginManager = Components.classes["@mozilla.org/login-manager;1"].  
+                           getService(Components.interfaces.nsILoginManager);  
+
+	var url =  "chrome://noojeeclick";
+
+
         
 	// Registration
 	var namespaces = [];
@@ -107,6 +119,89 @@ var noojeeClick = {};
 	    window.removeEventListener("load", noojeeClick.initialize, false);
 	    window.removeEventListener("unload", noojeeClick.shutdown, false);
 	};
+
+	function getObjectClass(obj)
+	{
+		if (obj && obj.constructor && obj.constructor.toString)
+		{
+			var arr = obj.constructor.toString().match(/function\s*(\w+)/);
+	
+			if (arr && arr.length == 2)
+			{
+				return arr[1];
+			}
+		}
+	
+		return undefined;
+	};
+	
+	
+	
+	this.getUsername = function ()
+	{
+		return this.getValue("username");
+	},
+	
+	//getPassword: function()
+	//{
+	//	return theApp.prefs.getValue("password"); 
+	//},
+	
+	this.storeCredentials = function(hostname, username, password)
+	{
+		var newLoginInfo = new nsLoginInfo(hostname,  
+	                       url, null, // 'Asterisk Auth',  
+	                       username, password, "", "");
+		var existingLoginInfo = this.findCredentials(hostname, username);
+		if (existingLoginInfo != null)	                       
+	    	nsLoginManager.removeLogin(existingLoginInfo); 
+		nsLoginManager.addLogin(newLoginInfo);  
+	},
+
+	/*
+	** returns the login object for the given hostname/username combination if it exists.
+	** If the credential doesn't exist then null is returned.
+	** The hostname should the ip address/hostname of the asterisk server as
+	** it appears in the configuration dialog.
+	*/
+	this.findCredentials = function (hostname, username)
+	{
+	    // Find users for the given parameters  
+	    var logins = nsLoginManager.findLogins({}, hostname, url, null);
+	    
+	    this.ns_debug("config", "retrieveCredentials login=" + logins);  
+	         
+	    var login = null;
+	    
+	    // Find user from returned array of nsILoginInfo objects  
+	    for (var i = 0; i < logins.length; i++) 
+	    {  
+	    	this.ns_debug("config", "login=" + logins[i].username);
+	       if (logins[i].username == username) 
+	       {  
+	          login = logins[i];  
+	          break;  
+	       }  
+	    } 
+	    return login;
+	},
+	
+
+	/*
+	** returns the password for the given hostname/username combination
+	** The hostname should the ip address/hostname of the asterisk server as
+	** it appears in the configuration dialog.
+	*/
+	this.retrieveCredentials = function (hostname, username)
+	{
+		var password = null;
+		var login = this.findCredentials(hostname, username);
+		
+		if (login != null)
+			password = login.password;
+			
+		return password;
+	},
 	
 	
 	/*
@@ -119,38 +214,44 @@ var noojeeClick = {};
 	 */ 
 	this.onConfigurationLoad = function ()
 	{
+  		var tabBox = window.document.getElementById('njConfigTabbox');
+ 		var asteriskTab = tabBox.tabs.getItemAtIndex(3);
+ 		
 	
 		// Check if we need to disable the asterisk tab 
 	 	if (this.getBoolValue("tab.asterisk.enabled") == false)
 	 	{
-	 		this.ns_debug("init", "asterisk tab disabled");
-	  		var tabBox = window.document.getElementById('njConfigTabbox');
-	 		var asteriskTab = tabBox.tabs.getItemAtIndex(3);
+	 		this.ns_debug("config", "asterisk tab disabled");
 	  		asteriskTab.disabled = true;
 	 		asteriskTab.collapsed = true;
 	 	}	
 	 	else
-	 		this.ns_debug("init", "asterisk tab enabled");
+	 		this.ns_debug("config", "asterisk tab enabled");
 	 		
 	 	 		
  		// retrieve the password
- 		var password = theApp.prefs.getCredentials(theApp.prefs.getValue("host") theApp.prefs.getUsername());
- 		var passwordField = window.document.getElementById('njConfigTabbox');
- 		passwordField.setValue(password);
-	 	
-	};
+ 		var password = this.retrieveCredentials(this.getValue("host"), this.getUsername());
+ 		var passwordField = window.document.getElementById('njcPassword');
+ 		passwordField.value = password;
+ 	};
 
 	this.onConfigurationClosed = function ()
 	{
-		theApp.util.njdebug("config", "onConfigurationClosed called");
-		var hostField = window.document.getElementById('extensions.noojeeclick.host');
-		var usernameField = window.document.getElementById('extensions.noojeeclick.username');
-		var passwordField = window.document.getElementById('extensions.noojeeclick.password');
-	
-		theApp.prefs.storeCredentials(hostField.getValue()
-			, usernameField.getValue()
-			, passwordField.getValue());
+		try
+		{
+			this.ns_debug("config", "onConfigurationClosed called");
+			var hostField = window.document.getElementById('host');
+			var usernameField = window.document.getElementById('username');
+			var passwordField = window.document.getElementById('njcPassword');
 		
+			this.storeCredentials(hostField.value
+				, usernameField.value
+				, passwordField.value);
+		}
+		catch (e)
+		{
+			this.ns_debug("config", "Exception: " + e);
+		}
 	    return false;
 	};
 	
@@ -180,7 +281,6 @@ var noojeeClick = {};
 	// We can't call the normal njdebug until the namespaces are all setup.	
 	this.ns_debug = function (module, msg)
 	{
-	
 		if (this.getBoolValue("enableDebugging") == true)
 		{
 			var filter = this.getValue("debugFilter");
@@ -192,7 +292,11 @@ var noojeeClick = {};
 				var min = now.getMinutes();
 				var sec = now.getSeconds();
 				var mil = now.getMilliseconds();
-				this.consoleService.logStringMessage(hour + ":" + min + ":" + sec + ":" + mil+ " debug (" + module + "): " + msg);
+				// for debugging as we can't use njdebug during the initialisation.
+				var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
+        			.getService(Components.interfaces.nsIConsoleService);
+				
+				consoleService.logStringMessage(hour + ":" + min + ":" + sec + ":" + mil+ " debug (" + module + "): " + msg);
 			}
 		}
 	};
@@ -213,7 +317,7 @@ var noojeeClick = {};
 		}
 		return value;
 	};
-	
+
 	
 	// Register handlers to maintain extension life cycle.
 	window.addEventListener("load", noojeeClick.initialize, false);
