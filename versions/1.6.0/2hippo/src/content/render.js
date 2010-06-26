@@ -125,18 +125,27 @@ addClickToDialLinks: function (document)
 				theApp.util.njdebug("render", "examining node=" + cand.nodeValue);
 				if (trackRegex.test(cand.nodeValue))
 				{
-					theApp.util.njdebug("render", "cand=" + cand);
+					theApp.util.njdebug("render", "cand=" + cand + " cand.id=" + cand.id);
 
 					// Check that the node isn't owned by a document which is in
 					// design mode (i.e. an editor).
 					// If it is then we skip the node.
 					if (document.getElementById(cand.id) != null)
 					{
+						theApp.util.njdebug("render", "Scanning for an editor");
+						// Scan all of the owners checking for an editor
 						var owner = document.getElementById(cand.id).ownerDocument;
-						if (owner.designMode == "on" || owner.contentEditable == "on")
+						theApp.util.njdebug("render", "cand.id owner=" + owner);
+						while (owner != null)
 						{
-							theApp.util.njdebug("render", "Found node in designMode, skipping");
-							continue;
+							theApp.util.njdebug("render", "owner.id=" + owner.id);
+							theApp.util.njdebug("render", "designmode=" + owner.designMode + " editable="+ owner.contentEditable);
+							if (owner.designMode == "on" || owner.contentEditable == "on")
+							{
+								theApp.util.njdebug("render", "Found node in designMode, skipping");
+								continue;
+							}
+						 	owner = document.getElementById(owner.id).ownerDocument;
 						}
 					}
 					else
@@ -325,3 +334,4 @@ excluded: function (doc)
 }
 
 }});
+
