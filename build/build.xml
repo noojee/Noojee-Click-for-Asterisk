@@ -3,7 +3,7 @@
 		Builds the Noojee Click xpi file ready for deployment.
 	</description>
 
-	<property name="version" value="1.5.4" />
+	<property name="version" value="1.6.0" />
 	<property name="src" value="${basedir}/srcExtension" />
 	<property name="build" value="${basedir}/build" />
 	<property name="versionDir" value="${basedir}/versions/${version}" />
@@ -11,7 +11,8 @@
 	<property name="zipName" value="noojeeclick-${version}.zip" />
 
 	 <macrodef name="defineIncludes">
-	    <attribute name="path"/>
+	    <attribute name="fromPath"/>
+	 	<attribute name="toPath"/>
 	    <sequential>
 	    	<fileset id="includes" dir="${src}">
 	    		<include name="**/*.xml" />
@@ -19,15 +20,16 @@
 	    		<include name="**/*.manifest" />
 	    		<include name="**/*.xul" />
 	    		<exclude name="**/.*" />
-	    		<include name="${build}/templates/@{path}/updateinfo-${version}.xml" />
-	    		<include name="${versionDir}/@{path}/src/update.rdf" />
-	    		<include name="${versionDir}/@{path}/src/install.rdf" />
+	    		<include name="${build}/templates/@{fromPath}/updateinfo-${version}.xml" />
+	    		<include name="@{toPath}/src/update.rdf" />
+	    		<include name="@{toPath}/src/install.rdf" />
 	    	</fileset>
 	   	</sequential>
 	 </macrodef>
 
 	 <macrodef name="filterSrc">
-	    <attribute name="path"/>
+	    <attribute name="fromPath"/>
+	 	<attribute name="toPath"/>
 	    <attribute name="updateLink"/>
 	    <sequential>
 			<description>
@@ -35,7 +37,7 @@
 			</description>
 			<mkdir dir="${versionDir}" />
 			<!-- copy all of the core files and update the version no. in the about box -->
-			<copy  todir="${versionDir}/@{path}/src" overwrite="True">
+			<copy  todir="@{toPath}/src" overwrite="True">
 				<fileset refid="includes"/>
 				<filterchain>
 					<replacetokens>
@@ -45,7 +47,7 @@
 			</copy>
 	
 	    	<!-- copy images with no filter as they are binary and filters corrupt them -->
-			<copy  todir="${versionDir}/@{path}/src" overwrite="True">
+			<copy  todir="@{toPath}/src" overwrite="True">
 				<fileset dir="${src}">
 					<include name="**/*.png" />
 					<exclude name="**/.*" />
@@ -54,7 +56,7 @@
 
 			<!-- create the update.rdf using the @{path} specific setting -->
 			<echo>Copy update.rdf</echo>
-			<copy file="${build}/templates/@{path}/update.rdf" tofile="${versionDir}/@{path}/src/update.rdf" overwrite="True">
+			<copy file="@{fromPath}/update.rdf" tofile="@{toPath}/src/update.rdf" overwrite="True">
 				<filterchain>
 					<replacetokens>
 						<token key="version" value="${version}" />
@@ -65,8 +67,7 @@
 
 			<!-- create the install.rdf using the @{path} specific setting -->
 			<echo>Copy install.rdf</echo>
-			<copy file="${build}/templates/@{path}/install.rdf" tofile="${versionDir}/@{path}/src/install.rdf" overwrite="True">
-				
+			<copy file="@{fromPath}/install.rdf" tofile="@{toPath}/src/install.rdf" overwrite="True">
 				<filterchain>
 					<replacetokens>
 						<token key="version" value="${version}" />
@@ -78,14 +79,15 @@
 	 </macrodef>
 	
 	 <macrodef name="createDirs">
-	    <attribute name="path"/>
+	    <attribute name="fromPath"/>
+	 	<attribute name="toPath"/>
 	    <sequential>
 			<echo>Building @{path}</echo>
-			<mkdir dir="${versionDir}/@{path}" />
-			<mkdir dir="${versionDir}/@{path}/src" />
-			<delete file="${versionDir}/@{path}/${xpiName}" />
-			<jar basedir="${versionDir}/@{path}/src" duplicate="fail" excludes="**/*" destfile="${versionDir}/@{path}/${xpiName}">
-		    	<fileset dir="${versionDir}/@{path}/src">
+			<mkdir dir="@{toPath}" />
+			<mkdir dir="@{toPath}/src" />
+			<delete file="@{toPath}/${xpiName}" />
+			<jar basedir="@{toPath}/src" duplicate="fail" excludes="**/*" destfile="@{toPath}/${xpiName}">
+		    	<fileset dir="@{toPath}/src">
 		    		<include name="**/*.xml" />
 		    		<include name="**/*.js" />
 		    		<include name="**/*.png" />
@@ -95,15 +97,13 @@
 		    		<exclude name="**/.*" />
 		    	</fileset>
 			</jar>
-			<copy file="${versionDir}/@{path}/src/update.rdf" tofile="${versionDir}/@{path}/update.rdf" overwrite="True">
+			<copy file="@{toPath}/src/update.rdf" tofile="@{toPath}/update.rdf" overwrite="True">
 			</copy>
-			<copy file="${versionDir}/@{path}/src/update.rdf" tofile="${versionDir}/@{path}/update.rdf" overwrite="True">
-			</copy>
-			<copy file="${build}/templates/updateinfo/${version}/updateinfo-${version}.xml" tofile="${versionDir}/@{path}/updateinfo-${version}.xml" overwrite="True">
+			<copy file="${build}/templates/updateinfo/${version}/updateinfo-${version}.xml" tofile="@{toPath}/updateinfo-${version}.xml" overwrite="True">
 			</copy>
 	    	
-			<zip basedir="${versionDir}/@{path}" duplicate="fail" excludes="**/*" destfile="${versionDir}/@{path}/${zipName}">
-		    	<fileset dir="${versionDir}/@{path}">
+			<zip basedir="@{toPath}" duplicate="fail" excludes="**/*" destfile="@{toPath}/${zipName}">
+		    	<fileset dir="@{toPath}">
 		    		<include name="*.xml" />
 		    		<include name="*.rdf" />
 		    		<include name="*.htm" />
@@ -121,9 +121,9 @@
 			Builds an xpi suitable for hosting on the mozilla plugin website.
 		</description>
 		<echo>Building mozilla</echo>
-		<defineIncludes  path="mozilla" />
-		<filterSrc path="mozilla" updateLink=""/>
-		<createDirs  path="mozilla" />
+		<defineIncludes  fromPath="mozilla" toPath="${versionDir}/mozilla"/>
+		<filterSrc fromPath="build/templates/mozilla" toPath="${versionDir}/mozilla" updateLink=""/>
+		<createDirs  fromPath="mozilla" toPath="${versionDir}/mozilla" />
 	</target>
 	
 	<target name="local">
@@ -131,9 +131,34 @@
 			Builds an xpi suitable for hosting locally
 		</description>
 		<echo>Building Local</echo>
-		<defineIncludes  path="local" />
-		<filterSrc path="local" updateLink="&lt;em:updateURL&gt;https://www.noojee.com.au/noojeeclick/update.rdf&lt;/em:updateURL&gt;"/>
-		<createDirs  path="local" />
+		<defineIncludes  fromPath="local" toPath="${versionDir}/local" />
+		<filterSrc fromPath="build/templates/local" toPath="${versionDir}/local" updateLink="&lt;em:updateURL&gt;https://www.noojee.com.au/noojeeclick/update.rdf&lt;/em:updateURL&gt;"/>
+		<createDirs  fromPath="local" toPath="${versionDir}/local" />
+	</target>
+
+	<target name="debug">
+		<description>
+			sets the required files for debugging
+		</description>
+		<echo>Building Debug version</echo>
+		<echo>Copy install.rdf</echo>
+		<copy file="${build}/templates/local/install.rdf" tofile="${src}/install.rdf" overwrite="True">
+			<filterchain>
+				<replacetokens>
+					<token key="version" value="${version}" />
+					<token key="updateURL" value="&lt;em:updateURL&gt;https://www.noojee.com.au/noojeeclick/update.rdf&lt;/em:updateURL&gt;" />
+				</replacetokens>
+			</filterchain>
+		</copy>
+
+		<copy file="${build}/templates/local/update.rdf" tofile="${src}/update.rdf" overwrite="True">
+			<filterchain>
+				<replacetokens>
+					<token key="version" value="${version}" />
+					<token key="updateURL" value="@{updateLink}" />
+				</replacetokens>
+			</filterchain>
+		</copy>
 	</target>
 
 	<target name="2hippo">
@@ -141,13 +166,13 @@
 			Builds an xpi suitable for 2hippo
 		</description>
 		<echo>Building 2Hippo</echo>
-		<defineIncludes  path="2hippo" />
-		<filterSrc path="2hippo" updateLink="&lt;em:updateURL&gt;https://www.2hippo.com/noojeeclick/update.rdf&lt;/em:updateURL&gt;"/>
-		<createDirs  path="2hippo" />
+		<defineIncludes  fromPath="2hippo" toPath="${versionDir}/2hippo" />
+		<filterSrc fromPath="build/templates/2hippo" toPath="${versionDir}/2hippo"  updateLink="&lt;em:updateURL&gt;https://www.2hippo.com/noojeeclick/update.rdf&lt;/em:updateURL&gt;"/>
+		<createDirs  fromPath="2hippo" toPath="${versionDir}/2hippo"  />
 	</target>
 
 
-	<target name="all" depends="mozilla,local,2hippo">
+	<target name="all" depends="mozilla,local,2hippo,debug">
 	</target>
 	
 	
