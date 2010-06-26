@@ -125,22 +125,43 @@ addClickToDialLinks: function (document)
 				theApp.util.njdebug("render", "examining node=" + cand.nodeValue);
 				if (trackRegex.test(cand.nodeValue))
 				{
-					theApp.util.njdebug("render", "cand=" + cand);
 
 					// Check that the node isn't owned by a document which is in
 					// design mode (i.e. an editor).
 					// If it is then we skip the node.
-					if (document.getElementById(cand.id) != null)
+
+					theApp.util.njdebug("render", "Scanning for an editor parent for cand=" + cand);
+
+					// Scan all of the owners checking for an editor
+					var parent = cand.parentNode;
+					var editable = false;
+					while (parent != null)
 					{
-						var owner = document.getElementById(cand.id).ownerDocument;
-						if (owner.designMode == "on" || owner.contentEditable == "on")
+						if (parent.designMode == "on" 
+						|| parent.designMode == "true"
+						|| parent.contentEditable == "on"
+						|| parent.contentEditable == "true"
+						)
 						{
 							theApp.util.njdebug("render", "Found node in designMode, skipping");
-							continue;
+							editable = true;
+							break;
 						}
+						else if (parent.designMode == "off" 
+						|| parent.designMode == "false"
+						|| parent.contentEditable == "off"
+						|| parent.contentEditable == "false"
+						)
+						{
+							// parent isn't editable so search no further.
+							break;
+						}
+						
+					 	parent = parent.parentNode;
 					}
-					else
-						theApp.util.njdebug("render", "Can't find owner for cand");
+					
+					if (editable)
+						continue;
 
 					// First check that the parent isn't already a noojeeClick
 					// element
@@ -325,3 +346,4 @@ excluded: function (doc)
 }
 
 }});
+
