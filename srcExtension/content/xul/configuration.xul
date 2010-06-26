@@ -1,16 +1,20 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 
+	<!-- -->
+<!-- 	onpaneload='noojeeClick.onConfigurationLoad()'
+buttons="accept,cancel"
 
+-->
 
-<prefwindow type="prefwindow" id="NoojeePreferences" title="Noojee Click for Asterisk"
+<dialog type="prefwindow" id="NoojeePreferences" title="Noojee Click for Asterisk"
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	image="chrome://noojeeclick/content/images/noojee.png" 
-	buttons="accept,cancel"
+	
 	helpURI="http://www.noojee.com.au/Page/NoojeeClickHelp"
-	onload="noojeeClick.onConfigurationLoad();"
+	onload='noojeeClick.onConfigurationLoad()'
+	ondialogaccept='noojeeClick.onConfigurationClosed()'
 	>
-	ondialogaccept="noojeeClick.configuration.onConfigurationClosed();"
 	<!--            ondialoghelp="showHelpWindow();" -->
 
 	 <script type="application/x-javascript"
@@ -52,7 +56,9 @@
 
 
 	<prefpane id="noojeeClick" label="Preferences"
-		helpURI="http://www.noojee.com.au/Page/NoojeeClickHelp">
+		helpURI="http://www.noojee.com.au/Page/NoojeeClickHelp"
+		ondialogaccept='noojeeClick.onConfigurationClosed()'
+		>
 		<preferences>
 			<preference id="extensions.noojeeclick.serverType" name="extensions.noojeeclick.serverType"
 				type="unichar" />
@@ -329,8 +335,8 @@
 								</row>
 								<row  align="center">
 									<label value="Password:" />
-									<textbox preference="extensions.noojeeclick.password"
-										id="password" type="password" />
+									<textbox 
+										id="njcPassword" type="password" />
 								</row>
 								<row  align="center">
 									<label value="Context:" />
@@ -506,4 +512,4 @@
 	
 	
 
-</prefwindow>
+</dialog>
