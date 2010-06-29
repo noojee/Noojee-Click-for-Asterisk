@@ -125,31 +125,44 @@ addClickToDialLinks: function (document)
 				theApp.util.njdebug("render", "examining node=" + cand.nodeValue);
 				if (trackRegex.test(cand.nodeValue))
 				{
-					theApp.util.njdebug("render", "cand=" + cand + " cand.id=" + cand.id);
 
 					// Check that the node isn't owned by a document which is in
 					// design mode (i.e. an editor).
 					// If it is then we skip the node.
-					if (document.getElementById(cand.id) != null)
+
+					theApp.util.njdebug("render", "Scanning for an editor parent for cand=" + cand);
+
+					// Scan all of the owners checking for an editor
+					var parent = cand.parentNode;
+					var editable = false;
+					while (parent != null)
 					{
-						theApp.util.njdebug("render", "Scanning for an editor");
-						// Scan all of the owners checking for an editor
-						var owner = document.getElementById(cand.id).ownerDocument;
-						theApp.util.njdebug("render", "cand.id owner=" + owner);
-						while (owner != null)
+						if (parent.designMode == "on" 
+						|| parent.designMode == "true"
+						|| parent.contentEditable == "on"
+						|| parent.contentEditable == "true"
+						)
 						{
-							theApp.util.njdebug("render", "owner.id=" + owner.id);
-							theApp.util.njdebug("render", "designmode=" + owner.designMode + " editable="+ owner.contentEditable);
-							if (owner.designMode == "on" || owner.contentEditable == "on")
-							{
-								theApp.util.njdebug("render", "Found node in designMode, skipping");
-								continue;
-							}
-						 	owner = document.getElementById(owner.id).ownerDocument;
+							theApp.util.njdebug("render", "Found node in designMode, skipping");
+							editable = true;
+							break;
 						}
+						else if (parent.designMode == "off" 
+						|| parent.designMode == "false"
+						|| parent.contentEditable == "off"
+						|| parent.contentEditable == "false"
+						)
+						{
+							// parent isn't editable so search no further.
+							break;
+						}
+						if (parent == parent.parentNode)
+							theApp.util.njerror("render", "bugger, self referencing parent.");
+					 	parent = parent.parentNode;
 					}
-					else
-						theApp.util.njdebug("render", "Can't find owner for cand");
+					
+					if (editable)
+						continue;
 
 					// First check that the parent isn't already a noojeeClick
 					// element

@@ -156,7 +156,8 @@ addClickToDialLinks: function (document)
 							// parent isn't editable so search no further.
 							break;
 						}
-						
+						if (parent == parent.parentNode)
+							theApp.util.njerror("render", "bugger, self referencing parent.");
 					 	parent = parent.parentNode;
 					}
 					
