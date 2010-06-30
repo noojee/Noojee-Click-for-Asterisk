@@ -167,7 +167,7 @@
 		</description>
 		<echo>Building 2Hippo</echo>
 		<defineIncludes  fromPath="2hippo" toPath="${versionDir}/2hippo" />
-		<filterSrc fromPath="build/templates/2hippo" toPath="${versionDir}/2hippo"  updateLink="&lt;em:updateURL&gt;https://www.2hippo.com/noojeeclick/update.rdf&lt;/em:updateURL&gt;"/>
+		<filterSrc fromPath="build/templates/2hippo" toPath="${versionDir}/2hippo"  updateLink="&lt;em:updateURL&gt;https://me.2hippo.com/noojeeclick/update.rdf&lt;/em:updateURL&gt;"/>
 		<createDirs  fromPath="2hippo" toPath="${versionDir}/2hippo"  />
 	</target>
 
