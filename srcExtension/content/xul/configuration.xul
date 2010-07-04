@@ -350,9 +350,11 @@ buttons="accept,cancel"
 										<label value="Use HTTPS" />
 									</hbox>
 								</row>
+								<!--
 								<row  align="center">
 									<button label="Test Connection" oncommand="onTestConnection();"/>
 								</row>
+								-->
 <row >
 <p></p>
 <p></p>

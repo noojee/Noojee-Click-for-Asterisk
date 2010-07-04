@@ -9,6 +9,13 @@ pref("extensions.noojeeclick.port", "8088");
 pref("extensions.noojeeclick.username", "");
 pref("extensions.noojeeclick.password", "");
 
+/* setting firstrun to 'true' causes the above password to be moved into secure
+ * storage the first time Noojee Click runs. The password is then removed from the
+ * preferences.
+ * In future version firstrun may be used to initialise other settings as well.
+ */
+pref("extensions.noojeeclick.firstrun", true);
+
 
 /* Change the context to match the clients specific dialplan context 
 When NJ Click originates a call it will do it in this context.
@@ -48,7 +55,7 @@ pref("extensions.noojeeclick.handsetType", "Yealink");
 pref("extensions.noojeeclick.dialPrefix", "");
 pref("extensions.noojeeclick.enableLogging", false);
 pref("extensions.noojeeclick.enableDebugging", false);
-pref("extensions.noojeeclick.debugFilter", "api, asterisk, events.high, jobs, noojeeclick, phonepatterns, prefs, render, sequence, util, monitor");
+pref("extensions.noojeeclick.debugFilter", "config, api, asterisk, events.high, jobs, noojeeclick, phonepatterns, prefs, render, sequence, util, monitor");
 pref("extensions.noojeeclick.httpPrefix", "asterisk");
 pref("extensions.noojeeclick.useHttps", false);
 pref("extensions.noojeeclick.callerId", "");

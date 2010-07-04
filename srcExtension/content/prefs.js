@@ -28,9 +28,9 @@ onTestConnection: function ()
 
 getValue: function (key)
 {
+	var value = null;
 	try
 	{
-		var value = null;
 		var prefObj = Components.classes["@mozilla.org/preferences-service;1"]
 		        .getService(Components.interfaces.nsIPrefService);
 		var Branch = prefObj.getBranch("extensions.noojeeclick.");
@@ -49,9 +49,9 @@ getValue: function (key)
 
 getBoolValue: function (key)
 {
+	var value = null;
 	try
 	{
-		var value = null;
 		var prefObj = Components.classes["@mozilla.org/preferences-service;1"]
 		        .getService(Components.interfaces.nsIPrefService);
 		var Branch = prefObj.getBranch("extensions.noojeeclick.");
