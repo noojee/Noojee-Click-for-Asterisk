@@ -50,14 +50,14 @@ Dial: function ()
 		// is being dialled on the local handset's LCD.
 		// The CallerId must only contain numbers as the likes of trixbox
 		// will drop the call if it contains non-digits.
-		// The CallerID(Name) is set for sip phones that can display text (I think this might work)
+		// The CALLERID(Name) is set for sip phones that can display text (I think this might work)
 		// 
-		url += "&Variable=CallerID(Num)=" + normalised; // Hopefully sets the handsets display 
-		url += "&Variable=CallerID(Name)=" + phoneNo + "-NoojeeClick";  //and this as well.
+		url += "&Variable=CALLERID(Num)=" + normalised; // Hopefully sets the handsets display 
+		url += "&Variable=CALLERID(Name)=" + phoneNo + "-NoojeeClick";  //and this as well.
 
 		// If the user has configured the callerId then lets set it.
 		// We try to control the callerID that is presented to the 
-		// far end by setting CallerID(Num).
+		// far end by setting CALLERID(Num).
 		var callerID = theApp.prefs.getValue("callerId");
 		if (callerID != null)
 		{
