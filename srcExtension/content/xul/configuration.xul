@@ -1,19 +1,15 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 
-	<!-- -->
-<!-- 	onpaneload='noojeeClick.onConfigurationLoad()'
-buttons="accept,cancel"
 
--->
 
-<dialog type="prefwindow" id="NoojeePreferences" title="Noojee Click for Asterisk"
+<prefwindow type="prefwindow" id="NoojeePreferences" title="Noojee Click for Asterisk"
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	image="chrome://noojeeclick/content/images/noojee.png" 
-	
+	buttons="accept,cancel"
 	helpURI="http://www.noojee.com.au/Page/NoojeeClickHelp"
 	onload='noojeeClick.onConfigurationLoad()'
-	ondialogaccept='noojeeClick.onConfigurationClosed()'
+	onunload='noojeeClick.onConfigurationClosed()'
 	>
 	<!--            ondialoghelp="showHelpWindow();" -->
 
@@ -57,7 +53,6 @@ buttons="accept,cancel"
 
 	<prefpane id="noojeeClick" label="Preferences"
 		helpURI="http://www.noojee.com.au/Page/NoojeeClickHelp"
-		ondialogaccept='noojeeClick.onConfigurationClosed()'
 		>
 		<preferences>
 			<preference id="extensions.noojeeclick.serverType" name="extensions.noojeeclick.serverType"
@@ -514,4 +509,4 @@ buttons="accept,cancel"
 	
 	
 
-</dialog>
+</prefwindow>
