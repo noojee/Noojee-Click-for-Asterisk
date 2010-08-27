@@ -13,27 +13,17 @@
         <em:optionsURL>chrome://noojeeclick/content/xul/configuration.xul</em:optionsURL>
 
         <!-- You can't do this when uploading to the mozilla add on site. -->
-		<em:updateURL>https://www.noojee.com.au/noojeeclick/update.rdf</em:updateURL>
+		
 
     <!-- -->
         <em:iconURL>chrome://noojeeclick/content/noojeeclick.png</em:iconURL>
         <em:type>2</em:type> <!-- type=extension --> 
-        
         <em:targetApplication>
            <!-- Firefox -->
            <Description>
                 <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
                 <em:minVersion>2.0</em:minVersion>
                 <em:maxVersion>3.6.*</em:maxVersion>
-           </Description>
-        </em:targetApplication>
-
-        <em:targetApplication>
-           <!-- Thunderbird -->
-           <Description>
-                <em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id>
-                <em:minVersion>3.0.5</em:minVersion>
-                <em:maxVersion>3.0.5</em:maxVersion>
            </Description>
         </em:targetApplication>
     </Description>

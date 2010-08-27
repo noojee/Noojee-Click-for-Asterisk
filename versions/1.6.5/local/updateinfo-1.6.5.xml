@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xhtml>
+<body>
+<h1>Release notes</h1>
+<p>Version 1.6.5</p>
+<p>Fixed a bug a pattern with an invalid delimiter would cause
+Noojee Click to display an error message many times.</p>
+
+<p>If you have feature requests or installation/configuration problems post them at http://forums.noojee.com.au</p>
+</body>
+</xhtml>
