@@ -11,20 +11,7 @@ tagsOfInterest: [ "a", "abbr", "acronym", "address", "applet", "b", "bdo",
 		"object", "pre", "p", "q", "samp", "small", "span", "strike", "s",
 		"strong", "sub", "sup", "td", "th", "tt", "u", "var" ],
 
-// Used by the configuration dialog to pause
-// the refresh whilst the user configures the system.
-refreshEnabled: true,
 
-
-enableRefresh : function()
-{
-	refreshEnabled = true;
-},
-
-disableRefresh : function()
-{
-	refreshEnabled = false;
-},
 
 onRefresh: function()
 {
@@ -39,73 +26,69 @@ onRefresh: function()
 onRefreshOne: function (doc)
 {
 	theApp.util.njdebug("render", "onRefresh called for doc=" + doc);
-
-	//if (refreshEnabled)
+	try
 	{
-		try
+		// First remove any clicks.
+		var spans = doc.getElementsByName("noojeeClick");
+		theApp.util.njdebug("render", "spans=" + spans);
+		theApp.util.njdebug("render", "span.length=" + spans.length);
+
+		var removalSpanArray = [];
+		var removedSpanItemCount = 0;
+		for ( var i = spans.length - 1; i >= 0; i--)
 		{
-			// First remove any clicks.
-			var spans = doc.getElementsByName("noojeeClick");
-			theApp.util.njdebug("render", "spans=" + spans);
-			theApp.util.njdebug("render", "span.length=" + spans.length);
-	
-			var removalSpanArray = [];
-			var removedSpanItemCount = 0;
-			for ( var i = spans.length - 1; i >= 0; i--)
+			var removalImageArray = [];
+			var removedImageItemCount = 0;
+			var span = spans[i];
+			var parent = span.parentNode;
+
+			var children = span.childNodes;
+			var insertionPoint = span;
+			for ( var j = children.length - 1; j >= 0; j--)
 			{
-				var removalImageArray = [];
-				var removedImageItemCount = 0;
-				var span = spans[i];
-				var parent = span.parentNode;
-	
-				var children = span.childNodes;
-				var insertionPoint = span;
-				for ( var j = children.length - 1; j >= 0; j--)
+				var child = children[j];
+				var deleted = false;
+				if (child.nodeName == "IMG")
 				{
-					var child = children[j];
-					var deleted = false;
-					if (child.nodeName == "IMG")
+					if (child.name == "noojeeClickImg")
 					{
-						if (child.name == "noojeeClickImg")
-						{
-							removalImageArray[removedImageItemCount++] = child;
-							deleted = true;
-						}
-					}
-					if (deleted == false)
-					{
-						parent.insertBefore(child, insertionPoint);
-						insertionPoint = child;
+						removalImageArray[removedImageItemCount++] = child;
+						deleted = true;
 					}
 				}
-	
-				for ( var k = 0; k < removedImageItemCount; k++)
+				if (deleted == false)
 				{
-					span.removeChild(removalImageArray[k]);
+					parent.insertBefore(child, insertionPoint);
+					insertionPoint = child;
 				}
-				removalSpanArray[removedSpanItemCount++] = span;
 			}
-	
-			for ( var l = 0; l < removedSpanItemCount; l++)
+
+			for ( var k = 0; k < removedImageItemCount; k++)
 			{
-				if (removalSpanArray[l].parentNode != null)
-					removalSpanArray[l].parentNode.removeChild(removalSpanArray[l]);
-				else
-					theApp.util.njdebug("render", "unexpected null parentNode for: "
-							+ removalSpanArray[l]);
+				span.removeChild(removalImageArray[k]);
 			}
-	
-			// Now add the Noojee Dial icons back in.
-			if (theApp.prefs.getBoolValue("enabled") == true)
-			{
-				this.addClickToDialLinks(doc);
-			}
-	
-		} catch (e)
-		{
-			theApp.util.njlog(e);
-			theApp.util.showException("onRefreshOne", e);
+			removalSpanArray[removedSpanItemCount++] = span;
 		}
+
+		for ( var l = 0; l < removedSpanItemCount; l++)
+		{
+			if (removalSpanArray[l].parentNode != null)
+				removalSpanArray[l].parentNode.removeChild(removalSpanArray[l]);
+			else
+				theApp.util.njdebug("render", "unexpected null parentNode for: "
+						+ removalSpanArray[l]);
+		}
+
+		// Now add the Noojee Dial icons back in.
+		if (theApp.prefs.getBoolValue("enabled") == true)
+		{
+			this.addClickToDialLinks(doc);
+		}
+
+	} catch (e)
+	{
+		theApp.util.njlog(e);
+		theApp.util.showException("onRefreshOne", e);
 	}
 },
 

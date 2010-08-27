@@ -202,14 +202,11 @@ onAddDialPatternMenuAction: function ()
 				case '+':
 					newPattern += '+';
 					break;
-				case '.':
-					newPattern += '.';
-					break;
 				case ' ':
 					newPattern += ' ';
 					break;
 				default:
-					theApp.prompts.njAlert("Unsupported character found in phone number: '" + phoneNo[i] + "'");
+					theApp.prompts.njAlert("Unsupported character '" + phoneNo[i] + "' found in phone number. Add the character to the 'Delimiters' field on 'Advanced' tab in the Noojee Click configuration and try again.");
 					fault = true;
 					break;
 
