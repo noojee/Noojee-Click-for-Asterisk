@@ -111,7 +111,7 @@ Dial: function ()
 			theApp.noojeeclick.resetIcon();
 			if (result.message == "Authentication Required")
 			{
-				theApp.util.showError(result.response, "The connection to Asterisk was lost, a reconnect will be initiated. Wait a moment and then dial again.");
+				theApp.dialstatus.getInstance().updateStatus("The connection to Asterisk was lost.");
 		
 				var sequence = new theApp.sequence.Sequence( [ new Login(), new Wait(null) ], "", false);
 				sequence.run();
@@ -245,7 +245,7 @@ Answer: function (channel)
 			theApp.noojeeclick.resetIcon();
 			if (result.message == "Authentication Required")
 			{
-				theApp.util.showError(result.response, "The connection to Asterisk was lost, a reconnect will be initiated. Wait a moment and then dial again.");
+				theApp.dialstatus.getInstance().updateStatus("The connection to Asterisk was lost.");
 		
 				var sequence = new theApp.sequence.Sequence( [ new this.Login(), new this.Wait(null) ], "", false);
 				sequence.run();
@@ -448,7 +448,7 @@ HangupAction: function (channel)
 		
 		// We have now hungup so make certain the status line
 		// is clear.
-		theApp.asterisk.updateState("Disconnecting");
+		theApp.asterisk.getInstance().updateState("Disconnecting");
 		theApp.noojeeclick.resetIcon();
 		window.setTimeout("noojeeClick.asterisk.getInstance().updateState('');", 3000);
 		
