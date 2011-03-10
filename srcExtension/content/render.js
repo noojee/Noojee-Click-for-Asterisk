@@ -12,6 +12,10 @@ tagsOfInterest: [ "a", "abbr", "acronym", "address", "applet", "b", "bdo",
 		"strong", "sub", "sup", "td", "th", "tt", "u", "var" ],
 
 
+//njClickElementType: "IMG",
+njClickElementType: "INPUT",
+
+njClickElementName: "noojeeClickImg",
 
 onRefresh: function()
 {
@@ -47,10 +51,13 @@ onRefreshOne: function (doc)
 			for ( var j = children.length - 1; j >= 0; j--)
 			{
 				var child = children[j];
+				theApp.util.njdebug("render", "child.nodeName=" + child.nodeName);
+				theApp.util.njdebug("render", "child.name=" + child.name);
+
 				var deleted = false;
-				if (child.nodeName == "IMG")
+				if (child.nodeName == this.njClickElementType)
 				{
-					if (child.name == "noojeeClickImg")
+					if (child.name == this.njClickElementName)
 					{
 						removalImageArray[removedImageItemCount++] = child;
 						deleted = true;
@@ -158,6 +165,7 @@ addClickToDialLinks: function (document)
 						}
 						if (parent == parent.parentNode)
 							theApp.util.njerror("render", "bugger, self referencing parent.");
+						// definition:bugger, from the latin australias - woe is me, that shouldn't have happened.
 					 	parent = parent.parentNode;
 					}
 					
@@ -176,7 +184,7 @@ addClickToDialLinks: function (document)
 						// Create an artificial parent span to insert the reworked
 						// text
 						var span = document.createElement("span");
-						span.setAttribute("name", "noojeeClick");
+						span.setAttribute("name", "noojeeClickTop");
 
 						var source = cand.nodeValue;
 						theApp.util.njdebug("render", "source=" + source);
@@ -214,7 +222,8 @@ addClickToDialLinks: function (document)
 							// Check the characters immediately before and
 							// after the matching digit.
 							// If we find a digit, period,
-							// comma, plus or minus sign before or after the
+							// comma, plus or minus sign or one of the defined
+							// delimiters before or after the
 							// matching region then the match region is probably
 							// part of some bigger number which isn't actually
 							// a phone number. So mark it as non-matching and
@@ -272,27 +281,40 @@ addClickToDialLinks: function (document)
 
 							// Now add matching substring with an image.
 							var clickSpan = document.createElement("span");
+//							clickSpan.setAttribute("style",
+									//"nowrap");
 							clickSpan.setAttribute("style",
-									"white-space:nowrap");
+							"white-space:nowrap");
 							clickSpan.setAttribute("name", "noojeeClick");
 
 							theApp.util.njdebug("render", "match[0]=" + match[0]);
 							var text = document.createTextNode(match[0]);
-							var img = document.createElement("img");
-							img
-									.setAttribute("src",
-											"chrome://noojeeclick/content/images/micro.png");
-							img.setAttribute("name", "noojeeClickImg");
-							img.setAttribute("title", match[0]);
-							img.addEventListener("onmouseover", theApp.handlers.onMouseOver,
-									true);
-							img
-									.addEventListener("onmouseout", theApp.handlers.onMouseOut,
-											true);
-							img.addEventListener("click", theApp.handlers.onDialHandler, true);
-							img.setAttribute("PhoneNo", match[0]);
+							
+							//<input type="image" src="rainbow.gif" name="image" width="60" height="60">
+							var btn = document.createElement(this.njClickElementType);
+							btn.setAttribute("type", "image"); 
+							btn.setAttribute("src", "chrome://noojeeclick/content/images/call-phone.png");
+							btn.setAttribute("name", this.njClickElementName);
+							btn.setAttribute("title", match[0]);
+							btn.addEventListener("click", theApp.handlers.onDialHandler, true);
+							btn.setAttribute("PhoneNo", match[0]);
+							
+//							var img = document.createElement(this.njClickElement);
+//							img
+//									.setAttribute("src",
+//											"chrome://noojeeclick/content/images/call-phone.png");
+//							img.setAttribute("name", this.njClickElementName);
+//							img.setAttribute("title", match[0]);
+//							img.addEventListener("onmouseover", theApp.handlers.onMouseOver,
+//									true);
+//							img
+//									.addEventListener("onmouseout", theApp.handlers.onMouseOut,
+//											true);
+//							img.addEventListener("click", theApp.handlers.onDialHandler, true);
+//							img.setAttribute("PhoneNo", match[0]);
 							clickSpan.appendChild(text);
-							clickSpan.appendChild(img);
+							//clickSpan.appendChild(img);
+							clickSpan.appendChild(btn);
 							span.appendChild(clickSpan);
 							lastLastIndex = trackRegex.lastIndex;
 						}
