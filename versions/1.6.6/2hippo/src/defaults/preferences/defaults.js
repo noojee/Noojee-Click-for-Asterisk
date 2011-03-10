@@ -55,7 +55,7 @@ pref("extensions.noojeeclick.handsetType", "Yealink");
 pref("extensions.noojeeclick.dialPrefix", "");
 pref("extensions.noojeeclick.enableLogging", false);
 pref("extensions.noojeeclick.enableDebugging", false);
-pref("extensions.noojeeclick.debugFilter", "config, api, asterisk, events.high, jobs, noojeeclick, phonepatterns, prefs, render, sequence, util, monitor");
+pref("extensions.noojeeclick.debugFilter", "config, api, asterisk, events.high, job, noojeeclick, phonepatterns, prefs, render, sequence, util, monitor");
 pref("extensions.noojeeclick.httpPrefix", "asterisk");
 pref("extensions.noojeeclick.useHttps", false);
 pref("extensions.noojeeclick.callerId", "");

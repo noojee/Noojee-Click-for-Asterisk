@@ -180,6 +180,7 @@ addClickToDialLinks: function (document)
 					// this simple check
 					if (cand.parentNode != null
 							&& cand.parentNode.getAttribute("name") != "noojeeClick")
+//							&& cand.parentNode.getAttribute("name") != "noojeeClickTop")
 					{
 						// Create an artificial parent span to insert the reworked
 						// text
@@ -296,6 +297,9 @@ addClickToDialLinks: function (document)
 							btn.setAttribute("src", "chrome://noojeeclick/content/images/call-phone.png");
 							btn.setAttribute("name", this.njClickElementName);
 							btn.setAttribute("title", match[0]);
+							btn.setAttribute("border", "0");
+							btn.setAttribute("padding", "0px 0");
+							btn.setAttribute("style", "border-color:#FFFFFF");
 							btn.addEventListener("click", theApp.handlers.onDialHandler, true);
 							btn.setAttribute("PhoneNo", match[0]);
 							

@@ -33,17 +33,17 @@ getClassObject: function (manager, cid, iid)
 	if (!iid.equals(Components.interfaces.nsIFactory))
 		throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
 	return theApp.protocol;
-}
+},
 
 canUnload: function (manager) 
 {
 	return true;
-}
+},
 
 
 
 // XPCOM will automatically call this method when our module gets loaded.
-function NSGetModule() 
+NSGetModule: function () 
 {
 	return this;
 }
