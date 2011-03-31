@@ -13,7 +13,7 @@ tagsOfInterest: [ "a", "abbr", "acronym", "address", "applet", "b", "bdo",
 
 
 //njClickElementType: "IMG",
-njClickElementType: "INPUT",
+njClickElementType: "button",
 
 njClickElementName: "noojeeClickImg",
 
@@ -32,11 +32,12 @@ onRefreshOne: function (doc)
 	theApp.util.njdebug("render", "onRefresh called for doc=" + doc);
 	try
 	{
-		// First remove any clicks.
+		// First remove any noojeeClick spans.
 		var spans = doc.getElementsByName("noojeeClick");
-		theApp.util.njdebug("render", "spans=" + spans);
-		theApp.util.njdebug("render", "span.length=" + spans.length);
+		theApp.util.njdebug("remove", "noojeeClick spans=" + spans);
+		theApp.util.njdebug("remove", "span.length=" + spans.length);
 
+		
 		var removalSpanArray = [];
 		var removedSpanItemCount = 0;
 		for ( var i = spans.length - 1; i >= 0; i--)
@@ -51,14 +52,15 @@ onRefreshOne: function (doc)
 			for ( var j = children.length - 1; j >= 0; j--)
 			{
 				var child = children[j];
-				theApp.util.njdebug("render", "child.nodeName=" + child.nodeName);
-				theApp.util.njdebug("render", "child.name=" + child.name);
+				theApp.util.njdebug("remove", "found child.nodeName=" + child.nodeName);
+				theApp.util.njdebug("remove", "child.nodeValue=" + child.nodeValue);
 
 				var deleted = false;
-				if (child.nodeName == this.njClickElementType)
+				if (child.nodeName.toLowerCase() == this.njClickElementType.toLowerCase())
 				{
-					if (child.name == this.njClickElementName)
+					if (child.name.toLowerCase() == this.njClickElementName.toLowerCase())
 					{
+						theApp.util.njdebug("remove", "removing child.nodeName=" + child.nodeName);
 						removalImageArray[removedImageItemCount++] = child;
 						deleted = true;
 					}
@@ -80,10 +82,57 @@ onRefreshOne: function (doc)
 		for ( var l = 0; l < removedSpanItemCount; l++)
 		{
 			if (removalSpanArray[l].parentNode != null)
+			{
+				var parentNode = removalSpanArray[l].parentNode;
 				removalSpanArray[l].parentNode.removeChild(removalSpanArray[l]);
+				parentNode.normalize();
+			}
 			else
-				theApp.util.njdebug("render", "unexpected null parentNode for: "
+				theApp.util.njdebug("remove", "unexpected null parentNode for: "
 						+ removalSpanArray[l]);
+		}
+
+		
+		// Now remove the noojeeClickTop elements
+		// This is just a matter of inserting any child elements into
+		// the noojeeClickTop's parent and then removing the noojeeClickTop span
+		var topSpans = doc.getElementsByName("noojeeClickTop");
+		theApp.util.njdebug("remove", "removing noojeeClickTop children spans=" + topSpans);
+		theApp.util.njdebug("remove", "span.length=" + topSpans.length);
+		
+		for ( var i = topSpans.length - 1; i >= 0; i--)
+		{
+			var topSpan = topSpans[i];
+			var parent = topSpan.parentNode;
+
+			var children = topSpan.childNodes;
+			
+			for ( var j = 0; j < children.length; j++)
+			{
+				var child = children[j];
+				theApp.util.njdebug("remove", "child.nodeName=" + child.nodeName);
+				theApp.util.njdebug("remove", "child.nodeValue=" + child.nodeValue);
+
+				parent.insertBefore(child, topSpan);
+			}
+		}
+
+		theApp.util.njdebug("remove", "removing noojeeClickTop spans=" + topSpans);
+		theApp.util.njdebug("remove", "span.length=" + topSpans.length);
+
+		// We have moved all of the child into the parent span so it should
+		// now be safe to remove the topSpans
+		for ( var l = topSpans.length - 1; l >= 0; l--)
+		{
+			if (topSpans[l].parentNode != null)
+			{
+				topSpans[l].parentNode.removeChild(topSpans[l]);
+				theApp.util.njdebug("remove", "removing noojeeClickTop span=" + topSpan[l]);
+
+			}
+			else
+				theApp.util.njdebug("remove", "unexpected null parentNode for: "
+						+ topSpans[l]);
 		}
 
 		// Now add the Noojee Dial icons back in.
@@ -92,7 +141,8 @@ onRefreshOne: function (doc)
 			this.addClickToDialLinks(doc);
 		}
 
-	} catch (e)
+	} 
+	catch (e)
 	{
 		theApp.util.njlog(e);
 		theApp.util.showException("onRefreshOne", e);
@@ -174,7 +224,7 @@ addClickToDialLinks: function (document)
 
 					// First check that the parent isn't already a noojeeClick
 					// element
-					// In some case we appear to be processing the document
+					// In some cases we appear to be processing the document
 					// twice
 					// but I've not found a simple way to suppress it so we do
 					// this simple check
@@ -183,13 +233,24 @@ addClickToDialLinks: function (document)
 //							&& cand.parentNode.getAttribute("name") != "noojeeClickTop")
 					{
 						// Create an artificial parent span to insert the reworked
-						// text
-						var span = document.createElement("span");
-						span.setAttribute("name", "noojeeClickTop");
+						// text. We need this as a single piece of text may have multiple
+						// phone numbers. The noojeeClickTop holds the entire piece of text
+						// with individual noojeeClick spans holding each phone number
+						// that we find within the span.
+						
+			//top			var span = document.createElement("span");
+			//top			span.setAttribute("name", "noojeeClickTop");
+						
+						var candParent  = cand.parentNode;
+						
+						// We now remove the canidate as we are going to re-insert
+						// it back into the parent piecemeal with noojeeclick spans
+						// inserted around each number.
+						candParent.removeChild(cand);
 
 						var source = cand.nodeValue;
 						theApp.util.njdebug("render", "source=" + source);
-						cand.parentNode.replaceChild(span, cand);
+//top						cand.parentNode.replaceChild(span, cand);
 						trackRegex.lastIndex = 0;
 
 						// var children[];
@@ -277,15 +338,12 @@ addClickToDialLinks: function (document)
 							}
 							theApp.util.njdebug("render", "match is good");
 
-							span.appendChild(document
+							candParent.appendChild(document
 									.createTextNode(nonMatching));
 
 							// Now add matching substring with an image.
 							var clickSpan = document.createElement("span");
-//							clickSpan.setAttribute("style",
-									//"nowrap");
-							clickSpan.setAttribute("style",
-							"white-space:nowrap");
+							clickSpan.setAttribute("style",	"white-space:nowrap");
 							clickSpan.setAttribute("name", "noojeeClick");
 
 							theApp.util.njdebug("render", "match[0]=" + match[0]);
@@ -293,13 +351,17 @@ addClickToDialLinks: function (document)
 							
 							//<input type="image" src="rainbow.gif" name="image" width="60" height="60">
 							var btn = document.createElement(this.njClickElementType);
-							btn.setAttribute("type", "image"); 
-							btn.setAttribute("src", "chrome://noojeeclick/content/images/call-phone.png");
+							//btn.setAttribute("type", "image"); 
+							//btn.setAttribute("src", "chrome://noojeeclick/content/images/call-phone.png");
 							btn.setAttribute("name", this.njClickElementName);
 							btn.setAttribute("title", match[0]);
-							btn.setAttribute("border", "0");
-							btn.setAttribute("padding", "0px 0");
-							btn.setAttribute("style", "border-color:#FFFFFF");
+							//btn.setAttribute("border", "0");
+							//btn.setAttribute("padding", "0px 0");
+							btn.setAttribute("style", 
+									//"border-color:#FFFFFF;" +
+									"width: 16px; height: 14px; "
+									+ "background: url('chrome://noojeeclick/content/images/call-phone.png') 0 0 no-repeat;" +
+											"border: 0; padding: 0;");
 							btn.addEventListener("click", theApp.handlers.onDialHandler, true);
 							btn.setAttribute("PhoneNo", match[0]);
 							
@@ -319,12 +381,12 @@ addClickToDialLinks: function (document)
 							clickSpan.appendChild(text);
 							//clickSpan.appendChild(img);
 							clickSpan.appendChild(btn);
-							span.appendChild(clickSpan);
+							candParent.appendChild(clickSpan);
 							lastLastIndex = trackRegex.lastIndex;
 						}
-						span.appendChild(document.createTextNode(source
+						candParent.appendChild(document.createTextNode(source
 								.substring(lastLastIndex)));
-						span.normalize();
+						candParent.normalize();
 					}
 				}
 			}
