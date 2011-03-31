@@ -1,5 +1,5 @@
 
-target=/home/bsutton/.mozilla/firefox/5b8dnag4.default/extensions
+target=/home/bsutton/.mozilla/firefox-4.0/wlak5kry.default/extensions
 
 echo ${target}
 rm -rf ${target}/noojeeclick@noojee.com.au

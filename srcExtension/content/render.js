@@ -12,9 +12,7 @@ tagsOfInterest: [ "a", "abbr", "acronym", "address", "applet", "b", "bdo",
 		"strong", "sub", "sup", "td", "th", "tt", "u", "var" ],
 
 
-//njClickElementType: "IMG",
 njClickElementType: "button",
-
 njClickElementName: "noojeeClickImg",
 
 onRefresh: function()
@@ -93,47 +91,6 @@ onRefreshOne: function (doc)
 		}
 
 		
-		// Now remove the noojeeClickTop elements
-		// This is just a matter of inserting any child elements into
-		// the noojeeClickTop's parent and then removing the noojeeClickTop span
-		var topSpans = doc.getElementsByName("noojeeClickTop");
-		theApp.util.njdebug("remove", "removing noojeeClickTop children spans=" + topSpans);
-		theApp.util.njdebug("remove", "span.length=" + topSpans.length);
-		
-		for ( var i = topSpans.length - 1; i >= 0; i--)
-		{
-			var topSpan = topSpans[i];
-			var parent = topSpan.parentNode;
-
-			var children = topSpan.childNodes;
-			
-			for ( var j = 0; j < children.length; j++)
-			{
-				var child = children[j];
-				theApp.util.njdebug("remove", "child.nodeName=" + child.nodeName);
-				theApp.util.njdebug("remove", "child.nodeValue=" + child.nodeValue);
-
-				parent.insertBefore(child, topSpan);
-			}
-		}
-
-		theApp.util.njdebug("remove", "removing noojeeClickTop spans=" + topSpans);
-		theApp.util.njdebug("remove", "span.length=" + topSpans.length);
-
-		// We have moved all of the child into the parent span so it should
-		// now be safe to remove the topSpans
-		for ( var l = topSpans.length - 1; l >= 0; l--)
-		{
-			if (topSpans[l].parentNode != null)
-			{
-				topSpans[l].parentNode.removeChild(topSpans[l]);
-				theApp.util.njdebug("remove", "removing noojeeClickTop span=" + topSpan[l]);
-
-			}
-			else
-				theApp.util.njdebug("remove", "unexpected null parentNode for: "
-						+ topSpans[l]);
-		}
 
 		// Now add the Noojee Dial icons back in.
 		if (theApp.prefs.getBoolValue("enabled") == true)
@@ -230,41 +187,26 @@ addClickToDialLinks: function (document)
 					// this simple check
 					if (cand.parentNode != null
 							&& cand.parentNode.getAttribute("name") != "noojeeClick")
-//							&& cand.parentNode.getAttribute("name") != "noojeeClickTop")
 					{
-						// Create an artificial parent span to insert the reworked
-						// text. We need this as a single piece of text may have multiple
-						// phone numbers. The noojeeClickTop holds the entire piece of text
-						// with individual noojeeClick spans holding each phone number
-						// that we find within the span.
-						
-			//top			var span = document.createElement("span");
-			//top			span.setAttribute("name", "noojeeClickTop");
-						
 						var candParent  = cand.parentNode;
 						
 						// We now remove the canidate as we are going to re-insert
 						// it back into the parent piecemeal with noojeeclick spans
-						// inserted around each number.
+						// inserted around each phone number.
 						candParent.removeChild(cand);
 
 						var source = cand.nodeValue;
 						theApp.util.njdebug("render", "source=" + source);
-//top						cand.parentNode.replaceChild(span, cand);
 						trackRegex.lastIndex = 0;
-
-						// var children[];
-						// var previousMatch = null;
 
 						// In a single piece of text we may have multiple
 						// matches
 						// so we need to iterate over the list of matches.
-						// We go through the 'text' identifying each match
+						// We go through the 'text' identifying each phone number
 						// which we wrap in an image tag with the noojee click
 						// icon.
-						// As we go we rebuild the text into a single new parent
-						// span ready for re-inserting into the original parent
-						// with any noojee click images inserted.
+						// As we go we re-insert the text back into the parent (which 
+						// we removed it from)
 						for ( var match = null, lastLastIndex = 0; (match = trackRegex
 								.exec(source));)
 						{
@@ -341,7 +283,7 @@ addClickToDialLinks: function (document)
 							candParent.appendChild(document
 									.createTextNode(nonMatching));
 
-							// Now add matching substring with an image.
+							// Now add matching substring (phone number) with an image.
 							var clickSpan = document.createElement("span");
 							clickSpan.setAttribute("style",	"white-space:nowrap");
 							clickSpan.setAttribute("name", "noojeeClick");
@@ -349,37 +291,17 @@ addClickToDialLinks: function (document)
 							theApp.util.njdebug("render", "match[0]=" + match[0]);
 							var text = document.createTextNode(match[0]);
 							
-							//<input type="image" src="rainbow.gif" name="image" width="60" height="60">
 							var btn = document.createElement(this.njClickElementType);
-							//btn.setAttribute("type", "image"); 
-							//btn.setAttribute("src", "chrome://noojeeclick/content/images/call-phone.png");
 							btn.setAttribute("name", this.njClickElementName);
 							btn.setAttribute("title", match[0]);
-							//btn.setAttribute("border", "0");
-							//btn.setAttribute("padding", "0px 0");
 							btn.setAttribute("style", 
-									//"border-color:#FFFFFF;" +
 									"width: 16px; height: 14px; "
 									+ "background: url('chrome://noojeeclick/content/images/call-phone.png') 0 0 no-repeat;" +
 											"border: 0; padding: 0;");
 							btn.addEventListener("click", theApp.handlers.onDialHandler, true);
 							btn.setAttribute("PhoneNo", match[0]);
 							
-//							var img = document.createElement(this.njClickElement);
-//							img
-//									.setAttribute("src",
-//											"chrome://noojeeclick/content/images/call-phone.png");
-//							img.setAttribute("name", this.njClickElementName);
-//							img.setAttribute("title", match[0]);
-//							img.addEventListener("onmouseover", theApp.handlers.onMouseOver,
-//									true);
-//							img
-//									.addEventListener("onmouseout", theApp.handlers.onMouseOut,
-//											true);
-//							img.addEventListener("click", theApp.handlers.onDialHandler, true);
-//							img.setAttribute("PhoneNo", match[0]);
 							clickSpan.appendChild(text);
-							//clickSpan.appendChild(img);
 							clickSpan.appendChild(btn);
 							candParent.appendChild(clickSpan);
 							lastLastIndex = trackRegex.lastIndex;

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xhtml>
+<body>
+<h1>Release notes</h1>
+<p>Version 1.6.6.1</p>
+Fixed a bug in the render engine that was causing Firefox 4.0 to hang all too frequently.
+Removed the use of a noojeeClicTop span as this wasn't actually necessary.
+Tested for regression in Firefox 3.x and 4.0 - all good.
+Tweaked the rendering of the noojee click button so that it bottom aligns its self and so that its background was transparent (rather than white).
+Modified the Aastra auto-answer header based on feedback from users.
+
+<p>If you have feature requests or installation/configuration problems post them at http://forums.noojee.com.au</p>
+</body>
+</xhtml>

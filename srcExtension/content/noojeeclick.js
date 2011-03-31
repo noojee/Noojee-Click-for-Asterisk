@@ -20,7 +20,7 @@ theApp.noojeeclick =
 autoAnswerList: [
 {
     manufacturer :"Aastra",
-    header :"Alert-Info: \\\\;info=alert-autoanswer"
+    header :"'Call-Info: Answer-After=0"
 },
 {
     manufacturer :"GrandStream",
