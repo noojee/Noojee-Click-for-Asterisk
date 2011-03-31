@@ -24,24 +24,51 @@ theApp.monitor =
 
 Monitor: function ()
 {
-	this.pageMonitorID = -1; // id of the timer which we use to monitor page changes 
+	this.pageMonitorID = -1; // id of the timer which we use to monitor page changes
 	this.lastModified = new Date();
 	this.lastModificationCheck = new Date();
 	this.document = null;
 	this.refreshRequired = false;
-	this.duration = 400;	// The interval used to check if a page is changed.
-	this.microDuration = 50; // once we detect a change the interval to check that the change has completed.
+	this.duration = 400;	// The interval used to check if a page has finished changing.
 	this.suppressDomModification = false;
-	
+	this.wasModified = false; // Set to true if the page is modified whilst we don't have the focus.
+
+	// We only want to monitor the page if it is the active tab.
+	// This is a big performance boost when lots of tabs are open.
+	this.isActive = false;  
+
 	/**
-	 * initialises the monitor for the given document.
+	 * NoojeeClick.js calls the init method to initialises the monitor for each page as the page
+	 * is loaded.
 	 */
 	this.init = function(document)
 	{
-		theApp.util.njdebug("monitor", "init called for document=" + document);
-		this.document = document;
-		var self = this;
-		document.addEventListener("DOMSubtreeModified", function() { self.domModified(); }, false);
+		try
+		{
+			// Special check. It looks like an interaction problem between the monitor
+			// and fckEditor. Anyway I'm guessing document has gone away by the time
+			// the monitor kicks in. Any reference to the document will throw an error.
+			// Given we don't want to add click to dial links to these type of pages
+			// we just supress the error by catching it and returning.
+			if (document == null || document.location == null || document.location.href == null)
+			{
+				return;
+			}
+			
+			theApp.util.njdebug("monitor", "init called for document=" + document);
+			this.document = document;
+			var self = this;
+			document.addEventListener("DOMSubtreeModified", function() { self.domModified(); }, false);
+			document.addEventListener("focus", function() { self.onFocus(); }, false);
+			document.addEventListener("blur", function() { self.onBlur(); }, false);
+
+		}
+		catch (e)
+		{
+			theApp.util.njerror("monitor ignoring document with null href");
+			return;
+		}
+
 	}
 	
 	
@@ -57,7 +84,7 @@ Monitor: function ()
 		
 		if (this.lastModificationCheck != this.lastModified)
 		{
-			theApp.util.njdebug("monitor", "Monitored document still changing=" + this.document);
+			theApp.util.njdebug("monitor", "Monitored document still changing=" + this.document.location);
 			this.lastModificationCheck = this.lastModified;
 
 			// The page is still changing so keep monitoring.
@@ -67,17 +94,19 @@ Monitor: function ()
 		{
 			// The document has stopped changing and a refresh is required.
 			this.suppressDomModification = true;
-			theApp.util.njdebug("monitor", "Change complete forcing refresh for document=" + this.document);
+			theApp.util.njdebug("monitor", "Dom has stopped changing so forcing refresh of document=" + this.document.location);
 			theApp.render.onRefreshOne(this.document);
 			this.pageMonitorID = -1;
-			theApp.util.njdebug("monitor", "Page Monitor stoped refresh complete for document=" + this.document);
+			theApp.util.njdebug("monitor", "Page Monitor stopped, refresh complete for document=" + this.document.location);
+			this.suppressDomModification = false;
+			this.wasModified = false; 
 		}
 			
 	}
 
 	this.startPageMonitor = function()
 	{
-		theApp.util.njdebug("monitor", "Page Monitor Started ");
+		theApp.util.njdebug("monitor", "Page Monitor Started for: " + this.document.location);
 
 		this.pageMonitorID = window.setTimeout(function(self) {self.monitorPage(self); }, this.duration, this)
 		theApp.util.njdebug("monitor", "Page Monitor Timer ID=" + this.pageMonitorID);
@@ -94,17 +123,38 @@ Monitor: function ()
 	 */
 	this.domModified = function()
 	{
-		if (this.suppressDomModification == false)
+		this.wasModified = true;
+		if (theApp.prefs.getBoolValue("monitor") == true && this.isActive == true)
 		{
-			// Wait for the page to stop changing before we attempt the refresh.
-			this.lastModified = new Date();
-			if (this.pageMonitorID == -1)
-				this.startPageMonitor();
+			if (this.suppressDomModification == false)
+			{
+				// Wait for the page to stop changing before we attempt the refresh.
+				this.lastModified = new Date();
+				if (this.pageMonitorID == -1)
+					this.startPageMonitor();
+			}
 		}
-		else
-			this.suppressDomModification = false;
 	}
 
+	/** 
+	 * When the page becomes active it gets the focus, so lets monitor it.
+	 */
+	this.onFocus = function()
+	{
+		this.isActive = true;
+		
+		// If the dom was modified whilst not in focus we now need to force a refresh.
+		if (this.wasModified == true)
+			this.domModified();
+	}
+
+	/** 
+	 * When the page looses focus we are no longer interested in monitoring it.
+	 */
+	this.onBlur = function()
+	{
+		this.isActive = false;
+	}
 },
 
 

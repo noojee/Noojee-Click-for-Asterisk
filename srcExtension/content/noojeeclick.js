@@ -85,8 +85,7 @@ onPageLoad: function (e)
 			// If we can't add the global styles then we have a major problem
 			if (theApp.util.addGlobalStyle(document, css))
 			{
-				if (theApp.prefs.getBoolValue("monitor") == true)
-					new theApp.monitor.Monitor().init(document);
+				new theApp.monitor.Monitor().init(document);
 
 				theApp.render.addClickToDialLinks(document);
 			}
