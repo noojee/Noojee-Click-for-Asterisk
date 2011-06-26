@@ -2,10 +2,12 @@ noojeeClick.ns(function() { with (noojeeClick.LIB) {
 
 theApp.job =
 {
+name: null,
 
 // The Dial Job
 Dial: function ()
 {
+	this.name = "dial";
 	
 	this.run = function(sequence, phoneNo)
 	{
@@ -154,6 +156,8 @@ Dial: function ()
 //The Answer Job
 Answer: function (channel)
 {
+	this.name = "Answer";
+	
 	this.channel = channel;
 	
 	this.run = function(sequence, phoneNo)
@@ -289,6 +293,8 @@ Answer: function (channel)
 // Wait Job
 Wait: function (subSequence)
 {
+	this.name = "Wait";
+	
 	this.ranOnce = false;
 	this.subSequence = subSequence;
 
@@ -384,6 +390,7 @@ Wait: function (subSequence)
 
 HangupAction: function (channel)
 {
+	this.name = "HangupAction";
 	this.channel = channel;
 	
 	this.run = function(sequence, dummy)
@@ -466,6 +473,7 @@ HangupAction: function (channel)
 // Ping Job
 Ping: function ()
 {
+	this.name = "Ping";
 	this.run = function(sequence, param)
 	{
 		theApp.util.njlog("ping");
@@ -506,6 +514,8 @@ Ping: function ()
 // Status Job
 Status: function ()
 {
+	this.name = "Status";
+	
 	this.run = function(sequence, param)
 	{
 		theApp.util.njlog("status");
@@ -546,6 +556,8 @@ Status: function ()
 // Complete Job
 Complete: function ()
 {
+	this.name = "Complete";
+	
 	this.run = function(sequence, param)
 	{
 		theApp.util.njdebug("job", "compete");
@@ -584,6 +596,7 @@ Complete: function ()
 // Login Job
 Login: function ()
 {
+	this.name = "Login";
 	this.run = function(sequence, phoneNo)
 	{
 		theApp.util.njdebug("job", "login");
@@ -639,6 +652,8 @@ Login: function ()
 // Logoff Job
 Logoff: function ()
 {
+	this.name = "Logoff";
+	
 	this.run = function(sequence, phoneNo)
 	{
 		var url = theApp.job.genURL("Logoff");
@@ -711,6 +726,18 @@ genURL: function (command)
 
 	theApp.util.njdebug("job", "genURL ret=" + url);
 	return url;
+},
+
+toString : function (jobs)
+{
+	var string = "";
+	for (var i = 0; i < jobs.length; i++)
+	{
+		if (string.length > 0)
+			string += ", ";
+		string += jobs[i].name;	
+	}
+	return string;
 }
 
 
