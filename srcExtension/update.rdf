@@ -12,20 +12,20 @@
         <!-- Each li is a different version of the same add-on -->
         <RDF:li>
           <RDF:Description>
-            <em:version>1.6.6.1</em:version> <!-- This is the version number of the add-on -->
+            <em:version>1.7</em:version> <!-- This is the version number of the add-on -->
             <!-- One targetApplication for each application the add-on is compatible with -->
             <em:targetApplication>
               <RDF:Description>
               	<!-- firefox -->
                 <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
                 <em:minVersion>3.0</em:minVersion>
-                <em:maxVersion>4.0.*</em:maxVersion>
+                <em:maxVersion>5.0.*</em:maxVersion>
 
                 <!-- This is where this version of the add-on will be downloaded from -->
-				<em:updateLink>https://www.noojee.com.au/noojeeclick/noojeeclick-1.6.6.1.xpi</em:updateLink>
+				<em:updateLink>https://www.noojee.com.au/noojeeclick/noojeeclick-1.7.xpi</em:updateLink>
                
                 <!-- A page describing what is new in this updated version -->
-                <em:updateInfoURL>http://www.noojee.com.au/noojeeclick/updateinfo-1.6.6.1.xml</em:updateInfoURL>
+                <em:updateInfoURL>http://www.noojee.com.au/noojeeclick/updateinfo-1.7.xml</em:updateInfoURL>
               </RDF:Description>
             </em:targetApplication>
             <em:targetApplication>
@@ -36,10 +36,10 @@
                 <em:maxVersion>3.0.5</em:maxVersion>
 
                 <!-- This is where this version of the add-on will be downloaded from -->
-				<em:updateLink>https://www.noojee.com.au/noojeeclick/noojeeclick-1.6.6.1.xpi</em:updateLink>
+				<em:updateLink>https://www.noojee.com.au/noojeeclick/noojeeclick-1.7.xpi</em:updateLink>
                
                 <!-- A page describing what is new in this updated version -->
-                <em:updateInfoURL>http://www.noojee.com.au/noojeeclick/updateinfo-1.6.6.1.xml</em:updateInfoURL>
+                <em:updateInfoURL>http://www.noojee.com.au/noojeeclick/updateinfo-1.7.xml</em:updateInfoURL>
               </RDF:Description>
             </em:targetApplication>
           </RDF:Description>
