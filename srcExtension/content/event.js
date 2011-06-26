@@ -8,11 +8,11 @@ eventFactory: function (xmlDoc)
 {
 	var events = new Array();
 	var j = 0;
+	var name;
 
 	theApp.util.njdebug("event.low", "eventFactory called");
 
 	var genericElement = xmlDoc.getElementsByTagName("generic");
-	theApp.util.njdebug("event.low", "generic=" + genericElement);
 
 	// Check each array instance for an event.
 	// We may end up with multiple events.
@@ -47,12 +47,12 @@ eventFactory: function (xmlDoc)
 			{
 				event = new this.Bridge(genericElement[i]);
 			}
-			// 1.4 support now replaced by Bridge
+			// 1.4 support, now replaced by Bridge
 			else if ("Link".toLowerCase() == eventType.toLowerCase())
 			{
 				event = new this.Link(genericElement[i]);
 			}
-			// 1.4 support now replaced by Bridge
+			// 1.4 support, now replaced by Bridge
 			else if ("Unlink".toLowerCase() == eventType.toLowerCase())
 			{
 				event = new this.Unlink(genericElement[i]);
@@ -61,8 +61,8 @@ eventFactory: function (xmlDoc)
 			{
 				event = new this.Hangup(genericElement[i]);
 			}
-			else
-				theApp.util.njdebug("event.low", "Unknown event=" + eventType);
+//			else
+//				theApp.util.njdebug("event.low", "Unknown event=" + eventType);
 			
 			if (event != null)
 				events[j++] = event;
@@ -72,10 +72,9 @@ eventFactory: function (xmlDoc)
 	if (theApp.prefs.getBoolValue("enableDebugging") == true)
 	{
 		theApp.util.njdebug("event.low", events.length + " events found");
-		theApp.util.njdebug("event.low", "events=" + events);
-		for (var i = 0; i < events.length; i++)
+		for (var i = 0; i < j; i++)
 		{
-			theApp.util.njdebug("event.low", "events[i]=" + theApp.util.getObjectClass(events[i]));
+			theApp.util.njdebug("event.low", "events[i]=" + events[i].name);
 		}
 	}
 
@@ -91,7 +90,10 @@ eventFactory: function (xmlDoc)
 
 NewChannel: function (response)
 {
+	this.name = "NewChannel";
+	
 	this.channel = response.getAttribute("channel");
+
 
 	this.state = response.getAttribute("ChannelStateDesc");
 	
@@ -112,7 +114,7 @@ NewChannel: function (response)
 			theApp.util.njdebug("event.high", "NewChannel received for local channel=" + this.channel + " state=" + this.state);
 			theApp.util.njdebug("event.high", "extractChannel=" + theApp.util.extractChannel(this.channel).toLowerCase());
 			theApp.util.njdebug("event.high", "getLocalChannel()=" + theApp.util.getLocalChannel().toLowerCase());
-			asterisk.channel = this.channel;
+			asterisk.setChannel(this.channel);
 			
 			if (this.state == "Down")
 				asterisk.updateState("Ringing: " + theApp.prefs.getValue("extension"));
@@ -132,7 +134,7 @@ NewChannel: function (response)
 
 WaitEventComplete: function (response)
 {
-	theApp.util.njdebug("event.low", "WaitEventComplete received.");
+	this.name = "WaitEventComplete";
 
 	this.apply = function(asterisk)
 	{
@@ -146,6 +148,7 @@ WaitEventComplete: function (response)
  */
 Bridge: function (response)
 {
+	this.name = "Bridge";
 	var bridgestate = response.getAttribute("bridgestate");
 
 	this.apply = function(asterisk)
@@ -175,13 +178,17 @@ callerid2='0438428038' />
  */
 Link: function (response)
 {
+	this.name = "Link";
 	this.channel = response.getAttribute("channel1");
+	
 	this.remoteChannel = response.getAttribute("channel2");
 	this.uniqueid = response.getAttribute("uniqueid1");
 	this.remoteUniqueid = response.getAttribute("uniqueid2");
 
 	this.apply = function(asterisk)
 	{
+		theApp.util.njdebug("Applying Event=" + this.name + " channel=" + this.channel);
+		
 		// First check that the event is ours
 		if (theApp.util.isLocalChannel(this.channel))
 		{
@@ -206,13 +213,18 @@ callerid2='0438428038'/>
  */
 Unlink: function (response)
 {
+	this.name = "Unlink";
 	this.channel = response.getAttribute("channel1");
+	theApp.util.njdebug("channel=" + this.channel);
+	
 	this.remoteChannel = response.getAttribute("channel2");
 	this.uniqueid = response.getAttribute("uniqueid1");
 	this.remoteUniqueid = response.getAttribute("uniqueid2");
 
 	this.apply = function(asterisk)
 	{
+		theApp.util.njdebug("Applying Event=" + this.name + " channel=" + this.channel);
+		
 		// First check that the event is ours
 		if (theApp.util.isLocalChannel(this.channel))
 		{
@@ -227,7 +239,9 @@ Unlink: function (response)
 
 Hangup: function (response)
 {
+	this.name = "Hangup";
 	this.channel = response.getAttribute("channel");
+	
 	this.uniqueid = response.getAttribute("uniqueid");
 	this.cause = response.getAttribute("cause");
 	this.causeText = response.getAttribute("cause-txt");
@@ -235,6 +249,8 @@ Hangup: function (response)
 
 	this.apply = function(asterisk)
 	{
+		theApp.util.njdebug("Applying Event=" + this.name + " channel=" + this.channel)
+		
 		if (theApp.util.isLocalChannel(this.channel))
 		{
 			theApp.util.njdebug("event.high", "Hangup event received for channel=" + this.channel + " cause=" + this.causeText);
@@ -267,6 +283,7 @@ Hangup: function (response)
 
 DialEvent: function (response)
 {
+	this.name = "DialEvent";
 	this.channel = response.getAttribute("channel");
 
 	// asterisk 1.6 changed to channel, to support 1.4 we check for the old 'source' attribute.
@@ -286,7 +303,7 @@ DialEvent: function (response)
 
 	this.apply = function(asterisk)
 	{
-		theApp.util.njdebug("event.high", "Dial event received.");
+		theApp.util.njdebug("Applying Event=" + this.name + " channel=" + this.channel);
 		
 		// First check that the event is ours
 		if (theApp.util.isLocalChannel(this.channel))
@@ -300,7 +317,9 @@ DialEvent: function (response)
 
 Newstate: function (response)
 {
+	this.name = "NewState";
 	this.channel = response.getAttribute("channel");
+	
 	this.uniqueid = response.getAttribute("uniqueid");
 	
 	this.state = response.getAttribute("ChannelStateDesc");
@@ -327,7 +346,9 @@ Newstate: function (response)
 
 Newcallerid: function (response)
 {
+	this.name = "Newcallerid";
 	this.channel = response.getAttribute("channel");
+	
 	this.uniqueid = response.getAttribute("uniqueid");
 	this.calleridname = response.getAttribute("calleridname");
 	
@@ -339,6 +360,7 @@ Newcallerid: function (response)
 	
 	this.apply = function(asterisk)
 	{
+		theApp.util.njdebug("Applying Event=" + this.name + " channel=" + this.channel);
 		if (this.channel == asterisk.remoteChannel)
 		{
 			theApp.util.njdebug("event.high", "Newcallerid event received for channel=" + this.channel + " callerid=" + this.callerid);
