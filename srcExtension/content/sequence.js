@@ -19,16 +19,13 @@ theApp.sequence =
 {
 Sequence: function (jobs, param, initialising)
 {
-	const
-	COMPLETE = 0;
-	const
-	RUNNING = 1;
-	const
-	ERROR = 2;
+	const	COMPLETE = 0;
+	const	RUNNING = 1;
+	const	ERROR = 2;
 
 	var xmlHttpRequest;
 
-	theApp.util.njdebug("sequence", "sequence: " + jobs + ":" + param);
+	theApp.util.njdebug("sequence", "sequence: " + theApp.job.toString(jobs) + ":" + param);
 
 	this.currentStep = -1;
 	this.param = param;
@@ -36,16 +33,22 @@ Sequence: function (jobs, param, initialising)
 
 	this.run = function()
 	{
+		var self = this;
+		// Run the sequence in the background so the dial doesn't tie up the UI.
+		window.setTimeout(function(self) {self.runCallback(self); }, 0, self)
+	}
+	
+	this.runCallback = function(self)
+	{
 		try
 		{
-			theApp.util.njdebug("sequence", "sequence.run this=" + this);
-			theApp.util.njdebug("sequence", "jobs=" + jobs);
+			theApp.util.njdebug("sequence", "jobs=" + theApp.job.toString(jobs));
 			if (navigator.onLine)
 			{
 				this.currentStep = 0;
-				this.currentJob = this.jobs[this.currentStep];
-				theApp.util.njdebug("sequence", "currentJob =" + this.currentJob);
-				this.currentJob.run(this, param);
+				this.currentJob = self.jobs[self.currentStep];
+				theApp.util.njdebug("sequence", "currentJob =" + self.currentJob.name);
+				this.currentJob.run(self, param);
 			}
 			else
 				theApp.prompts.njAlert("The browser must be online in order to dial.");
@@ -59,8 +62,6 @@ Sequence: function (jobs, param, initialising)
 
 	this.request = function(requestURL)
 	{
-		theApp.util.njdebug("sequence", "request this=" + this);
-
 		xmlHttpRequest = new XMLHttpRequest();
 		// xmlHttpRequest.onreadystate = this.callback;
 		xmlHttpRequest.onload = this.load;
@@ -95,11 +96,10 @@ Sequence: function (jobs, param, initialising)
 	 */
 	this.load = function()
 	{
-		theApp.util.njdebug("sequence", "load this=" + this);
 		var details = this;
 
-		theApp.util.njdebug("sequence", "sequence.load: " + details.readyState + ":" + details.status + ":" + details.statusText + ":"
-		        + details.responseHeader + ":" + details.responseText);
+//		theApp.util.njdebug("sequence", "sequence.load: " + details.readyState + ":" + details.status + ":" + details.statusText + ":"
+//		        + details.responseHeader + ":" + details.responseText);
 
 		var seq = this.sequence;
 
@@ -134,8 +134,7 @@ Sequence: function (jobs, param, initialising)
 				seq.currentStep++;
 
 			theApp.util.njdebug("sequence", "running step=" + seq.currentStep);
-			theApp.util.njdebug("sequence", "jobs=" + seq.jobs);
-			theApp.util.njdebug("sequence", "jobs.length=" + seq.jobs.length);
+			theApp.util.njdebug("sequence", "jobs=" + theApp.job.toString(seq.jobs));
 
 			if (seq.currentStep < seq.jobs.length)
 			{
@@ -164,7 +163,7 @@ Sequence: function (jobs, param, initialising)
 		try
 		{
 			var details = this;
-			theApp.util.njdebug("sequence", "error this=" + this);
+			theApp.util.njdebug("sequence", "error this=" + this.currentJob.name);
 			theApp.noojeeclick.resetIcon();
 			theApp.asterisk.getInstance().updateState("");
 
