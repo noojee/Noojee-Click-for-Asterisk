@@ -20,20 +20,21 @@ getInstance: function ()
 
 Asterisk: function ()
 {
+	var channel = null;		// channel attached to local phone
+
 	this.dialing = null; 		// the phone no. which is currently being dialed.
 	this.remoteDialCommenced = false; // During a call tracks if we have started dialing the remote end.
-	this.channel = null;		// channel attached to local phone
 	this.remoteChannel = null;	// channel attached to remote phone
 	this.state = null;
 	this.callerid = null;
 	this.calleridname = null;
 	this.calleridnum = null;
 	this.uniqueid = null;
-	// I've disabled this logic as the problem is that the we don't know what the httptimeout
-	// value is set to on the asterisk server (defaults to 60 seconds) so we don't
+	// I've disabled this logic as the problem is that the we don't know what the http timeout
+	// value is set to on the asterisk server (defaults to 60 seconds). So we don't
 	// actually know when we have to login again. This way we just login every time 
-	// we try to dial. For normal people this is probably right as they won't dial more than 
-	// once a minute so we are probably timed out.
+	// we try to dial. For most people this is probably right as they won't dial more than 
+	// once a minute so we have probably timed out.
 	this.loggedIn = false; 
 
 	this.inLocalDial = false; // Used when a dial is in progress 
@@ -43,11 +44,8 @@ Asterisk: function ()
 	this.init = function()
 	{
 		theApp.util.njlog("initializing Asterisk");
-		if (theApp.prefs.getBoolValue("enabled") == true)
-		{ 
-			var sequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.Wait(null) ], "", true);
-			sequence.run();
-		}
+		var sequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.Wait(null) ], "", true);
+		sequence.run();
 	}
 	
 	this.setLoggedIn = function (loggedIn)
@@ -64,7 +62,8 @@ Asterisk: function ()
 		
 		this.remoteDialCommenced = false;
 		this.dialing = phoneNo;
-		this.channel = null;
+		theApp.util.njdebug("asterisk", "Asterisk.channel set to null");
+		channel = null;
 		this.remoteChannel = null;
 		this.state = null;	
 		
@@ -75,8 +74,8 @@ Asterisk: function ()
 //		if (this.loggedIn)
 			//dialSequence = new theApp.sequence.Sequence( [ new theApp.job.Dial(), new theApp.job.Complete() ], phoneNo, false);
 		//else
-			dialSequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.Dial(), new theApp.job.Complete() ], phoneNo, false);
-			
+		
+		dialSequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.Dial(), new theApp.job.Complete() ], phoneNo, false);
 		dialSequence.run();
 	}
 
@@ -98,14 +97,16 @@ Asterisk: function ()
 
 	this.hangup = function()
 	{
-		theApp.util.njdebug("asterisk", "Asterisk.hangup called channel=" + theApp.asterisk.getInstance().channel);
+		theApp.util.njdebug("asterisk", "Asterisk.hangup called channel=" + channel);
 
 		// Hangup the our extension
 		// we must logon in case our session has timed out since we first logged on.
-		var sequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.HangupAction(theApp.asterisk.getInstance().channel), new theApp.job.Complete() ], "", false);
+		
+		var sequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.HangupAction(channel), new theApp.job.Complete() ], "", false);
 		sequence.run();
 
-		this.channel = null;
+		theApp.util.njdebug("asterisk", "Asterisk.channel set to null");
+		channel = null;
 		this.remoteChannel = null;
 		this.state = null;
 		this.inLocalDial = false; // Mark the dial is no longer is progress so
@@ -130,7 +131,6 @@ Asterisk: function ()
 		theApp.util.njdebug("asterisk", events.length + " events found");
 		for (var i = 0; i < events.length; i++)
 		{
-			theApp.util.njdebug("asterisk", "applying events[i]=" + theApp.util.getObjectClass(events[i]));
 			events[i].apply(theApp.asterisk.getInstance());
 		}
 	}
@@ -156,7 +156,7 @@ Asterisk: function ()
 				var message = "none";
 				var response;
 
-				theApp.util.njdebug("asterisk", "Parsing:" + responseText);
+				theApp.util.njdebug("asterisk.low", "Parsing:" + responseText);
 				var parser = new DOMParser();
 				xmlDoc = parser.parseFromString(responseText, "application/xhtml+xml");
 
@@ -218,11 +218,11 @@ Asterisk: function ()
 
 	// Tests if the given channel (from an event usually) matches the 
 	// current remote  channel.
-	this.isRemoteChannel = function (channel)
+	this.isRemoteChannel = function (pChannel)
 	{
 		var matches = false;
 		if (this.remoteChannel != null)
-			matches = theApp.util.extractChannel(channel).toLowerCase() == theApp.util.extractChannel(this.remoteChannel).toLowerCase();
+			matches = theApp.util.extractChannel(pChannel).toLowerCase() == theApp.util.extractChannel(this.remoteChannel).toLowerCase();
 		return matches;
 	}
 
