@@ -63,17 +63,33 @@ ie : window.document.all,
 ns6 : window.document.getElementById && !window.document.all,
 
 
+/*
+ *  Called when a page finishes loading
+ * This is hooked by the namespace.initialise()
+*/
 onPageLoad: function (e)
 {
-	var document = e.originalTarget; // = window.content.document
-	
+	// We set a timer so that we don't slow down the page load
+	// This effectively pushes the rendering into the background
+	var document = e.originalTarget
+	var self = this;
+	window.setTimeout(function(self) {self.onPageLoadCallback(document); }, 0, self)
+},
+
+/**
+ * Called by a timer set in onPageLoad so that we do this in the background
+ * rather than making the user wait for us to complete the rendering.
+ */
+onPageLoadCallback: function (document)
+{
+
 	theApp.api.njAPIonLoad(document);
 	
 	theApp.util.njdebug("noojeeclick", "onPageLoad called");
 	try
 	{
 
-		if (theApp.prefs.getBoolValue("enabled") == true)
+		if (theApp.prefs.getBoolValue("showClickIcons") == true)
 		{
 			if (theApp.util.hasGlobalStyle(document) == true)
 				return;
@@ -255,7 +271,7 @@ onDialDifferentlyShowing: function (menu)
 {
 	theApp.util.njdebug("noojeeclick", "onDialDifferentlyShowing");
 	var menuItem = document.getElementById('njcontextDialDifferently');
-	menuItem.setAttribute("checked", enabled);
+	menuItem.setAttribute("checked", true);
 },
 
 onDialSelectionShowing: function (menu)
@@ -279,12 +295,12 @@ onDialAddPatternShowing: function (menu)
 	}
 },
 
-onEnableShowing: function (menu)
+onShowClickIconsShowing: function (menu)
 {
-	theApp.util.njdebug("noojeeclick", "onEnableShowing called");
-	var enabled = theApp.prefs.getBoolValue("enabled");
-	var enableMenu = document.getElementById('menu_Enable');
-	enableMenu.setAttribute("checked", enabled);
+	theApp.util.njdebug("noojeeclick", "onShowClickIconsShowing called");
+	var showClickIcons = theApp.prefs.getBoolValue("showClickIcons");
+	var showClickIconsMenu = document.getElementById('menu_ShowClickIcons');
+	showClickIconsMenu.setAttribute("checked", showClickIcons);
 },
 
 onRedialShowing: function (menu)
