@@ -46,7 +46,7 @@ Change the patterns to handle your local region
 */
 pref("extensions.noojeeclick.pattern", "XXXX XXX XXX\nXXXX XXXX\nXX XXXX XXXX\nXXXXXXXXXX\nXX XXXXXXXX\nXXX-XXX-XXXX\n(XX) XXXX XXXX\n+XX X XXXX XXXX\nXXX-XXX-XXXX\n(XXX) XXX-XXX\n+XXXXXXXXXXX\n+X.XXX.XXX.XXXX\n(XXX) XXX-XXXX\nXXX XXXX\n");
 
-pref("extensions.noojeeclick.enabled", true);
+pref("extensions.noojeeclick.showClickIcons", true);
 pref("extensions.noojeeclick.initialised", false);
 pref("extensions.noojeeclick.serverType", "AJAM");
 pref("extensions.noojeeclick.extension", "");
