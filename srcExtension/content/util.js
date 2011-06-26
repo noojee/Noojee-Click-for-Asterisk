@@ -16,7 +16,7 @@ njlog: function (msg)
 		var min = now.getMinutes();
 		var sec = now.getSeconds();
 		var mil = now.getMilliseconds();
-		this.consoleService.logStringMessage(hour + ":" + min + ":" + sec + ":" + mil + " info: " + msg);
+		this.consoleService.logStringMessage(arguments.callee.caller.name + " " + hour + ":" + min + ":" + sec + ":" + mil + " info: " + msg);
 	}
 },
 
@@ -34,7 +34,7 @@ njdebug: function (module, msg)
 			var min = now.getMinutes();
 			var sec = now.getSeconds();
 			var mil = now.getMilliseconds();
-			this.consoleService.logStringMessage(hour + ":" + min + ":" + sec + ":" + mil+ " debug (" + module + "): " + msg);
+			this.consoleService.logStringMessage(arguments.callee.caller.name + " " + hour + ":" + min + ":" + sec + ":" + mil+ " debug (" + module + "): " + msg);
 		}
 	}
 },
@@ -46,7 +46,7 @@ njerror: function (msg)
 		var min = now.getMinutes();
 		var sec = now.getSeconds();
 		var mil = now.getMilliseconds();
-		this.consoleService.logStringMessage(hour + ":" + min + ":" + sec + ":" + mil + " error: " + msg);
+		this.consoleService.logStringMessage(arguments.callee.caller.name + " " + hour + ":" + min + ":" + sec + ":" + mil + " error: " + msg);
 },
 
 Right: function(str, n)
@@ -153,7 +153,7 @@ stacktrace: function ()
 	while (f)
 	{
 		if (f != this.stacktrace)
-			stack += "\n" + f.name;
+			stack += "\n" + f.caller.name;
 		f = f.caller;
 	}
 	return stack;
