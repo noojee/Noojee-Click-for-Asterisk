@@ -28,16 +28,16 @@ onRefresh: function()
 onRefreshOne: function (doc)
 {
 	
-	theApp.util.njdebug("render", "onRefresh called for doc=" + doc);
+	theApp.util.njdebug("render", "onRefreshOne called for doc=" + doc);
 	try
 	{
 		try
 		{
 			// Special check. It looks like an interaction problem between the monitor
 			// and fckEditor. Anyway I'm guessing document has gone away by the time
-			// the monitor kicks in. Any refernce to the document will throw an error.
+			// the monitor kicks in. Any reference to the document will throw an error.
 			// Given we don't want to add click to dial links to these type of pages
-			// we just supress the error by catching it and returning.
+			// we just suppress the error by catching it and returning.
 			if (doc == null || doc.location == null || doc.location.href == null)
 			{
 				return;
@@ -112,7 +112,7 @@ onRefreshOne: function (doc)
 		
 
 		// Now add the Noojee Dial icons back in.
-		if (theApp.prefs.getBoolValue("enabled") == true)
+		if (theApp.prefs.getBoolValue("showClickIcons") == true)
 		{
 			this.addClickToDialLinks(doc);
 		}
@@ -162,7 +162,7 @@ addClickToDialLinks: function (document)
 					{
 	
 						// Check that the node isn't owned by a document which is in
-						// design mode (i.e. an editor).
+						// design mode (i.e. an editor such as fckeditor).
 						// If it is then we skip the node.
 	
 						theApp.util.njdebug("render", "Scanning for an editor parent for cand=" + cand);
@@ -192,9 +192,13 @@ addClickToDialLinks: function (document)
 								break;
 							}
 							if (parent == parent.parentNode)
+							{
 								theApp.util.njerror("render", "bugger, self referencing parent.");
-							// definition:bugger, from the latin australias - woe is
-							// me, that shouldn't have happened.
+								// definition:bugger, from the latin australias - woe is
+								// me, that shouldn't have happened.
+								break;
+							}
+							
 						 	parent = parent.parentNode;
 						}
 						
@@ -212,11 +216,10 @@ addClickToDialLinks: function (document)
 						{
 							var candParent  = cand.parentNode;
 							
-							// We now remove the canidate as we are going to
-							// re-insert
-							// it back into the parent piecemeal with noojeeclick
-							// spans
-							// inserted around each phone number.
+							// We now remove the candidate as we are going to
+							// re-insert it back into the parent piecemeal with noojeeclick
+							// spans inserted around each phone number.
+							// Remember each candidate can have multiple phone number present.
 							candParent.removeChild(cand);
 	
 							var source = cand.nodeValue;
@@ -243,7 +246,7 @@ addClickToDialLinks: function (document)
 								// adding the non-matching substrings
 								// between the matching substrings.
 	
-								// Add the non-matching substring which appear
+								// Add the non-matching substring which appears
 								// between
 								// the matching substrings into the new parent node.
 								var nonMatching = source.substring(lastLastIndex,
@@ -310,28 +313,44 @@ addClickToDialLinks: function (document)
 								candParent.appendChild(document
 										.createTextNode(nonMatching));
 	
-								// Now add matching substring (phone number) with an
-								// image.
-								var clickSpan = document.createElement("span");
-								clickSpan.setAttribute("style",	"white-space:nowrap");
-								clickSpan.setAttribute("name", "noojeeClick");
-	
-								theApp.util.njdebug("render", "match[0]=" + match[0]);
+								// Now render the matching substring (phone number) with the noojee Click
+								// element wrapping it so it becomes clickable.
+								// We support a growing number of render styles.
+								var renderStyle = "button";
 								var text = document.createTextNode(match[0]);
-								
-								var btn = document.createElement(this.njClickElementType);
-								btn.setAttribute("name", this.njClickElementName);
-								btn.setAttribute("title", match[0]);
-								btn.setAttribute("style", 
-										"width: 16px; height: 14px; "
-										+ "background: url('chrome://noojeeclick/content/images/call-phone.png') 0 0 no-repeat;" +
-												"border: 0; padding: 0;");
-								btn.addEventListener("click", theApp.handlers.onDialHandler, true);
-								btn.setAttribute("PhoneNo", match[0]);
-								
-								clickSpan.appendChild(text);
-								clickSpan.appendChild(btn);
-								candParent.appendChild(clickSpan);
+								var clickElement = null;
+								if (renderStyle == "anchor")
+								{
+									// Anchor link which is clickable but doesn't present with an icon
+									var clickElement = document.createElement("a");
+									clickElement.setAttribute("style", "cursor:pointer;");
+									clickElement.addEventListener("click", theApp.handlers.onDialHandler, true);
+//									a.addEventListener("mouseover", numInfo, false);
+									clickElement.appendChild(text);
+									clickElement.setAttribute("PhoneNo", match[0]);
+									
+								}
+								else if (renderStyle == "button")
+								{
+									clickElement = document.createElement("span");
+									clickElement.setAttribute("style",	"white-space:nowrap");
+									clickElement.setAttribute("name", "noojeeClick");
+		
+									theApp.util.njdebug("render", "match[0]=" + match[0]);
+									var btn = document.createElement(this.njClickElementType);
+									btn.setAttribute("name", this.njClickElementName);
+									btn.setAttribute("title", match[0]);
+									btn.setAttribute("style", 
+											"width: 16px; height: 14px; "
+											+ "background: url('chrome://noojeeclick/content/images/call-phone.png') 0 0 no-repeat;" +
+													"border: 0; padding: 0;");
+									btn.addEventListener("click", theApp.handlers.onDialHandler, true);
+									btn.setAttribute("PhoneNo", match[0]);
+									
+									clickElement.appendChild(text);
+									clickElement.appendChild(btn);
+								}
+								candParent.appendChild(clickElement);
 								lastLastIndex = trackRegex.lastIndex;
 							}
 							candParent.appendChild(document.createTextNode(source
