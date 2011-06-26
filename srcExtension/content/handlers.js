@@ -232,11 +232,11 @@ onAddDialPatternMenuAction: function ()
 	}
 },
 
-onEnable: function ()
+onShowClickIcons: function ()
 {
-	var enabled = theApp.prefs.getBoolValue("enabled");
+	var enabled = theApp.prefs.getBoolValue("showClickIcons");
 	enabled = !enabled;
-	theApp.prefs.setBoolValue("enabled", enabled);
+	theApp.prefs.setBoolValue("showClickIcons", enabled);
 	theApp.render.onRefresh();
 	if (enabled == true)
 		theApp.asterisk.getInstance().init();
