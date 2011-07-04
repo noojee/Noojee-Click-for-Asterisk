@@ -159,49 +159,66 @@ showMenuHideItems: function (event)
 
 		theApp.util.njdebug("noojeeclick", "popupNode name=" + document.popupNode.hasAttribute("name"));
 
+		var checkForSelection = true;
+		var hideDialDifferently = true;
+		
 		if (document.popupNode.hasAttribute("name"))
 		{
-			if (document.popupNode.getAttribute("name") == "noojeeClickImg")
+			if (document.popupNode.getAttribute("name") == theApp.render.njClickElementName)
 			{
-				theApp.util.njdebug("noojeeclick", "noojeeClickImg");
+				theApp.util.njdebug("noojeeclick", "found element with name=" +  theApp.render.njClickElementName);
+				
+				// The user has done a right click on the Noojee click to dial icon so show
+				// the dial differently menu item.
 				var menuItem = document.getElementById("njcontextDialDifferently");
 				menuItem.hidden = false;
-			}
-			else
-			{
-				theApp.util.njdebug("noojeeclick", "not noojee ClickImg");
-				var menuItem = document.getElementById("njcontextDialDifferently");
-				menuItem.hidden = true;
-				visibleItems--;
+				// and the dial menu item
+				var menuItem = document.getElementById("njcontextDialSelection");
+				menuItem.hidden = false;
+
+				// We don't check for 'selected' text if the user has click on a noojee click icon
+				checkForSelection = false;
+				hideDialDifferently = false;
 			}
 		}
-		else
+
+		if (hideDialDifferently)
 		{
-			theApp.util.njdebug("noojeeclick", "not noojee ClickImg");
+			// The user has click on something other than a noojee click icon so
+			// we don't need the dial different option (the standard dial option lets them dial 
+			// differently).
 			var menuItem = document.getElementById("njcontextDialDifferently");
 			menuItem.hidden = true;
 			visibleItems--;
 		}
 
-		if (gContextMenu.isTextSelected)
+		
+		if (checkForSelection)
 		{
-			theApp.util.njdebug("noojeeclick", "popup - text selected");
-			var menuItem = document.getElementById("njcontextDialSelection");
-			menuItem.hidden = false;
-			menuItem = document.getElementById("njcontextDialAddPattern");
-			menuItem.hidden = false;
+			// Check if the user has selected something that might contain a number.
+			// if (gContextMenu.isTextSelected )
+			if (theApp.util.getSelectedText())
+			{
+				// The user has selected some text AND it contains a number
+				theApp.util.njdebug("noojeeclick", "popup - text selected");
+				var menuItem = document.getElementById("njcontextDialSelection");
+				menuItem.hidden = false;
+				menuItem = document.getElementById("njcontextDialAddPattern");
+				menuItem.hidden = false;
+			}
+			else
+			{
+				// either their is no selection or it doesn't contain a number so suppress both menus.
+				theApp.util.njdebug("noojeeclick", "popup - text not selected");
+				var menuItem = document.getElementById("njcontextDialSelection");
+				menuItem.hidden = true;
+				visibleItems--;
+				menuItem = document.getElementById("njcontextDialAddPattern");
+				menuItem.hidden = true;
+				visibleItems--;
+			}
+		}
 
-		}
-		else
-		{
-			theApp.util.njdebug("noojeeclick", "popup - text not selected");
-			var menuItem = document.getElementById("njcontextDialSelection");
-			menuItem.hidden = true;
-			visibleItems--;
-			menuItem = document.getElementById("njcontextDialAddPattern");
-			menuItem.hidden = true;
-			visibleItems--;
-		}
 
 		if (visibleItems == 0)
 		{
@@ -271,7 +288,7 @@ onDialDifferentlyShowing: function (menu)
 {
 	theApp.util.njdebug("noojeeclick", "onDialDifferentlyShowing");
 	var menuItem = document.getElementById('njcontextDialDifferently');
-	menuItem.setAttribute("checked", true);
+	menuItem.hidden = false;
 },
 
 onDialSelectionShowing: function (menu)

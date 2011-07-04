@@ -14,7 +14,7 @@
                   label="Dial Differently..."
                   observes="Tasks:dialDifferently"
                   class="menu-iconic-wide"	
-				  popupshowing="noojeeClick.noojeeclick.onDialDifferentlyShowing(this);"
+				  popupshowing="noojeeClick.noojeeclick.onDialDifferentlyShowing(document.popupNode);"
                   />
         <menuitem id="njcontextDialSelection"
                   label="Dial Selection..."

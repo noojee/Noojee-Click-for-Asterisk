@@ -28,6 +28,7 @@ Sequence: function (jobs, param, initialising)
 	theApp.util.njdebug("sequence", "sequence: " + theApp.job.toString(jobs) + ":" + param);
 
 	this.currentStep = -1;
+	this.currentJob = null;
 	this.param = param;
 	this.jobs = jobs;
 
@@ -45,10 +46,10 @@ Sequence: function (jobs, param, initialising)
 			theApp.util.njdebug("sequence", "jobs=" + theApp.job.toString(jobs));
 			if (navigator.onLine)
 			{
-				this.currentStep = 0;
-				this.currentJob = self.jobs[self.currentStep];
+				self.currentStep = 0;
+				self.currentJob = self.jobs[self.currentStep];
 				theApp.util.njdebug("sequence", "currentJob =" + self.currentJob.name);
-				this.currentJob.run(self, param);
+				self.currentJob.run(self, param);
 			}
 			else
 				theApp.prompts.njAlert("The browser must be online in order to dial.");
@@ -163,7 +164,8 @@ Sequence: function (jobs, param, initialising)
 		try
 		{
 			var details = this;
-			theApp.util.njdebug("sequence", "error this=" + this.currentJob.name);
+			var seq = this.sequence;
+			theApp.util.njdebug("sequence", "error this=" + seq.currentJob.name);
 			theApp.noojeeclick.resetIcon();
 			theApp.asterisk.getInstance().updateState("");
 
@@ -172,7 +174,7 @@ Sequence: function (jobs, param, initialising)
 			        + details.responseHeader + ":" + details.responseXML + ":" + details.responseText);
 
 			// Check if the current sequence has its own error handler and if so call it.
-			var seq = this.sequence;
+			
 			if (seq.currentJob.error)
 			{
 				result = seq.currentJob.error(details.responseText);

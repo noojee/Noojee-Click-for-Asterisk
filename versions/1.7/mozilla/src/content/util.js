@@ -153,7 +153,7 @@ stacktrace: function ()
 	while (f)
 	{
 		if (f != this.stacktrace)
-			stack += "\n" + f.caller.name;
+			stack += "\n" + f.name;
 		f = f.caller;
 	}
 	return stack;
@@ -300,7 +300,7 @@ isLocalChannel: function (channel)
 
 getSelectedText: function ()
 {
-	var selectedText = theApp.phonepatterns.extractPhoneNo(this.trim(this.getRawSelectedText()));
+	var selectedText = this.trim(theApp.phonepatterns.extractPhoneNo(this.trim(this.getRawSelectedText())));
 
 	return selectedText;
 },
