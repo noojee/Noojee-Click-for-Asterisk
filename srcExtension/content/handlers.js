@@ -5,21 +5,31 @@ theApp.handlers =
 {
 
 
-// Display tooltip
+// Suppress parent mouse actions.
 onMouseOver: function (e)
 {
+	// We don't want any parent elements to see this otherwise they
+	// might do something unexpected.
+	e.stopPropagation();
+
 	theApp.util.njdebug("handlers", "onMouseOver");
+	e.preventDefault();
 },
 
-// Display tooltip
+//Suppress parent mouse actions.
 onMouseOut: function (e)
 {
+	// We don't want any parent elements to see this otherwise they
+	// might do something unexpected.
+	e.stopPropagation();
+	
 	theApp.util.njdebug("handlers", "onMouseOut");
+	e.preventDefault();
 },
 
 onDial: function (e)
 {
-	theApp.util.njlog("handlers", "onDial");
+	theApp.util.njdebug("handlers", "onDial");
 	var obj = theApp.noojeeclick.ns6 ? e.target : event.srcElement;
 	var phoneNo = obj.getAttribute("phoneNo");
 
@@ -37,7 +47,7 @@ onDial: function (e)
 */
 onHangup: function ()
 {
-	theApp.util.njlog("onHangup");
+	theApp.util.njdebug("handlers", "onHangup");
 	theApp.asterisk.getInstance().hangup();
 	theApp.noojeeclick.resetIcon();
 
@@ -50,12 +60,14 @@ onDialHandler: function (e)
 	theApp.util.njdebug("handlers", "onDialHandler");
 	try
 	{
-		theApp.util.njdebug("onDialHandler");
-
 		if (!e)
 			e = window.event;
 		if (!theApp.util.isRClick(e))
 		{
+			// We don't want any parent elements to see our click otherwise they
+			// might do something unexpected.
+			e.stopPropagation();
+
 			theApp.handlers.onDial(e);
 		}
 	}
@@ -64,12 +76,13 @@ onDialHandler: function (e)
 		theApp.util.njlog(e);
 		theApp.util.showException("onDialHandler", e);
 	}
+	e.preventDefault();
 },
 
 
 onDialDifferently: function (e)
 {
-	theApp.util.njlog("handlers", 'Dial differently');
+	theApp.util.njdebug("handlers", 'Dial differently');
 
 	var obj = ns6 ? e.target : event.srcElement;
 	this.doDialDifferently(obj);
