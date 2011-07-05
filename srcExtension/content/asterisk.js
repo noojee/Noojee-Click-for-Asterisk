@@ -52,6 +52,11 @@ Asterisk: function ()
 	{
 		this.loggedIn = loggedIn;
 	}
+	
+	this.setChannel = function (_channel)
+	{
+		this.channel = _channel;
+	}
 
 	this.dial = function(phoneNo)
 	{
