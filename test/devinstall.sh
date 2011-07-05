@@ -1,5 +1,5 @@
 $!/bin/bash
-target=/home/bsutton/.mozilla/firefox-trunk/wlak5kry.default/extensions
+target=/home/bsutton/.mozilla/firefox/wlak5kry.default/extensions
 
 echo ${target}
 rm -rf ${target}/noojeeclick@noojee.com.au
