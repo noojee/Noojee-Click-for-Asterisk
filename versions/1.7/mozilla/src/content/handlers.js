@@ -5,7 +5,7 @@ theApp.handlers =
 {
 
 
-// Display tooltip
+// Suppress parent mouse actions.
 onMouseOver: function (e)
 {
 	// We don't want any parent elements to see this otherwise they
@@ -16,7 +16,7 @@ onMouseOver: function (e)
 	e.preventDefault();
 },
 
-// Display tooltip
+//Suppress parent mouse actions.
 onMouseOut: function (e)
 {
 	// We don't want any parent elements to see this otherwise they

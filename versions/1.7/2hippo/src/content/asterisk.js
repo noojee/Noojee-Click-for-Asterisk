@@ -52,6 +52,12 @@ Asterisk: function ()
 	{
 		this.loggedIn = loggedIn;
 	}
+	
+	this.setChannel = function (_channel)
+	{
+		this.channel = _channel;
+		theApp.util.njdebug("asterisk", "Asterisk.channel set to " + this.channel);
+	}
 
 	this.dial = function(phoneNo)
 	{
@@ -102,11 +108,11 @@ Asterisk: function ()
 		// Hangup the our extension
 		// we must logon in case our session has timed out since we first logged on.
 		
-		var sequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.HangupAction(channel), new theApp.job.Complete() ], "", false);
+		var sequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.HangupAction(this.channel), new theApp.job.Complete() ], "", false);
 		sequence.run();
 
 		theApp.util.njdebug("asterisk", "Asterisk.channel set to null");
-		channel = null;
+		this.channel = null;
 		this.remoteChannel = null;
 		this.state = null;
 		this.inLocalDial = false; // Mark the dial is no longer is progress so
