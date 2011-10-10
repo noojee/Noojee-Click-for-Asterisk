@@ -9,11 +9,11 @@
         Noojee Click requires Asterisk 1.4, 1.6 (you need at least 1.6.0.6) or 1.8
         </em:description>
         <em:creator>Brett Sutton</em:creator>
-        <em:homepageURL>http://me.2hippo.com/noojeeclick/noojeeclick.htm</em:homepageURL>
+        <em:homepageURL>http://@urlHost@/noojeeclick/noojeeclick.htm</em:homepageURL>
         <em:optionsURL>chrome://noojeeclick/content/xul/configuration.xul</em:optionsURL>
 
         <!-- Specifies the update url which firefox uses to determine if a new update is available. -->
-		<em:updateURL>https://me.2hippo.com/noojeeclick/update.rdf</em:updateURL>
+		<em:updateURL>https://@urlHost@/noojeeclick/update.rdf</em:updateURL>
 		
     <!-- -->
         <em:iconURL>chrome://noojeeclick/content/noojeeclick.png</em:iconURL>
@@ -23,7 +23,7 @@
            <Description>
                 <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
                 <em:minVersion>3.0</em:minVersion>
-                <em:maxVersion>6.0</em:maxVersion>
+                <em:maxVersion>@maxFirefoxVersion@</em:maxVersion>
            </Description>
         </em:targetApplication>
     </Description>

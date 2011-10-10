@@ -19,13 +19,13 @@
               	<!-- firefox -->
                 <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
                 <em:minVersion>3.0</em:minVersion>
-                <em:maxVersion>6.0</em:maxVersion>
+                <em:maxVersion>@maxFirefoxVersion@</em:maxVersion>
 
                 <!-- This is where this version of the add-on will be downloaded from -->
-				<em:updateLink>https://www.noojee.com.au/noojeeclick/noojeeclick-@version@.xpi</em:updateLink>
+				<em:updateLink>https://@urlHost@/noojeeclick/noojeeclick-@version@.xpi</em:updateLink>
                
                 <!-- A page describing what is new in this updated version -->
-                <em:updateInfoURL>http://www.noojee.com.au/noojeeclick/updateinfo-@version@.xml</em:updateInfoURL>
+                <em:updateInfoURL>http://@urlHost@/noojeeclick/updateinfo-@version@.xml</em:updateInfoURL>
               </RDF:Description>
             </em:targetApplication>
             <em:targetApplication>
@@ -36,10 +36,10 @@
                 <em:maxVersion>3.0.5</em:maxVersion>
 
                 <!-- This is where this version of the add-on will be downloaded from -->
-				<em:updateLink>https://www.noojee.com.au/noojeeclick/noojeeclick-@version@.xpi</em:updateLink>
+				<em:updateLink>https://@urlHost@/noojeeclick/noojeeclick-@version@.xpi</em:updateLink>
                
                 <!-- A page describing what is new in this updated version -->
-                <em:updateInfoURL>http://www.noojee.com.au/noojeeclick/updateinfo-@version@.xml</em:updateInfoURL>
+                <em:updateInfoURL>http://@urlHost@/noojeeclick/updateinfo-@version@.xml</em:updateInfoURL>
               </RDF:Description>
             </em:targetApplication>
           </RDF:Description>

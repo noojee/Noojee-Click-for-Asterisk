@@ -9,7 +9,7 @@
         Noojee Click requires Asterisk 1.4, 1.6 (you need at least 1.6.0.6) or 1.8
         </em:description>
         <em:creator>Brett Sutton</em:creator>
-        <em:homepageURL>http://noojee.com.au/Page/noojeeclick</em:homepageURL>
+        <em:homepageURL>http://@urlHost@/products/noojee-click/click-overview</em:homepageURL>
         <em:optionsURL>chrome://noojeeclick/content/xul/configuration.xul</em:optionsURL>
 
         <!-- You can't do this when uploading to the mozilla add on site. -->
@@ -23,7 +23,7 @@
            <Description>
                 <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
                 <em:minVersion>3.0</em:minVersion>
-                <em:maxVersion>6.0</em:maxVersion>
+                <em:maxVersion>@maxFirefoxVersion@</em:maxVersion>
            </Description>
         </em:targetApplication>
     </Description>
