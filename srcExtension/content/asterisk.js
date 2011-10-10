@@ -46,18 +46,18 @@ Asterisk: function ()
 		theApp.util.njlog("initializing Asterisk");
 		var sequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.Wait(null) ], "", true);
 		sequence.run();
-	}
+	};
 	
 	this.setLoggedIn = function (loggedIn)
 	{
 		this.loggedIn = loggedIn;
-	}
+	};
 	
 	this.setChannel = function (_channel)
 	{
 		this.channel = _channel;
 		theApp.util.njdebug("asterisk", "Asterisk.channel set to " + this.channel);
-	}
+	};
 
 	this.dial = function(phoneNo)
 	{
@@ -83,7 +83,7 @@ Asterisk: function ()
 		
 		dialSequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.Dial(), new theApp.job.Complete() ], phoneNo, false);
 		dialSequence.run();
-	}
+	};
 
 	this.answer = function()
 	{
@@ -99,7 +99,7 @@ Asterisk: function ()
 			answerSequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.Answer(), new theApp.job.Complete() ], this.remoteChannel, false);
 			
 		answerSequence.run();
-	}
+	};
 
 	this.hangup = function()
 	{
@@ -118,13 +118,13 @@ Asterisk: function ()
 		this.inLocalDial = false; // Mark the dial is no longer is progress so
 									// we can ignore the 'originate failed' message that occurs if we 
 									// cancel a dial by hanging up.
-	}
+	};
 
 	this.logoff = function()
 	{
 		var sequence = new theApp.sequence.Sequence( [ new theApp.sequence.Logoff(), new theApp.sequence.Complete() ], "", false);
 		sequence.run();
-	}
+	};
 
 	this.processEvent = function(events)
 	{
@@ -139,13 +139,13 @@ Asterisk: function ()
 		{
 			events[i].apply(theApp.asterisk.getInstance());
 		}
-	}
+	};
 	
 	this.updateState = function(state)
 	{
 		this.state = state;
 		theApp.dialstatus.getInstance().updateStatus(state);
-	}
+	};
 	
 	this.parseResponse = function (responseText)
 	{
@@ -160,7 +160,7 @@ Asterisk: function ()
 			if (typeof (DOMParser) != "undefined")
 			{
 				var message = "none";
-				var response;
+				var response = "none";
 
 				theApp.util.njdebug("asterisk.low", "Parsing:" + responseText);
 				var parser = new DOMParser();
@@ -220,7 +220,7 @@ Asterisk: function ()
 			theApp.util.showException("parseResponse", e);
 		}
 		return result;
-	}
+	};
 
 	// Tests if the given channel (from an event usually) matches the 
 	// current remote  channel.
@@ -230,7 +230,7 @@ Asterisk: function ()
 		if (this.remoteChannel != null)
 			matches = theApp.util.extractChannel(pChannel).toLowerCase() == theApp.util.extractChannel(this.remoteChannel).toLowerCase();
 		return matches;
-	}
+	};
 
 	this.setRemoteDialCommenced = function(commenced)
 	{
@@ -238,21 +238,21 @@ Asterisk: function ()
 		
 		// We have completed the local dial portion
 		this.inLocalDial = false;
-	}
+	};
 	
 	this.isRemoteDialCommenced = function()
 	{
 		return this.remoteDialCommenced;
-	}
+	};
 	
 	this.isLocalDialInProgress = function()
 	{
 		return this.inLocalDial;
-	}
+	};
 }
 
 
 
-}
+};
 
 }});

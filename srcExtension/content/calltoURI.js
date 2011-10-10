@@ -49,7 +49,7 @@ NSGetModule: function ()
 }
 
 // namespace termination
-}
+};
 }
 }
 );

@@ -24,7 +24,7 @@ theApp.monitor =
 
 Monitor: function ()
 {
-	this.pageMonitorID = -1; // id of the timer which we use to monitor page changes
+	this.pageMonitorID = null; // id of the timer which we use to monitor page changes
 	this.lastModified = new Date();
 	this.lastModificationCheck = new Date();
 	this.document = null;
@@ -69,7 +69,7 @@ Monitor: function ()
 			return;
 		}
 
-	}
+	};
 	
 	
 	
@@ -88,7 +88,7 @@ Monitor: function ()
 			this.lastModificationCheck = this.lastModified;
 
 			// The page is still changing so keep monitoring.
-			this.pageMonitorID = window.setTimeout(function(self) {self.monitorPage(self); }, duration, this)
+			this.pageMonitorID = window.setTimeout(function(self) {self.monitorPage(self); }, duration, this);
 		}
 		else
 		{
@@ -96,21 +96,21 @@ Monitor: function ()
 			this.suppressDomModification = true;
 			theApp.util.njdebug("monitor", "Dom has stopped changing so forcing refresh of document=" + this.document.location);
 			theApp.render.onRefreshOne(this.document);
-			this.pageMonitorID = -1;
+			this.pageMonitorID = null;
 			theApp.util.njdebug("monitor", "Page Monitor stopped, refresh complete for document=" + this.document.location);
 			this.suppressDomModification = false;
 			this.wasModified = false; 
 		}
 			
-	}
+	};
 
 	this.startPageMonitor = function()
 	{
 		theApp.util.njdebug("monitor", "Page Monitor Started for: " + this.document.location);
 
-		this.pageMonitorID = window.setTimeout(function(self) {self.monitorPage(self); }, this.duration, this)
+		this.pageMonitorID = window.setTimeout(function(self) {self.monitorPage(self); }, this.duration, this);
 		theApp.util.njdebug("monitor", "Page Monitor Timer ID=" + this.pageMonitorID);
-	}
+	};
 	
 	/**
 	 * Called by the dom modifed event this method triggers
@@ -134,7 +134,7 @@ Monitor: function ()
 					this.startPageMonitor();
 			}
 		}
-	}
+	};
 
 	/** 
 	 * When the page becomes active it gets the focus, so lets monitor it.
@@ -146,7 +146,7 @@ Monitor: function ()
 		// If the dom was modified whilst not in focus we now need to force a refresh.
 		if (this.wasModified == true)
 			this.domModified();
-	}
+	};
 
 	/** 
 	 * When the page looses focus we are no longer interested in monitoring it.
@@ -154,10 +154,10 @@ Monitor: function ()
 	this.onBlur = function()
 	{
 		this.isActive = false;
-	}
+	};
 },
 
 
-}
+};
 
 }});

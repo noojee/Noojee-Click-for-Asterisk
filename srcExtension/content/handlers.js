@@ -258,6 +258,6 @@ onShowClickIcons: function ()
 
 
 
-}
+};
 
 }});

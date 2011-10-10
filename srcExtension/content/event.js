@@ -8,7 +8,6 @@ eventFactory: function (xmlDoc)
 {
 	var events = new Array();
 	var j = 0;
-	var name;
 
 	theApp.util.njdebug("event.low", "eventFactory called");
 
@@ -129,7 +128,7 @@ NewChannel: function (response)
 			asterisk.updateState(this.state);
 		}
 	
-	}
+	};
 },
 
 WaitEventComplete: function (response)
@@ -138,7 +137,7 @@ WaitEventComplete: function (response)
 
 	this.apply = function(asterisk)
 	{
-	}
+	};
 },
 
 
@@ -163,7 +162,7 @@ Bridge: function (response)
 			var event = theApp.event.Unlink(response);
 			event.apply(asterisk);
 		}
-	}
+	};
 	
 },
 
@@ -197,7 +196,7 @@ Link: function (response)
 			asterisk.remoteChannel = this.remoteChannel;
 			asterisk.updateState("Connected");
 		}
-	}
+	};
 },
 
 
@@ -232,9 +231,9 @@ Unlink: function (response)
 			asterisk.remoteChannel = this.remoteChannel;
 			asterisk.updateState("Disconnected");
 			theApp.noojeeclick.resetIcon();
-			window.setTimeout("noojeeClick.asterisk.getInstance().updateState('');", 3000);
+			window.setTimeout(function () {noojeeClick.asterisk.getInstance().updateState('');}, 3000);
 		}
-	}
+	};
 },
 
 Hangup: function (response)
@@ -249,7 +248,7 @@ Hangup: function (response)
 
 	this.apply = function(asterisk)
 	{
-		theApp.util.njdebug("Applying Event=" + this.name + " channel=" + this.channel)
+		theApp.util.njdebug("Applying Event=" + this.name + " channel=" + this.channel);
 		
 		if (theApp.util.isLocalChannel(this.channel))
 		{
@@ -263,10 +262,10 @@ Hangup: function (response)
 */
 			asterisk.updateState("Disconnected");
 			theApp.noojeeclick.resetIcon();
-			window.setTimeout("noojeeClick.asterisk.getInstance().updateState('');", 3000);
+			window.setTimeout(function () {noojeeClick.asterisk.getInstance().updateState('');}, 3000);
 		}
 	
-	}
+	};
 },
 
 
@@ -312,7 +311,7 @@ DialEvent: function (response)
 			asterisk.setRemoteDialCommenced(true);
 			asterisk.updateState("Dialing: " + asterisk.dialing );
 		}
-	}
+	};
 },
 
 Newstate: function (response)
@@ -341,7 +340,7 @@ Newstate: function (response)
 			theApp.util.njdebug("event.high", "NewState updated asterisk state to " + asterisk.state);
 			asterisk.updateState(this.state);
 		}
-	}
+	};
 },
 
 Newcallerid: function (response)
@@ -369,13 +368,9 @@ Newcallerid: function (response)
 			asterisk.callerid = this.callerid;
 		}
 	
-	}
+	};
 },
 
-
-
-
-
-}
+};
 
 }});

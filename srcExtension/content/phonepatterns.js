@@ -44,7 +44,7 @@ normalisePhoneNo: function (phoneNo)
 	        && phoneNo.indexOf(theApp.util.trim(theApp.prefs.getValue("localPrefix"))) == 0)
 	{
 		phoneNo = phoneNo.replace(theApp.util.trim(theApp.prefs.getValue("localPrefix"))
-			, theApp.util.trim(theApp.prefs.getValue("localPrefixSubstitution")))
+			, theApp.util.trim(theApp.prefs.getValue("localPrefixSubstitution")));
 	}
 
 	// Finally expand the international prefix
@@ -104,6 +104,7 @@ transposePattern: function (patternList)
 	var validPatterns = new String();
 	
 	var pattern = "";
+	var builder = new String();
 	for ( var j = 0; j < patterns.length; j++)
 	{
 		// We also take the opportunity to remove leading and trailing
@@ -116,7 +117,7 @@ transposePattern: function (patternList)
 	
 		var inBrackets = false;
 		var validPattern = true;
-		var builder = new String();
+		builder = new String();
 
 		var len = pattern.length;
 
@@ -266,6 +267,6 @@ extractPhoneNo: function (text)
 }
 
 
-}
+};
 
 }});

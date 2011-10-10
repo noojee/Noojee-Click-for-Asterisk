@@ -17,7 +17,7 @@ theApp.Test =
 		prompts.alert(window, "Noojee Click", theApp.msg);
 	}
 
-}
+};
 
 }});
 

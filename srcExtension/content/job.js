@@ -95,17 +95,16 @@ Dial: function ()
 		this.status = function()
 		{
 			theApp.util.njlog("Dialing: " + phoneNo + " (" + normalised + ")");
-		}
+		};
 
 		theApp.dialstatus.getInstance().updateStatus("Dialing: " + phoneNo);
 		theApp.util.njdebug("job", "dialurl=" + url);
 		sequence.request(url);
-	}
+	};
 
 	this.handleResponse = function(result)
 	{
 		var abort = false;
-		var authRequired = false;
 		if (result.response != "Success")
 		{
 			theApp.util.njlog("Dial Failed");
@@ -141,16 +140,16 @@ Dial: function ()
 			abort = true;
 		}
 		return abort;
-	}
+	};
 
 	this.doContinue = function()
 	{
 		return false;
-	}
+	};
 	this.parseResponse = function(responseText)
 	{
 		return theApp.asterisk.getInstance().parseResponse(responseText);
-	}
+	};
 },
 
 //The Answer Job
@@ -194,10 +193,6 @@ Answer: function (channel)
 
 		theApp.util.njdebug("job", "LocalChannel=" + localChannel);
 
-		var callerID = theApp.prefs.getValue("callerID");
-
-
-		
 		// dial
 		var url = theApp.job.genURL("Redirect");
 		url += localChannel;
@@ -231,12 +226,12 @@ Answer: function (channel)
 		this.status = function()
 		{
 			theApp.util.njlog("Answering: " + phoneNo + " (" + normalised + ")");
-		}
+		};
 
 		theApp.dialstatus.getInstance().updateStatus("Answering: " + phoneNo);
 		theApp.util.njdebug("job", "answerurl=" + url);
 		sequence.request(url);
-	}
+	};
 
 	this.handleResponse = function(result)
 	{
@@ -277,16 +272,16 @@ Answer: function (channel)
 			abort = true;
 		}
 		return abort;
-	}
+	};
 
 	this.doContinue = function()
 	{
 		return false;
-	}
+	};
 	this.parseResponse = function(responseText)
 	{
 		return theApp.asterisk.getInstance().parseResponse(responseText);
-	}
+	};
 },
 
 
@@ -316,21 +311,21 @@ Wait: function (subSequence)
 		this.status = function()
 		{
 			theApp.util.njlog("WaitEvent: event monitoring initialised.");
-		}
+		};
 
 		theApp.util.njdebug("job", "waitEventurl=" + url);
 		sequence.request(url);
-	}
+	};
 
 	this.doContinue = function()
 	{
 		return true;
-	}
+	};
 	
 	this.parseResponse = function(responseText)
 	{
 		return theApp.asterisk.getInstance().parseResponse(responseText);
-	}
+	};
 	
 	this.handleResponse = function(result)
 	{
@@ -366,7 +361,7 @@ Wait: function (subSequence)
 			// </ajax-response>
 		}
 		return abort;
-	}
+	};
 	
 	this.error = function(responseText)
 	{
@@ -384,7 +379,7 @@ Wait: function (subSequence)
 			theApp.util.njlog("Action failed " + result.message);
 			theApp.util.showError(result.response, result.message);
 		}
-	}
+	};
 
 },
 
@@ -432,17 +427,17 @@ HangupAction: function (channel)
 		this.status = function()
 		{
 			theApp.util.njlog("Hangup: " + extension);
-		}
+		};
 
 		//theApp.dialstatus.getInstance().updateStatus("Hangup: " + extension);
 		theApp.util.njdebug("job", "hangup url=" + url);
 		sequence.request(url);
-	}
+	};
 
 	this.doContinue = function()
 	{
 		return false;
-	}
+	};
 
 	this.handleResponse = function(result)
 	{
@@ -457,16 +452,16 @@ HangupAction: function (channel)
 		// is clear.
 		theApp.asterisk.getInstance().updateState("Disconnecting");
 		theApp.noojeeclick.resetIcon();
-		window.setTimeout("noojeeClick.asterisk.getInstance().updateState('');", 3000);
+		window.setTimeout(function () {noojeeClick.asterisk.getInstance().updateState('');}, 3000);
 		
 		return abort;
-	}
+	};
 
 
 	this.parseResponse = function(responseText)
 	{
 		return theApp.asterisk.getInstance().parseResponse(responseText);
-	}
+	};
 	
 },
 
@@ -483,15 +478,15 @@ Ping: function ()
 		this.status = function()
 		{
 			theApp.util.njlog("Pinging");
-		}
+		};
 
 		sequence.request(url);
-	}
+	};
 
 	this.doContinue = function()
 	{
 		return false;
-	}
+	};
 
 	this.handleResponse = function(result)
 	{
@@ -502,12 +497,12 @@ Ping: function ()
 			abort = true;
 		}
 		return abort;
-	}
+	};
 
 	this.parseResponse = function(responseText)
 	{
 		return theApp.asterisk.getInstance().parseResponse(responseText);
-	}
+	};
 	
 },
 
@@ -525,15 +520,15 @@ Status: function ()
 		this.status = function()
 		{
 			theApp.util.njlog("Checking Asterisk Status");
-		}
+		};
 
 		sequence.request(url);
-	}
+	};
 
 	this.doContinue = function()
 	{
 		return false;
-	}
+	};
 
 	this.handleResponse = function(result)
 	{
@@ -544,12 +539,12 @@ Status: function ()
 			abort = true;
 		}
 		return abort;
-	}
+	};
 
 	this.parseResponse = function(responseText)
 	{
 		return theApp.asterisk.getInstance().parseResponse(responseText);
-	}
+	};
 	
 },
 
@@ -565,15 +560,15 @@ Complete: function ()
 		this.status = function()
 		{
 			theApp.util.njdebug("job", "Checking Asterisk Status");
-		}
+		};
 
 		//theApp.dialstatus.getInstance().updateStatus("Dialed: " + param);
-	}
+	};
 
 	this.doContinue = function()
 	{
 		return false;
-	}
+	};
 
 	this.handleResponse = function(result)
 	{
@@ -584,12 +579,12 @@ Complete: function ()
 			abort = true;
 		}
 		return abort;
-	}
+	};
 
 	this.parseResponse = function(responseText)
 	{
 		return theApp.asterisk.getInstance().parseResponse(responseText);
-	}
+	};
 	
 },
 
@@ -613,17 +608,17 @@ Login: function ()
 		this.status = function()
 		{
 			theApp.util.njlog("Authenticating");
-		}
+		};
 
 		// theApp.dialstatus.getInstance().updateStatus("Authenticating");
 
 		sequence.request(url);
-	}
+	};
 
 	this.doContinue = function()
 	{
 		return false;
-	}
+	};
 
 	this.handleResponse = function(result)
 	{
@@ -640,12 +635,12 @@ Login: function ()
 			theApp.util.njlog("Login completed.");
 		}
 		return abort;
-	}
+	};
 
 	this.parseResponse = function(responseText)
 	{
 		return theApp.asterisk.getInstance().parseResponse(responseText);
-	}
+	};
 	
 },
 
@@ -662,17 +657,17 @@ Logoff: function ()
 		this.status = function()
 		{
 			theApp.util.njlog("Logging off");
-		}
+		};
 
 		theApp.dialstatus.getInstance().updateStatus("Logging Off");
 		sequence.request(url);
 
-	}
+	};
 
 	this.doContinue = function()
 	{
 		return false;
-	}
+	};
 
 	this.handleResponse = function(result)
 	{
@@ -683,12 +678,12 @@ Logoff: function ()
 			abort = true;
 		}
 		return abort;
-	}
+	};
 
 	this.parseResponse = function(responseText)
 	{
 		return theApp.asterisk.getInstance().parseResponse(responseText);
-	}
+	};
 	
 },
 
@@ -696,7 +691,7 @@ Logoff: function ()
 genURL: function (command)
 {
 	theApp.util.njdebug("job", "genURL(command)=" + command);
-	var url;
+	var url = null;
 
 	var protocol = "http://";
 	
@@ -742,6 +737,6 @@ toString : function (jobs)
 
 
 
-}
+};
 
 }});

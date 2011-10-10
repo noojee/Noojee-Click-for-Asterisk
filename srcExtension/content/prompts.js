@@ -29,6 +29,6 @@ njPrompt: function (msg, defaultValue)
 }
 
 
-}
+};
 
 }});

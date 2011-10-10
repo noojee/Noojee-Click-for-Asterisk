@@ -55,7 +55,6 @@ getBoolValue: function (key)
 		var prefObj = Components.classes["@mozilla.org/preferences-service;1"]
 		        .getService(Components.interfaces.nsIPrefService);
 		var Branch = prefObj.getBranch("extensions.noojeeclick.");
-		var defaultBranch = prefObj.getDefaultBranch("extensions.noojeeclick.");
 		value = Branch.getBoolPref(key);
 	}
 	catch (e)
@@ -91,6 +90,6 @@ setBoolValue: function (key, value)
 },
 
 
-}
+};
 
 }});

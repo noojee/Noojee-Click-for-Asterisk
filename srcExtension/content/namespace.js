@@ -4,17 +4,14 @@ var noojeeClick =
 (function()
 {
 	// for debugging as we can't use njdebug during the initialisation.
-	var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
-			.getService(Components.interfaces.nsIConsoleService);
+//	var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
+	        //.getService(Components.interfaces.nsIConsoleService);
 
-	var nsLoginInfo = new Components.Constructor(
-			"@mozilla.org/login-manager/loginInfo;1",
-			Components.interfaces.nsILoginInfo, "init");
-	var nsLoginManager = Components.classes["@mozilla.org/login-manager;1"]
-			.getService(Components.interfaces.nsILoginManager);
+	var nsLoginInfo = new Components.Constructor("@mozilla.org/login-manager/loginInfo;1", Components.interfaces.nsILoginInfo,
+	        "init");
+	var nsLoginManager = Components.classes["@mozilla.org/login-manager;1"].getService(Components.interfaces.nsILoginManager);
 
 	var url = "chrome://noojeeclick";
-
 
 	// Registration
 	var namespaces = [];
@@ -32,8 +29,7 @@ var noojeeClick =
 
 	function setValue(key, value)
 	{
-		var prefObj = Components.classes["@mozilla.org/preferences-service;1"]
-				.getService(Components.interfaces.nsIPrefService);
+		var prefObj = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
 		var Branch = prefObj.getBranch("extensions.noojeeclick.");
 
 		if (typeof value == 'boolean')
@@ -49,16 +45,15 @@ var noojeeClick =
 	 */
 	function getBoolValue(key)
 	{
+		var value = null;
 		try
 		{
-			var value = null;
 			var prefObj = Components.classes["@mozilla.org/preferences-service;1"]
-					.getService(Components.interfaces.nsIPrefService);
+			        .getService(Components.interfaces.nsIPrefService);
 			var Branch = prefObj.getBranch("extensions.noojeeclick.");
-			var defaultBranch = prefObj
-					.getDefaultBranch("extensions.noojeeclick.");
 			value = Branch.getBoolPref(key);
-		} catch (e)
+		}
+		catch (e)
 		{
 			// ignored as just means that key doesn't exist.
 		}
@@ -73,10 +68,11 @@ var noojeeClick =
 		try
 		{
 			var prefObj = Components.classes["@mozilla.org/preferences-service;1"]
-					.getService(Components.interfaces.nsIPrefService);
+			        .getService(Components.interfaces.nsIPrefService);
 			var Branch = prefObj.getBranch("extensions.noojeeclick.");
 			value = Branch.getCharPref(key);
-		} catch (e)
+		}
+		catch (e)
 		{
 			// ignored as it probably means that this preference hasn't been
 			// set.
@@ -104,10 +100,9 @@ var noojeeClick =
 				// for debugging as we can't use njdebug during the
 				// initialisation.
 				var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
-						.getService(Components.interfaces.nsIConsoleService);
+				        .getService(Components.interfaces.nsIConsoleService);
 
-				consoleService.logStringMessage(hour + ":" + min + ":" + sec
-						+ ":" + mil + " debug (" + module + "): " + msg);
+				consoleService.logStringMessage(hour + ":" + min + ":" + sec + ":" + mil + " debug (" + module + "): " + msg);
 			}
 		}
 	}
@@ -118,8 +113,7 @@ var noojeeClick =
 	 */
 	function setBoolValue(key, value)
 	{
-		var prefObj = Components.classes["@mozilla.org/preferences-service;1"]
-				.getService(Components.interfaces.nsIPrefService);
+		var prefObj = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
 		var Branch = prefObj.getBranch("extensions.noojeeclick.");
 
 		Branch.setBoolPref(key, value);
@@ -130,8 +124,6 @@ var noojeeClick =
 	{
 		noojeeClick.noojeeclick.onPageLoad(event);
 	};
-
-
 
 	this.onRefresh = function()
 	{
@@ -146,7 +138,7 @@ var noojeeClick =
 	function PrefListener(branchName, func)
 	{
 		var prefService = Components.classes["@mozilla.org/preferences-service;1"]
-				.getService(Components.interfaces.nsIPrefService);
+		        .getService(Components.interfaces.nsIPrefService);
 		var branch = prefService.getBranch(branchName);
 		branch.QueryInterface(Components.interfaces.nsIPrefBranch2);
 
@@ -162,14 +154,12 @@ var noojeeClick =
 
 		this.unregister = function unregister()
 		{
-			if (branch)
-				branch.removeObserver("", this);
+			if (branch) branch.removeObserver("", this);
 		};
 
 		this.observe = function(subject, topic, data)
 		{
-			if (topic == "nsPref:changed")
-				func(branch, data);
+			if (topic == "nsPref:changed") func(branch, data);
 		};
 	}
 	;
@@ -188,38 +178,35 @@ var noojeeClick =
 			}
 
 			// Noojee Click specific initialisation
-			var myListener = new PrefListener(
-					"extensions.noojeeclick.",
-					function(branch, name)
+			var myListener = new PrefListener("extensions.noojeeclick.", function(branch, name)
+			{
+				try
+				{
+					switch (name)
 					{
-						try
-						{
-							switch (name)
-							{
-							case "pattern":
-								//noojeeClick.onRefresh();
-								break;
-							}
-						} catch (e)
-						{
-							alert("Error occured calling onRefresh during a preference change to a 'pattern'");
-						}
-					});
+					case "pattern":
+						// noojeeClick.onRefresh();
+						break;
+					}
+				}
+				catch (e)
+				{
+					alert("Error occured calling onRefresh during a preference change to a 'pattern'");
+				}
+			});
 			myListener.register();
 
 			// On first run check the preferences for a password
 			// and move it into the store.
 			// This works for both existing installs and custom
 			// builds where we ship the password in the defaults.
-			if (getBoolValue("firstrun") == true
-					|| getBoolValue("firstrun") == null)
+			if (getBoolValue("firstrun") == true || getBoolValue("firstrun") == null)
 			{
 				var password = getValue("password");
 				var username = getValue("username");
 				var host = getValue("host");
 
-				if (host != null && username != null && password != null
-						&& password.length > 0)
+				if (host != null && username != null && password != null && password.length > 0)
 				{
 					storeCredentials(host, username, password);
 					// clear the password out of the defaults.
@@ -230,18 +217,19 @@ var noojeeClick =
 			}
 
 			// Hook the page load event
-			var appcontent = window.document.getElementById("appcontent");
-			if (appcontent != undefined && appcontent != null)
-				appcontent.addEventListener("DOMContentLoaded",
-						noojeeClick.onPageLoad, false);
+			if (window.document != null)
+			{
+				var appcontent = window.document.getElementById("appcontent");
+				if (appcontent != undefined && appcontent != null)
+				    appcontent.addEventListener("DOMContentLoaded", noojeeClick.onPageLoad, false);
+			}
 
 			// Add a context menu handler so we can dynamically show/hide
 			// specific menu items.
 			var contextMenu = document.getElementById("contentAreaContextMenu");
-			if (contextMenu)
-				contextMenu.addEventListener("popupshowing",
-						noojeeClick.showMenuHideItems, false);
-		} catch (e)
+			if (contextMenu) contextMenu.addEventListener("popupshowing", noojeeClick.showMenuHideItems, false);
+		}
+		catch (e)
 		{
 			alert("Noojee Click error in init" + e);
 		}
@@ -278,30 +266,28 @@ var noojeeClick =
 	this.storeCredentials = function(hostname, username, password)
 	{
 		storeCredentials(hostname, username, password);
-	}
+	};
 
 	function storeCredentials(hostname, username, password)
 	{
 
-		if (hostname == null || hostname.length == 0 || username == null
-				|| username.length == 0 || password == null
-				|| password.length == 0)
+		if (hostname == null || hostname.length == 0 || username == null || username.length == 0 || password == null
+		        || password.length == 0)
 		{
 			alert("Error: You can't save the Noojee Click configuration with an empty Host, Username or Password.");
-		} else
+		}
+		else
 		{
 
 			var newLoginInfo = new nsLoginInfo(hostname, url, null, // 'Asterisk
-					// Auth',
-					username, password, "", "");
+			// Auth',
+			username, password, "", "");
 			var existingLoginInfo = findCredentials(hostname, username);
-			if (existingLoginInfo != null)
-				nsLoginManager.removeLogin(existingLoginInfo);
+			if (existingLoginInfo != null) nsLoginManager.removeLogin(existingLoginInfo);
 
 			nsLoginManager.addLogin(newLoginInfo);
 		}
-	}
-	;
+	};
 
 	/*
 	 * * returns the login object for the given hostname/username combination if
@@ -336,7 +322,7 @@ var noojeeClick =
 	this.retrieveCredentials = function(hostname, username)
 	{
 		return retrieveCredentials(hostname, username);
-	}
+	};
 
 	/*
 	 * * returns the password for the given hostname/username combination * The
@@ -348,12 +334,10 @@ var noojeeClick =
 		var password = null;
 		var login = findCredentials(hostname, username);
 
-		if (login != null)
-			password = login.password;
+		if (login != null) password = login.password;
 
 		return password;
-	}
-	;
+	};
 
 	/*
 	 * This method doesn't really belong here, unfortunately this method is used
@@ -367,26 +351,27 @@ var noojeeClick =
 		try
 		{
 			ns_debug("config", "onConfigurationLoad called");
-			//noojeeClick.render.disableRefresh();
-			
-			var tabBox = window.document.getElementById('njConfigTabbox');
-			var asteriskTab = tabBox.tabs.getItemAtIndex(3);
-
-			// Check if we need to disable the asterisk tab
-			if (getBoolValue("tab.asterisk.enabled") == false)
+			if (window.document != null)
 			{
-				ns_debug("config", "asterisk tab disabled");
-				asteriskTab.disabled = true;
-				asteriskTab.collapsed = true;
-			} else
-				ns_debug("config", "asterisk tab enabled");
+				var tabBox = window.document.getElementById('njConfigTabbox');
+				var asteriskTab = tabBox.tabs.getItemAtIndex(3);
 
-			// retrieve the password
-			var password = this.retrieveCredentials(getValue("host"), this
-					.getUsername());
-			var passwordField = window.document.getElementById('njcPassword');
-			passwordField.value = password;
-		} 
+				// Check if we need to disable the asterisk tab
+				if (getBoolValue("tab.asterisk.enabled") == false)
+				{
+					ns_debug("config", "asterisk tab disabled");
+					asteriskTab.disabled = true;
+					asteriskTab.collapsed = true;
+				}
+				else
+					ns_debug("config", "asterisk tab enabled");
+
+				// retrieve the password
+				var password = this.retrieveCredentials(getValue("host"), this.getUsername());
+				var passwordField = window.document.getElementById('njcPassword');
+				passwordField.value = password;
+			}
+		}
 		catch (e)
 		{
 			alert("error loading configuration " + e);
@@ -400,20 +385,22 @@ var noojeeClick =
 		{
 			ns_debug("config", "onConfigurationClosed called");
 
-			var hostField = window.document.getElementById('host');
-			var usernameField = window.document.getElementById('username');
-			var passwordField = window.document.getElementById('njcPassword');
-			this.storeCredentials(hostField.value, usernameField.value,
-					passwordField.value);
-		} 
+			if (window.document != null)
+			{
+				var hostField = window.document.getElementById('host');
+				var usernameField = window.document.getElementById('username');
+				var passwordField = window.document.getElementById('njcPassword');
+				this.storeCredentials(hostField.value, usernameField.value, passwordField.value);
+			}
+		}
 		catch (e)
 		{
 			alert("error saving configuration " + e);
 			ns_debug("config", "Exception: " + e);
 		}
 
-		//noojeeClick.render.enableRefresh();
-		
+		// noojeeClick.render.enableRefresh();
+
 		return false;
 	};
 

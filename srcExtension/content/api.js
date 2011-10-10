@@ -59,7 +59,7 @@ eg: // in your XUL JS file Global = new Object(); Global.foo = function() { theA
 */	 
 
 
-}
+};
 
 }});
 
