@@ -3,7 +3,9 @@
 		Builds the Noojee Click xpi file ready for deployment.
 	</description>
 
-	<property name="version" value="1.8" />
+	<property name="version" value="1.9" />
+	<property name="maxFirefoxVersion" value="7.*" />
+	<property name="urlHost" value="www.noojee.com.au/" />
 	<property name="src" value="${basedir}/srcExtension" />
 	<property name="build" value="${basedir}/build" />
 	<property name="versionDir" value="${basedir}/versions/${version}" />
@@ -30,7 +32,6 @@
 	 <macrodef name="filterSrc">
 	    <attribute name="fromPath"/>
 	 	<attribute name="toPath"/>
-	    <attribute name="updateLink"/>
 	    <sequential>
 			<description>
 				Sub target which is responsible for substituting tokens found in files
@@ -42,6 +43,8 @@
 				<filterchain>
 					<replacetokens>
 						<token key="version" value="${version}" />
+						<token key="maxFirefoxVersion" value="${maxFirefoxVersion}" />
+						<token key="urlHost" value="${urlHost}" />
 					</replacetokens>
 				</filterchain>
 			</copy>
@@ -60,7 +63,8 @@
 				<filterchain>
 					<replacetokens>
 						<token key="version" value="${version}" />
-						<token key="updateURL" value="@{updateLink}" />
+						<token key="maxFirefoxVersion" value="${maxFirefoxVersion}" />
+						<token key="urlHost" value="${urlHost}" />
 					</replacetokens>
 				</filterchain>
 			</copy>
@@ -71,7 +75,8 @@
 				<filterchain>
 					<replacetokens>
 						<token key="version" value="${version}" />
-						<token key="updateURL" value="@{updateLink}" />
+						<token key="maxFirefoxVersion" value="${maxFirefoxVersion}" />
+						<token key="urlHost" value="${urlHost}" />
 					</replacetokens>
 				</filterchain>
 			</copy>
@@ -82,7 +87,7 @@
 	    <attribute name="fromPath"/>
 	 	<attribute name="toPath"/>
 	    <sequential>
-			<echo>Building @{path}</echo>
+			<echo message="Building @{toPath}"/>
 			<mkdir dir="@{toPath}" />
 			<mkdir dir="@{toPath}/src" />
 			<delete file="@{toPath}/${xpiName}" />
@@ -122,7 +127,7 @@
 		</description>
 		<echo>Building mozilla</echo>
 		<defineIncludes  fromPath="mozilla" toPath="${versionDir}/mozilla"/>
-		<filterSrc fromPath="build/templates/mozilla" toPath="${versionDir}/mozilla" updateLink=""/>
+		<filterSrc fromPath="build/templates/mozilla" toPath="${versionDir}/mozilla" />
 		<createDirs  fromPath="mozilla" toPath="${versionDir}/mozilla" />
 	</target>
 	
@@ -132,7 +137,7 @@
 		</description>
 		<echo>Building Local</echo>
 		<defineIncludes  fromPath="local" toPath="${versionDir}/local" />
-		<filterSrc fromPath="build/templates/local" toPath="${versionDir}/local" updateLink="&lt;em:updateURL&gt;https://www.noojee.com.au/noojeeclick/update.rdf&lt;/em:updateURL&gt;"/>
+		<filterSrc fromPath="build/templates/local" toPath="${versionDir}/local"/>
 		<createDirs  fromPath="local" toPath="${versionDir}/local" />
 	</target>
 
@@ -146,7 +151,8 @@
 			<filterchain>
 				<replacetokens>
 					<token key="version" value="${version}" />
-					<token key="updateURL" value="&lt;em:updateURL&gt;https://www.noojee.com.au/noojeeclick/update.rdf&lt;/em:updateURL&gt;" />
+					<token key="maxFirefoxVersion" value="${maxFirefoxVersion}" />
+					<token key="urlHost" value="${urlHost}" />
 				</replacetokens>
 			</filterchain>
 		</copy>
@@ -155,7 +161,8 @@
 			<filterchain>
 				<replacetokens>
 					<token key="version" value="${version}" />
-					<token key="updateURL" value="@{updateLink}" />
+					<token key="maxFirefoxVersion" value="${maxFirefoxVersion}" />
+					<token key="urlHost" value="${urlHost}" />
 				</replacetokens>
 			</filterchain>
 		</copy>
@@ -165,9 +172,10 @@
 		<description>
 			Builds an xpi suitable for 2hippo
 		</description>
+		<property name="urlHost" value="me.2hippo.com" />
 		<echo>Building 2Hippo</echo>
 		<defineIncludes  fromPath="2hippo" toPath="${versionDir}/2hippo" />
-		<filterSrc fromPath="build/templates/2hippo" toPath="${versionDir}/2hippo"  updateLink="&lt;em:updateURL&gt;https://me.2hippo.com/noojeeclick/update.rdf&lt;/em:updateURL&gt;"/>
+		<filterSrc fromPath="build/templates/2hippo" toPath="${versionDir}/2hippo"/>
 		<createDirs  fromPath="2hippo" toPath="${versionDir}/2hippo"  />
 	</target>
 
