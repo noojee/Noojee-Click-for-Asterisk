@@ -20,11 +20,11 @@ var noojeeClick =
 	// it registers itself as a namespace by calling noojeeClick.ns(...).
 	this.ns = function(fn)
 	{
-		var ns =
+		var aNamspace =
 		{};
-		namespaces.push(fn, ns);
+		namespaces.push(fn, aNamspace);
 
-		return ns;
+		return aNamspace;
 	};
 
 	function setValue(key, value)
