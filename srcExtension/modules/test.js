@@ -37,19 +37,19 @@ function Test()
 			var sec = now.getSeconds();
 			var mil = now.getMilliseconds();
 			consoleService.logStringMessage(hour + ":" + min + ":" + sec + ":" + mil+ " debug (" + module + "): " + msg);
-	}
+	};
 
 	this.init = function()
 	{
 		this.startDate = new Date();
 
 		this.njdebug("Test", "Test.init called id=" + this.startDate);
-	}
+	};
 	
 	this.hello = function()
 	{
 		this.njdebug("Test", "hello from Test id=" + this.startDate);
-	}
+	};
 	
 }
 	
