@@ -70,7 +70,6 @@ Left: function(str, n)
 		return str;
 	else
 	{
-		var iLen = String(str).length;
 		return String(str).substring(0, n);
 	}
 },
@@ -106,7 +105,7 @@ addGlobalStyle: function (document, css)
 	style.setAttribute("noojeeclick", "true");
 	style.id = "noojeeClickStyle";
 	style.type = "text/css";
-	style.innerHTML = css;
+	style.textContent = css;
 	var head = document.getElementsByTagName('head')[0];
 	if (head != null)
 	{
@@ -356,7 +355,7 @@ getClipboardText: function ()
 	return pasteText;
 },
 
-}
+};
 
 }});
 
