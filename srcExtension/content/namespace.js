@@ -4,8 +4,8 @@ var noojeeClick =
 (function()
 {
 	// for debugging as we can't use njdebug during the initialisation.
-//	var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
-	        //.getService(Components.interfaces.nsIConsoleService);
+	// var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
+	// .getService(Components.interfaces.nsIConsoleService);
 
 	var nsLoginInfo = new Components.Constructor("@mozilla.org/login-manager/loginInfo;1", Components.interfaces.nsILoginInfo,
 	        "init");
@@ -20,11 +20,10 @@ var noojeeClick =
 	// it registers itself as a namespace by calling noojeeClick.ns(...).
 	this.ns = function(fn)
 	{
-		var aNamspace =
-		{};
-		namespaces.push(fn, aNamspace);
+		var aNamespace = {};
+		namespaces.push(fn, aNamespace);
 
-		return aNamspace;
+		return aNamespace;
 	};
 
 	function setValue(key, value)
@@ -36,8 +35,7 @@ var noojeeClick =
 			Branch.setBoolPref(key, value);
 		else
 			Branch.setCharPref(key, value);
-	}
-	;
+	};
 
 	/*
 	 * Used to support the above function onConfigurationLoad. This method is an
@@ -59,8 +57,7 @@ var noojeeClick =
 		}
 
 		return value;
-	}
-	;
+	};
 
 	function getValue(key)
 	{
@@ -78,8 +75,7 @@ var noojeeClick =
 			// set.
 		}
 		return value;
-	}
-	;
+	};
 
 	// duplicate of njdebug so we can still output debug messages during
 	// initilisation.
@@ -287,7 +283,8 @@ var noojeeClick =
 
 			nsLoginManager.addLogin(newLoginInfo);
 		}
-	};
+	}
+	;
 
 	/*
 	 * * returns the login object for the given hostname/username combination if
@@ -337,7 +334,8 @@ var noojeeClick =
 		if (login != null) password = login.password;
 
 		return password;
-	};
+	}
+	;
 
 	/*
 	 * This method doesn't really belong here, unfortunately this method is used
