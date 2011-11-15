@@ -43,6 +43,10 @@ Monitor: function ()
 	 */
 	this.init = function(document)
 	{
+		/*
+		 * 
+		 * We are taking the monitor function out until mozilla fixes the performance problems.
+		 * 
 		try
 		{
 			// Special check. It looks like an interaction problem between the monitor
@@ -68,6 +72,7 @@ Monitor: function ()
 			theApp.util.njerror("monitor ignoring document with null href");
 			return;
 		}
+		*/
 
 	};
 	
