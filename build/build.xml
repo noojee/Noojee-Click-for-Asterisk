@@ -3,8 +3,8 @@
 		Builds the Noojee Click xpi file ready for deployment.
 	</description>
 
-	<property name="version" value="1.9" />
-	<property name="maxFirefoxVersion" value="7.*" />
+	<property name="version" value="1.9.1" />
+	<property name="maxFirefoxVersion" value="15.*" />
 	<property name="urlHost" value="www.noojee.com.au/" />
 	<property name="src" value="${basedir}/srcExtension" />
 	<property name="build" value="${basedir}/build" />
