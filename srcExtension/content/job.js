@@ -371,7 +371,7 @@ Wait: function (subSequence)
 		if (responseText == null || responseText.length == 0)
 		{
 			theApp.util.njlog("Unexpected error responseText is empty, asterisk may be down.");
-			theApp.util.showError(responseText, "Unable to connect to Asterisk.");
+			theApp.dialstatus.getInstance().updateStatus("Unable to connect to Asterisk.");
 		}
 		else
 		{
