@@ -3,8 +3,10 @@
 		Builds the Noojee Click xpi file ready for deployment.
 	</description>
 
-	<property name="version" value="1.9.1" />
-	<property name="maxFirefoxVersion" value="15.*" />
+	<property name="version" value="1.9.2" />
+	<property name="maxMozillaFirefoxVersion" value="10.*" />
+	<property name="maxLocalFirefoxVersion" value="15.*" />
+	<property name="maxClientFirefoxVersion" value="10.*" />
 	<property name="urlHost" value="www.noojee.com.au/" />
 	<property name="src" value="${basedir}/srcExtension" />
 	<property name="build" value="${basedir}/build" />
@@ -32,6 +34,7 @@
 	 <macrodef name="filterSrc">
 	    <attribute name="fromPath"/>
 	 	<attribute name="toPath"/>
+	 	<attribute name="maxFirefoxVersion"/>
 	    <sequential>
 			<description>
 				Sub target which is responsible for substituting tokens found in files
@@ -43,7 +46,7 @@
 				<filterchain>
 					<replacetokens>
 						<token key="version" value="${version}" />
-						<token key="maxFirefoxVersion" value="${maxFirefoxVersion}" />
+						<token key="maxFirefoxVersion" value="@{maxFirefoxVersion}" />
 						<token key="urlHost" value="${urlHost}" />
 					</replacetokens>
 				</filterchain>
@@ -63,7 +66,7 @@
 				<filterchain>
 					<replacetokens>
 						<token key="version" value="${version}" />
-						<token key="maxFirefoxVersion" value="${maxFirefoxVersion}" />
+						<token key="maxFirefoxVersion" value="@{maxFirefoxVersion}" />
 						<token key="urlHost" value="${urlHost}" />
 					</replacetokens>
 				</filterchain>
@@ -75,7 +78,7 @@
 				<filterchain>
 					<replacetokens>
 						<token key="version" value="${version}" />
-						<token key="maxFirefoxVersion" value="${maxFirefoxVersion}" />
+						<token key="maxFirefoxVersion" value="@{maxFirefoxVersion}" />
 						<token key="urlHost" value="${urlHost}" />
 					</replacetokens>
 				</filterchain>
@@ -126,8 +129,9 @@
 			Builds an xpi suitable for hosting on the mozilla plugin website.
 		</description>
 		<echo>Building mozilla</echo>
+		<property name="maxFirefoxVersion" value="15.*" />
 		<defineIncludes  fromPath="mozilla" toPath="${versionDir}/mozilla"/>
-		<filterSrc fromPath="build/templates/mozilla" toPath="${versionDir}/mozilla" />
+		<filterSrc fromPath="build/templates/mozilla" toPath="${versionDir}/mozilla" maxFireFoxVersion="${maxMozillaFirefoxVersion}" />
 		<createDirs  fromPath="mozilla" toPath="${versionDir}/mozilla" />
 	</target>
 	
@@ -137,7 +141,7 @@
 		</description>
 		<echo>Building Local</echo>
 		<defineIncludes  fromPath="local" toPath="${versionDir}/local" />
-		<filterSrc fromPath="build/templates/local" toPath="${versionDir}/local"/>
+		<filterSrc fromPath="build/templates/local" toPath="${versionDir}/local" maxFireFoxVersion="${maxLocalFirefoxVersion}"/>
 		<createDirs  fromPath="local" toPath="${versionDir}/local" />
 	</target>
 
@@ -151,7 +155,7 @@
 			<filterchain>
 				<replacetokens>
 					<token key="version" value="${version}" />
-					<token key="maxFirefoxVersion" value="${maxFirefoxVersion}" />
+					<token key="maxFirefoxVersion" value="${maxLocalFirefoxVersion}" />
 					<token key="urlHost" value="${urlHost}" />
 				</replacetokens>
 			</filterchain>
@@ -161,7 +165,7 @@
 			<filterchain>
 				<replacetokens>
 					<token key="version" value="${version}" />
-					<token key="maxFirefoxVersion" value="${maxFirefoxVersion}" />
+					<token key="maxFirefoxVersion" value="${maxLocalFirefoxVersion}" />
 					<token key="urlHost" value="${urlHost}" />
 				</replacetokens>
 			</filterchain>
@@ -175,7 +179,7 @@
 		<property name="urlHost" value="me.2hippo.com" />
 		<echo>Building 2Hippo</echo>
 		<defineIncludes  fromPath="2hippo" toPath="${versionDir}/2hippo" />
-		<filterSrc fromPath="build/templates/2hippo" toPath="${versionDir}/2hippo"/>
+		<filterSrc fromPath="build/templates/2hippo" toPath="${versionDir}/2hippo" maxFireFoxVersion="${maxClientFirefoxVersion}"/>
 		<createDirs  fromPath="2hippo" toPath="${versionDir}/2hippo"  />
 	</target>
 
