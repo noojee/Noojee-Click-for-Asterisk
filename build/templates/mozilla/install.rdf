@@ -12,10 +12,6 @@
         <em:homepageURL>http://@urlHost@/products/noojee-click/click-overview</em:homepageURL>
         <em:optionsURL>chrome://noojeeclick/content/xul/configuration.xul</em:optionsURL>
 
-        <!-- You can't do this when uploading to the mozilla add on site. -->
-		@updateURL@
-
-    <!-- -->
         <em:iconURL>chrome://noojeeclick/content/noojeeclick.png</em:iconURL>
         <em:type>2</em:type> <!-- type=extension --> 
         <em:targetApplication>
