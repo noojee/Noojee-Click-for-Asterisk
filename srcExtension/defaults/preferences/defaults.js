@@ -1,8 +1,13 @@
-/*  Change the host to match the asterisk host.
-Set the username and password to match an Asterisk Management Interface (AMI)
-user on your server (manager.conf). 
-Leave the port setting unless you have change the default asterisk
-configuration.
+/* 
+ * The defaults settings can be used to do basic provisioning.
+ *  Change the host to match the asterisk host.
+ *  Set the username and password to match an Asterisk Management Interface (AMI)
+ *  user on your server (manager.conf).
+ *  Leave the port setting unless you have change the default asterisk
+ *  configuration.
+ *  
+ *  The first time Noojee click runs the username/password will be cleared from the default settings
+ *  and moved into the Mozilla Login Manager.
 */
 pref("extensions.noojeeclick.host", "");
 pref("extensions.noojeeclick.port", "8088");
