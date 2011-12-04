@@ -403,12 +403,14 @@
 									id="delimiters" />
 
 							</row>
+<!-- Removed until mozilla fixes their performance problems with monitoring pages. 							
 							<row  align="center">
 								<label value="Monitor Pages:" />
 								<checkbox preference="extensions.noojeeclick.monitor"
 									id="monitor" />
 
 							</row>
+-->						
 							<row  align="center">
 									<hbox>
 										<checkbox preference="extensions.noojeeclick.enableLogging"
