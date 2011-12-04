@@ -8,7 +8,7 @@ noojeeClick
 		        {
 
 		            // List of tags whose children we will scan looking for
-					// phone numbers
+		            // phone numbers
 		            tagsOfInterest : [ "a", "abbr", "acronym", "address", "applet", "b", "bdo", "big", "blockquote", "body",
 		                    "caption", "center", "cite", "code", "dd", "del", "div", "dfn", "dt", "em", "fieldset", "font",
 		                    "form", "h1", "h2", "h3", "h4", "h5", "h6", "i", "iframe", "ins", "kdb", "li", "object", "pre",
@@ -36,15 +36,15 @@ noojeeClick
 				            try
 				            {
 					            // Special check. It looks like an interaction
-								// problem between the monitor
+					            // problem between the monitor
 					            // and fckEditor. Anyway I'm guessing document
-								// has gone away by the time
+					            // has gone away by the time
 					            // the monitor kicks in. Any reference to the
-								// document will throw an error.
+					            // document will throw an error.
 					            // Given we don't want to add click to dial
-								// links to these type of pages
+					            // links to these type of pages
 					            // we just suppress the error by catching it and
-								// returning.
+					            // returning.
 					            if (doc == null || doc.location == null || doc.location.href == null)
 					            {
 						            return;
@@ -146,19 +146,19 @@ noojeeClick
 					            if (pattern != null && theApp.util.trim(pattern).length != 0)
 					            {
 						            // Get the list of tags that we are gong to
-									// search for matching
+						            // search for matching
 						            // phone numbers.
 						            var xpath = "//text()[(parent::" + this.tagsOfInterest.join(" or parent::") + ")]";
 						            var candidates = document.evaluate(xpath, document, null,
 						                    XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null);
 
 						            // Get the list of regex patterns we are to
-									// match on.
+						            // match on.
 						            var trackRegex = new RegExp(theApp.phonepatterns.transposePattern(pattern), "ig");
 						            theApp.util.njdebug("render", "regex=" + trackRegex);
 
 						            // Loop through and test every candidate for
-									// a match.
+						            // a match.
 						            for ( var cand = null, i = 0; (cand = candidates.snapshotItem(i)); i++)
 						            {
 
@@ -167,15 +167,15 @@ noojeeClick
 							            {
 
 								            // Check that the node isn't owned
-											// by a document which is in
+								            // by a document which is in
 								            // design mode (i.e. an editor such
-											// as fckeditor).
+								            // as fckeditor).
 								            // If it is then we skip the node.
 
 								            theApp.util.njdebug("render", "Scanning for an editor parent for cand=" + cand);
 
 								            // Scan all of the owners checking
-											// for an editor
+								            // for an editor
 								            var parent = cand.parentNode;
 								            var editable = false;
 								            while (parent != null)
@@ -191,17 +191,17 @@ noojeeClick
 									                    || parent.contentEditable == "off" || parent.contentEditable == "false")
 									            {
 										            // parent isn't editable so
-													// search no further.
+										            // search no further.
 										            break;
 									            }
 									            if (parent == parent.parentNode)
 									            {
 										            theApp.util.njerror("render", "bugger, self referencing parent.");
 										            // definition:bugger, from
-													// the latin australias -
-													// woe is
+										            // the latin australias -
+										            // woe is
 										            // me, that shouldn't have
-													// happened.
+										            // happened.
 										            break;
 									            }
 
@@ -211,13 +211,13 @@ noojeeClick
 								            if (editable) continue;
 
 								            // First check that the parent isn't
-											// already a noojeeClick
+								            // already a noojeeClick
 								            // element
 								            // In some cases we appear to be
-											// processing the document
+								            // processing the document
 								            // twice
 								            // but I've not found a simple way
-											// to suppress it so we do
+								            // to suppress it so we do
 								            // this simple check
 								            if (cand.parentNode != null
 								                    && cand.parentNode.getAttribute("name") != "noojeeClick")
@@ -225,15 +225,15 @@ noojeeClick
 									            var candParent = cand.parentNode;
 
 									            // We now remove the candidate
-												// as we are going to
+									            // as we are going to
 									            // re-insert it back into the
-												// parent piecemeal with
-												// noojeeclick
+									            // parent piecemeal with
+									            // noojeeclick
 									            // spans inserted around each
-												// phone number.
+									            // phone number.
 									            // Remember each candidate can
-												// have multiple phone number
-												// present.
+									            // have multiple phone number
+									            // present.
 									            candParent.removeChild(cand);
 
 									            var source = cand.nodeValue;
@@ -241,121 +241,121 @@ noojeeClick
 									            trackRegex.lastIndex = 0;
 
 									            // In a single piece of text we
-												// may have multiple
+									            // may have multiple
 									            // matches
 									            // so we need to iterate over
-												// the list of matches.
+									            // the list of matches.
 									            // We go through the 'text'
-												// identifying each phone
+									            // identifying each phone
 									            // number
 									            // which we wrap in an image tag
-												// with the noojee click
+									            // with the noojee click
 									            // icon.
 									            // As we go we re-insert the
-												// text back into the parent
+									            // text back into the parent
 									            // (which
 									            // we removed it from)
 									            for ( var match = null, lastLastIndex = 0; (match = trackRegex.exec(source));)
 									            {
 										            // OK so we having a
-													// matching string
+										            // matching string
 										            theApp.util.njdebug("render", "match=" + match);
 
 										            // rebuild the original
-													// source string as we go by
+										            // source string as we go by
 										            // adding the non-matching
-													// substrings
+										            // substrings
 										            // between the matching
-													// substrings.
+										            // substrings.
 
 										            // Add the non-matching
-													// substring which appears
+										            // substring which appears
 										            // between
 										            // the matching substrings
-													// into the new parent node.
+										            // into the new parent node.
 										            var nonMatching = source.substring(lastLastIndex, match.index);
 
 										            // Check the characters
-													// immediately before and
+										            // immediately before and
 										            // after the matching digit.
 										            // If we find a digit,
-													// period,
+										            // period,
 										            // comma, plus or minus sign
-													// or one of the defined
+										            // or one of the defined
 										            // delimiters before or
-													// after the
+										            // after the
 										            // matching region then the
-													// match region is probably
+										            // match region is probably
 										            // part of some bigger
-													// number which isn't
-													// actually
+										            // number which isn't
+										            // actually
 										            // a phone number. So mark
-													// it as non-matching and
+										            // it as non-matching and
 										            // move on.
 
 										            // check the preceding
-													// character
+										            // character
 										            if (match.index > 0)
 										            {
 											            // njlog("preceeding=" +
-														// source.substring(
+											            // source.substring(
 											            // match.index - 1,
-														// match.index));
+											            // match.index));
 											            if ("0123456789+-,.".indexOf(source.substring(match.index - 1,
 											                    match.index)) != -1)
 											            {
 												            // the non match had
-															// an invalid
-															// character so
+												            // an invalid
+												            // character so
 												            // our number
-															// mustn't be a
-															// phone number.
+												            // mustn't be a
+												            // phone number.
 												            continue;
 											            }
 											            if (delimiters.indexOf(source.substring(match.index - 1, match.index)) != -1)
 											            {
 												            // the non match had
-															// an invalid
-															// character so
+												            // an invalid
+												            // character so
 												            // our number
-															// mustn't be a
-															// phone number.
+												            // mustn't be a
+												            // phone number.
 												            continue;
 											            }
 										            }
 
 										            // check the following
-													// character.
+										            // character.
 										            if (match.index + match[0].length < source.length - 1)
 										            {
 											            // njlog("following=" +
-														// source.substring(
+											            // source.substring(
 											            // match.index +
-														// match[0].length,
-														// match.index +
+											            // match[0].length,
+											            // match.index +
 											            // match[0].length +
-														// 1));
+											            // 1));
 
 											            if ("0123456789+-,.".indexOf(source.substring(match.index
 											                    + match[0].length, match.index + match[0].length + 1)) != -1)
 											            {
 												            // the non match had
-															// an invalid
-															// character so
+												            // an invalid
+												            // character so
 												            // our number
-															// mustn't be a
-															// phone number.
+												            // mustn't be a
+												            // phone number.
 												            continue;
 											            }
 											            if (delimiters.indexOf(source.substring(match.index + match[0].length,
 											                    match.index + match[0].length + 1)) != -1)
 											            {
 												            // the non match had
-															// an invalid
-															// character so
+												            // an invalid
+												            // character so
 												            // our number
-															// mustn't be a
-															// phone number.
+												            // mustn't be a
+												            // phone number.
 												            continue;
 											            }
 
@@ -365,26 +365,26 @@ noojeeClick
 										            candParent.appendChild(document.createTextNode(nonMatching));
 
 										            // Now render the matching
-													// substring (phone number)
-													// with the noojee Click
+										            // substring (phone number)
+										            // with the noojee Click
 										            // element wrapping it so it
-													// becomes clickable.
+										            // becomes clickable.
 										            // We support a growing
-													// number of render styles.
+										            // number of render styles.
 										            var renderStyle = "button";
 										            var text = document.createTextNode(match[0]);
 										            var clickElement = null;
 										            if (renderStyle == "anchor")
 										            {
 											            // Anchor link which is
-														// clickable but doesn't
-														// present with an icon
+											            // clickable but doesn't
+											            // present with an icon
 											            clickElement = document.createElement("a");
 											            clickElement.setAttribute("style", "cursor:pointer;");
 											            clickElement.addEventListener("click", theApp.handlers.onDialHandler,
 											                    true);
 											            // a.addEventListener("mouseover",
-														// numInfo, false);
+											            // numInfo, false);
 											            clickElement.appendChild(text);
 											            clickElement.setAttribute("PhoneNo", match[0]);
 
@@ -409,9 +409,9 @@ noojeeClick
 											                                    + "border: 0; padding: 0;");
 											            btn.addEventListener("click", theApp.handlers.onDialHandler, false);
 											            // We need to suppress
-														// any mouse action we
-														// may inherit from
-														// parent element
+											            // any mouse action we
+											            // may inherit from
+											            // parent element
 											            btn.addEventListener("mouseover", theApp.handlers.onMouseOver, false);
 											            btn.addEventListener("mouseout", theApp.handlers.onMouseOut, false);
 
@@ -442,9 +442,8 @@ noojeeClick
 		            },
 
 		            /*
-					 * Determines if a document should be excluded by check if
-					 * its URL matches any of the URLs laid out in the excluded
-					 * preferences.
+					 * Determines if a document should be excluded by check if its URL matches any of the URLs laid out in the
+					 * excluded preferences.
 					 */
 		            excluded : function(doc)
 		            {

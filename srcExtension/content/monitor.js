@@ -45,7 +45,7 @@ Monitor: function ()
 	{
 		/*
 		 * 
-		 * We are taking the monitor function out until mozilla fixes the performance problems.
+		 * We are taking the monitor function out until mozilla fixes their performance problems.
 		 * 
 		try
 		{
@@ -61,10 +61,10 @@ Monitor: function ()
 			
 			theApp.util.njdebug("monitor", "init called for document=" + document);
 			this.document = document;
-			var self = this;
-			document.addEventListener("DOMSubtreeModified", function() { self.domModified(); }, false);
-			document.addEventListener("focus", function() { self.onFocus(); }, false);
-			document.addEventListener("blur", function() { self.onBlur(); }, false);
+			//var self = this;
+			//document.addEventListener("DOMSubtreeModified", function() { self.domModified(); }, false);
+			//document.addEventListener("focus", function() { self.onFocus(); }, false);
+			//document.addEventListener("blur", function() { self.onBlur(); }, false);
 
 		}
 		catch (e)
