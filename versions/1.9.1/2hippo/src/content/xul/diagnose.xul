@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+
+<prefwindow type="prefwindow" id="Diagnose" title="Testing Asterisk Connection"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	image="chrome://noojeeclick/content/images/noojee.png" buttons="accept,cancel"
+	helpURI="http://www.noojee.com.au/Page/NoojeeClickHelp" ondialogaccept="onConfigurationClosed();">
+
+
+	<prefpane id="njDiagnose" label="Preferences"
+		helpURI="http://www.noojee.com.au/Page/NoojeeClickHelp">
+
+				<pane id="diagnose">
+					<grid>
+						<columns>
+							<column width="130" />
+							<column />
+						</columns>
+						<rows>
+							<vbox>
+								<label value="Console:" />
+								<textbox rows="15" cols="80" multiline="true"
+									 id="njDiagConsole" readonly="true" 
+									 value="Sorry, the connection tester isn't implmented as yet :&lt; ."/>
+							</vbox>
+						</rows>
+
+					</grid>
+
+
+				</pane>
+	</prefpane>
+
+	<script type="application/x-javascript" src="chrome://noojeeclick/content/diagnose.js" />
+
+</prefwindow>
