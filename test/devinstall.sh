@@ -1,9 +1,9 @@
 $!/bin/bash
-target=/home/bsutton/.mozilla/firefox/jx1m41r5.default/extensions
+target=~/.mozilla/firefox/3g0nlpt5.default/extensions
 
 echo ${target}
 rm -rf ${target}/noojeeclick@noojee.com.au
-cp noojeeclick@noojee.com.au ${target}
+cp test/noojeeclick@noojee.com.au ${target}
 
 
 echo Make certain you have the following firefox boolean property set \(via about:config\) 
