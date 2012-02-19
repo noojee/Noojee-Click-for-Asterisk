@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xhtml>
+<body>
+<h1>Release notes</h1>
+<p>Version 0.4.8
+Fixed bug in translating international Prefixes.
+Fixed a problem for overlapping patterns in that the shortest pattern was matched
+when we actually want the longest pattern to match.
+Improved matching of spaces to allow for matching of any valid html whitespace including non-breaking spaces.
+Added a default set of phone patterns.
+</p> 
+</body>
+</xhtml>

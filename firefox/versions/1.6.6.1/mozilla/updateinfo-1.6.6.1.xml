@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xhtml>
+<body>
+<h1>Release notes</h1>
+<p>Version 1.6.6.1</p>
+Some serious performance improvements for the monitor. It will now only monitor the active page instead of every open page.
+This should make a big difference for user that open lots of tabs. Oddly this never really seemed to be a problem under 3.x but under
+4.x (which is meant to be faster) it was causing major hangs.
+Fixed a bug in the render engine that was causing Firefox 4.0 to hang all too frequently.
+Removed the use of a noojeeClicTop span as this wasn't actually necessary.
+Tested for regression in Firefox 3.x and 4.0 - all good.
+Tweaked the rendering of the noojee click button so that it bottom aligns its self and so that its background was transparent (rather than white).
+Modified the Aastra auto-answer header based on feedback from users.
+
+We have now dropped support for Firefox 2.x
+
+<p>If you have feature requests or installation/configuration problems post them at http://forums.noojee.com.au</p>
+</body>
+</xhtml>
