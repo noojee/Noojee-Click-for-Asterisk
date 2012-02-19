@@ -1,0 +1,31 @@
+{
+	"name" : "Noojee Click for Asterisk",
+	"version" : "0.9",
+	"description" : "Turns phone numbers in any web page into 'click to dial' links. With Noojee Click and Asterisk you can dial any phone number on a web page with a single click.",
+	"background_page" : "background.html",
+	"options_page" : "options.html",
+	"icons" : {
+		"128" : "img/phone-128.png"
+	},
+	"content_scripts": [
+	{
+		"matches": ["*://*/*"],
+		"js": [
+			"js/noojee/namespace.js", 
+			"js/noojee/lib.js", 
+			"js/noojee/noojeeclick.js", 
+			"js/noojee/prefs.js", 
+			"js/noojee/util.js", 
+			"js/noojee/prompts.js", 
+			"js/noojee/render.js", 
+			"js/noojee/phonepatterns.js", 
+			"js/noojee/handlers.js", 
+			"js/init.js"]
+	}
+	],
+	"permissions" : [
+		"http://*/", 
+		"contextMenus",
+		"notifications"
+	]
+}
