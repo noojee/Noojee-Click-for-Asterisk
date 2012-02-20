@@ -1,0 +1,61 @@
+<project name="NoojeeClick" default="dist" basedir=".">
+
+	<description>
+		Build file for Chrome/Chromium extension.
+	</description>
+	
+	<!-- set global properties for this build -->
+	<property name="src"    location="src"/>
+	<property name="build"  location="build"/>
+	<property name="dist"   location="dist"/>
+	<property name="chrome" location="/usr/bin/google-chrome"/>
+	
+	<!-- ==============================
+		Initialization
+		-->
+	<target name="init">
+		<tstamp/>
+	</target>
+
+	<!-- ==============================
+		Builds the NoojeeClick extension
+		Merges common and specific sources
+		-->
+	<target name="build" depends="init">
+		<!-- Create the build directory -->
+		<mkdir dir="${build}"/>
+		
+		<!-- Merge common and specific sources -->
+		<copy todir="${build}">
+			<fileset dir="../common"/>
+			<fileset dir="${src}"/>
+		</copy>	
+	</target>
+	
+	<!-- ==============================
+		Packages NoojeeClick extension
+		-->
+	<target name="dist" depends="build">
+		<!-- Create the distribution directory -->
+		<mkdir dir="${dist}"/>
+		
+		<!-- Command line packaging -->
+		<exec executable="${chrome}">
+			<arg value="--pack-extension=${build}"/>
+			<arg value="--pack-extension-key=../../noojee_click.pem"/>
+			<arg value="--no-message-box"/>
+		</exec>
+		
+		<!-- Move generated file -->
+		<move file="build.crx" tofile="${dist}/noojee_click.crx"/>
+	</target>
+
+	<!-- ==============================
+		Clean-up
+		-->
+	<target name="clean">
+		<delete dir="${build}"/>
+		<delete dir="${dist}"/>
+		<delete file="build.crx"/>
+	</target>
+</project>
