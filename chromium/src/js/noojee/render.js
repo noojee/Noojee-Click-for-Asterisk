@@ -49,7 +49,7 @@ noojeeClick
 		            onRefreshOne : function(doc)
 		            {
 
-			            theApp.util.debug("render", "onRefreshOne called for doc=" + doc);
+			            theApp.util.njdebug("render", "onRefreshOne called for doc=" + doc);
 			            try
 			            {
 				            try
@@ -71,14 +71,14 @@ noojeeClick
 				            }
 				            catch (e)
 				            {
-					            theApp.util.error("excluded document with null href");
+					            theApp.util.njerror("excluded document with null href");
 					            return;
 				            }
 
 				            // First remove any noojeeClick spans.
 				            var spans = doc.getElementsByName("noojeeClick");
-				            theApp.util.debug("remove", "noojeeClick spans=" + spans);
-				            theApp.util.debug("remove", "span.length=" + spans.length);
+				            theApp.util.njdebug("remove", "noojeeClick spans=" + spans);
+				            theApp.util.njdebug("remove", "span.length=" + spans.length);
 
 				            var removalSpanArray = [];
 				            var removedSpanItemCount = 0;
@@ -94,15 +94,15 @@ noojeeClick
 					            for ( var j = children.length - 1; j >= 0; j--)
 					            {
 						            var child = children[j];
-						            theApp.util.debug("remove", "found child.nodeName=" + child.nodeName);
-						            theApp.util.debug("remove", "child.nodeValue=" + child.nodeValue);
+						            theApp.util.njdebug("remove", "found child.nodeName=" + child.nodeName);
+						            theApp.util.njdebug("remove", "child.nodeValue=" + child.nodeValue);
 
 						            var deleted = false;
 						            if (child.nodeName.toLowerCase() == this.njClickElementType.toLowerCase())
 						            {
 							            if (child.name.toLowerCase() == this.njClickElementName.toLowerCase())
 							            {
-								            theApp.util.debug("remove", "removing child.nodeName=" + child.nodeName);
+								            theApp.util.njdebug("remove", "removing child.nodeName=" + child.nodeName);
 								            removalImageArray[removedImageItemCount++] = child;
 								            deleted = true;
 							            }
@@ -130,7 +130,7 @@ noojeeClick
 						            parentNode.normalize();
 					            }
 					            else
-						            theApp.util.debug("remove", "unexpected null parentNode for: " + removalSpanArray[l]);
+						            theApp.util.njdebug("remove", "unexpected null parentNode for: " + removalSpanArray[l]);
 				            }
 
 				            // Now add the Noojee Dial icons back in.
@@ -142,7 +142,7 @@ noojeeClick
 			            }
 			            catch (e)
 			            {
-				            theApp.util.error(e);
+				            theApp.util.njerror(e);
 				            theApp.util.showException("onRefreshOne", e);
 			            }
 		            },
@@ -152,15 +152,15 @@ noojeeClick
 			            try
 			            {
 				            if (this.excluded(document) == true)
-					            theApp.util.debug("render", "excluded=" + document.location.href);
+					            theApp.util.njdebug("render", "excluded=" + document.location.href);
 				            else
 				            {
-					            theApp.util.debug("render", "rendering: "
+					            theApp.util.njdebug("render", "rendering: "
 					                    + (document.location ? document.location.href : document));
 
 					            var pattern = theApp.prefs.getValue("pattern");
 					            var delimiters = theApp.prefs.getValue("delimiters");
-					            theApp.util.debug("render", "pattern =" + pattern);
+					            theApp.util.njdebug("render", "pattern =" + pattern);
 
 					            if (pattern != null && theApp.util.trim(pattern).length != 0)
 					            {
@@ -174,14 +174,14 @@ noojeeClick
 						            // Get the list of regex patterns we are to
 						            // match on.
 						            var trackRegex = new RegExp(theApp.phonepatterns.transposePattern(pattern), "ig");
-						            theApp.util.debug("render", "regex=" + trackRegex);
+						            theApp.util.njdebug("render", "regex=" + trackRegex);
 
 						            // Loop through and test every candidate for
 						            // a match.
 						            for ( var cand = null, i = 0; (cand = candidates.snapshotItem(i)); i++)
 						            {
 
-							            theApp.util.debug("render", "examining node=" + cand.nodeValue);
+							            theApp.util.njdebug("render", "examining node=" + cand.nodeValue);
 							            if (trackRegex.test(cand.nodeValue))
 							            {
 
@@ -191,7 +191,7 @@ noojeeClick
 								            // as fckeditor).
 								            // If it is then we skip the node.
 
-								            theApp.util.debug("render", "Scanning for an editor parent for cand=" + cand);
+								            theApp.util.njdebug("render", "Scanning for an editor parent for cand=" + cand);
 
 								            // Scan all of the owners checking
 								            // for an editor
@@ -202,7 +202,7 @@ noojeeClick
 									            if (parent.designMode == "on" || parent.designMode == "true"
 									                    || parent.contentEditable == "on" || parent.contentEditable == "true")
 									            {
-										            theApp.util.debug("render", "Found node in designMode, skipping");
+										            theApp.util.njdebug("render", "Found node in designMode, skipping");
 										            editable = true;
 										            break;
 									            }
@@ -215,7 +215,7 @@ noojeeClick
 									            }
 									            if (parent == parent.parentNode)
 									            {
-										            theApp.util.error("render", "bugger, self referencing parent.");
+										            theApp.util.njerror("render", "bugger, self referencing parent.");
 										            // definition:bugger, from
 										            // the latin australias -
 										            // woe is
@@ -256,7 +256,7 @@ noojeeClick
 									            candParent.removeChild(cand);
 
 									            var source = cand.nodeValue;
-									            theApp.util.debug("render", "source=" + source);
+									            theApp.util.njdebug("render", "source=" + source);
 									            trackRegex.lastIndex = 0;
 
 									            // In a single piece of text we
@@ -278,7 +278,7 @@ noojeeClick
 									            {
 										            // OK so we having a
 										            // matching string
-										            theApp.util.debug("render", "match=" + match);
+										            theApp.util.njdebug("render", "match=" + match);
 
 										            // rebuild the original
 										            // source string as we go by
@@ -379,7 +379,7 @@ noojeeClick
 											            }
 
 										            }
-										            theApp.util.debug("render", "match is good");
+										            theApp.util.njdebug("render", "match is good");
 
 										            candParent.appendChild(document.createTextNode(nonMatching));
 
@@ -415,7 +415,7 @@ noojeeClick
 											            clickElement.setAttribute("name", "noojeeClick");
 											            clickElementid = "noojeeClick-click";
 
-											            theApp.util.debug("render", "match[0]=" + match[0]);
+											            theApp.util.njdebug("render", "match[0]=" + match[0]);
 											            var btn = document.createElement(this.njClickElementType);
 											            btn.setAttribute("name", this.njClickElementName);
 											            btn.id = "noojeeClick-btn";
@@ -450,12 +450,12 @@ noojeeClick
 							            }
 						            }
 					            }
-					            theApp.util.debug("render", "rendering complete:" + new Date());
+					            theApp.util.njdebug("render", "rendering complete:" + new Date());
 				            }
 			            }
 			            catch (e)
 			            {
-				            theApp.util.error(e);
+				            theApp.util.njerror(e);
 				            theApp.util.showException("addClickToDialLinks", e);
 			            }
 
@@ -473,12 +473,12 @@ noojeeClick
 			            {
 				            if (doc.location != null && doc.location.href != null)
 				            {
-					            theApp.util.debug("excluded", "checking exclusion for url=" + doc.location.href);
+					            theApp.util.njdebug("excluded", "checking exclusion for url=" + doc.location.href);
 
 					            var exclusions = theApp.prefs.getValue("exclusions");
 					            if (exclusions != null && exclusions.length != 0)
 					            {
-						            theApp.util.debug("excluded", "exclusions=" + exclusions);
+						            theApp.util.njdebug("excluded", "exclusions=" + exclusions);
 						            exclusions = exclusions.split("\n");
 						            for ( var i = 0; i < exclusions.length; i++)
 						            {
@@ -487,7 +487,7 @@ noojeeClick
 							            {
 								            if (doc.location.href != null && doc.location.href.indexOf(exclusion) == 0)
 								            {
-									            theApp.util.debug("excluded", "excluded: " + doc.location.href);
+									            theApp.util.njdebug("excluded", "excluded: " + doc.location.href);
 									            excluded = true;
 									            break;
 								            }
@@ -495,13 +495,13 @@ noojeeClick
 						            }
 					            }
 					            else
-						            theApp.util.debug("excluded", "No Exclusions.");
+						            theApp.util.njdebug("excluded", "No Exclusions.");
 				            }
 
 			            }
 			            catch (e)
 			            {
-				            theApp.util.error(e);
+				            theApp.util.njerror(e);
 				            theApp.util.showException("excluded", e);
 			            }
 

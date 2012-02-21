@@ -25,12 +25,12 @@ theApp.prompts =
 
 
 
-showAlert: function (msg)
+njAlert: function (msg)
 {
 	alert(msg);
 },
 
-showPrompt: function (msg, defaultValue)
+njPrompt: function (msg, defaultValue)
 {
 	var input = {value: defaultValue};
 	var check = {value: false};

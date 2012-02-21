@@ -31,7 +31,7 @@ onMouseOver: function (e)
 	// might do something unexpected.
 	e.stopPropagation();
 
-	theApp.util.debug("handlers", "onMouseOver");
+	theApp.util.njdebug("handlers", "onMouseOver");
 	e.preventDefault();
 },
 
@@ -42,18 +42,18 @@ onMouseOut: function (e)
 	// might do something unexpected.
 	e.stopPropagation();
 	
-	theApp.util.debug("handlers", "onMouseOut");
+	theApp.util.njdebug("handlers", "onMouseOut");
 	e.preventDefault();
 },
 
 onDial: function (e)
 {
-	theApp.util.debug("handlers", "onDial");
+	theApp.util.njdebug("handlers", "onDial");
 	var obj = theApp.noojeeclick.ns6 ? e.target : event.srcElement;
 	var phoneNo = obj.getAttribute("phoneNo");
 
 	if (phoneNo == null || phoneNo.length == 0)
-		theApp.prompts.showAlert("Please enter a phone number.");
+		theApp.prompts.njAlert("Please enter a phone number.");
 	else {
 		chrome.extension.sendRequest({type: "dial", phoneNo: phoneNo});
 	}
@@ -67,7 +67,7 @@ onDial: function (e)
 */
 onHangup: function ()
 {
-	theApp.util.debug("handlers", "onHangup");
+	theApp.util.njdebug("handlers", "onHangup");
 	theApp.asterisk.getInstance().hangup();
 	theApp.noojeeclick.resetIcon();
 
@@ -77,7 +77,7 @@ onHangup: function ()
 // Just do the simple dial
 onDialHandler: function (e)
 {
-	theApp.util.debug("handlers", "onDialHandler");
+	theApp.util.njdebug("handlers", "onDialHandler");
 	try
 	{
 		if (!e)
@@ -93,7 +93,7 @@ onDialHandler: function (e)
 	}
 	catch (e)
 	{
-		theApp.util.log(e);
+		theApp.util.njlog(e);
 		theApp.util.showException("onDialHandler", e);
 	}
 	e.preventDefault();
@@ -102,7 +102,7 @@ onDialHandler: function (e)
 
 onDialDifferently: function (e)
 {
-	theApp.util.debug("handlers", 'Dial differently');
+	theApp.util.njdebug("handlers", 'Dial differently');
 
 	var obj = ns6 ? e.target : event.srcElement;
 	this.doDialDifferently(obj);
@@ -111,11 +111,11 @@ onDialDifferently: function (e)
 
 dialSelectionMenuAction: function ()
 {
-	theApp.util.debug("handlers", "dialSelectionMenuAction called");
+	theApp.util.njdebug("handlers", "dialSelectionMenuAction called");
 	var phoneNo = theApp.util.getSelectedText();
 	if (phoneNo == null || phoneNo.length == 0)
 	{
-		theApp.prompts.showAlert("Please select a phone number first");
+		theApp.prompts.njAlert("Please select a phone number first");
 		return;
 	}
 
@@ -124,7 +124,7 @@ dialSelectionMenuAction: function ()
 	{
 		phoneNo = result.value;
 		if (phoneNo.length == 0)
-			theApp.prompts.showAlert("Please enter a phone number.");
+			theApp.prompts.njAlert("Please enter a phone number.");
 		else
 			theApp.asterisk.getInstance().dial(phoneNo);
 	}
@@ -139,7 +139,7 @@ dialFromClipboardMenuAction: function ()
 	{
 		phoneNo = result.value;
 		if (phoneNo.length == 0)
-			theApp.prompts.showAlert("Please enter a phone number.");
+			theApp.prompts.njAlert("Please enter a phone number.");
 		else
 			theApp.asterisk.getInstance().dial(phoneNo);
 	}
@@ -148,14 +148,14 @@ dialFromClipboardMenuAction: function ()
 dialDifferentlyMenuAction: function (target)
 {
 	target = document.popupNode;
-	theApp.util.debug("handlers", "target=" + target);
+	theApp.util.njdebug("handlers", "target=" + target);
 
 	// if (target.onImage)
 	{
 		this.doDialDifferently(target);
 	}
 	// else
-	// showAlert("Dial differently only works on the Noojee Click dial icon");
+	// njAlert("Dial differently only works on the Noojee Click dial icon");
 },
 
 doDialDifferently: function (target)
@@ -166,7 +166,7 @@ doDialDifferently: function (target)
 	{
 		phoneNo = result.value;
 		if (phoneNo.length == 0)
-			theApp.prompts.showAlert("Please enter a phone number.");
+			theApp.prompts.njAlert("Please enter a phone number.");
 		else
 			theApp.asterisk.getInstance().dial(phoneNo);
 	}
@@ -180,7 +180,7 @@ dialMenuAction: function ()
 	{
 		phoneNo = result.value;
 		if (phoneNo.length == 0)
-			theApp.prompts.showAlert("Please enter a phone number.");
+			theApp.prompts.njAlert("Please enter a phone number.");
 		else
 			theApp.asterisk.getInstance().dial(phoneNo);
 	}
@@ -188,14 +188,14 @@ dialMenuAction: function ()
 
 redialMenuAction: function ()
 {
-	theApp.util.debug("handlers", "redialMenuAction called");
+	theApp.util.njdebug("handlers", "redialMenuAction called");
 	var phoneNo = theApp.prefs.getValue("lastDialed");
 	if (phoneNo != null && phoneNo.length > 0)
 	{
 		theApp.asterisk.getInstance().dial(phoneNo);
 	}
 	else
-		theApp.prompts.showAlert("Redial string is empty."); // this shouldn't happen.
+		theApp.prompts.njAlert("Redial string is empty."); // this shouldn't happen.
 },
 
 onAddDialPatternMenuAction: function ()
@@ -204,7 +204,7 @@ onAddDialPatternMenuAction: function ()
 	var phoneNo = theApp.util.getRawSelectedText();
 	if (phoneNo == null || theApp.util.trim(phoneNo).length == 0)
 	{
-		theApp.promptsshowAlert("Please select a phone number first");
+		theApp.prompts.njAlert("Please select a phone number first");
 		return;
 	}
 
@@ -239,7 +239,7 @@ onAddDialPatternMenuAction: function ()
 					newPattern += ' ';
 					break;
 				default:
-					theApp.prompts.showAlert("Unsupported character '" + phoneNo[i] + "' found in phone number. Add the character to the 'Delimiters' field on 'Advanced' tab in the Noojee Click configuration and try again.");
+					theApp.prompts.njAlert("Unsupported character '" + phoneNo[i] + "' found in phone number. Add the character to the 'Delimiters' field on 'Advanced' tab in the Noojee Click configuration and try again.");
 					fault = true;
 					break;
 

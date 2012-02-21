@@ -46,13 +46,13 @@ Dial: function ()
 				
 		if (extension == null)
 		{
-			theApp.prompts.showAlert("Please enter your extension via the configuration panel first.");
+			theApp.prompts.njAlert("Please enter your extension via the configuration panel first.");
 			return;
 		}
 
 		if (context == null)
 		{
-			theApp.prompts.showAlert("Please enter the context via the configuration panel first.");
+			theApp.prompts.njAlert("Please enter the context via the configuration panel first.");
 			return;
 		}
 
@@ -67,7 +67,7 @@ Dial: function ()
 			channel += extension;
 		}
 
-		theApp.util.debug("job", "Channel=" + channel);
+		theApp.util.njdebug("job", "Channel=" + channel);
 
 		// dial
 		var url = theApp.job.genURL("Originate");
@@ -96,17 +96,17 @@ Dial: function ()
 			url += "&CallerId=" + normalised; // no caller id so we like to display the number we dialling
 												// on the users handset.
 
-		theApp.util.debug("job", "url=" + url);
+		theApp.util.njdebug("job", "url=" + url);
 
 		// Get the auto answer header if there is one
 		var enableAutoAnswer = theApp.prefs.getBoolValue("enableAutoAnswer");
-		theApp.util.debug("job", "AutoAnswer=" + enableAutoAnswer + " handsetType=" + handsetType);
+		theApp.util.njdebug("job", "AutoAnswer=" + enableAutoAnswer + " handsetType=" + handsetType);
 		if (enableAutoAnswer)
 		{
 			var i = 0;
 			for (i = 0; i < theApp.noojeeclick.autoAnswerList.length; i++)
 			{
-				theApp.util.debug("job", "manufacturer(i)=" + theApp.noojeeclick.autoAnswerList[i].manufacturer);
+				theApp.util.njdebug("job", "manufacturer(i)=" + theApp.noojeeclick.autoAnswerList[i].manufacturer);
 				if (handsetType == theApp.noojeeclick.autoAnswerList[i].manufacturer)
 				{
 					url += "&Variable=" + "SIPAddHeader=" + theApp.noojeeclick.autoAnswerList[i].header;
@@ -117,15 +117,15 @@ Dial: function ()
 
 		url += "&Priority=1";
 
-		theApp.util.debug("job", "Dialing");
+		theApp.util.njdebug("job", "Dialing");
 
 		this.status = function()
 		{
-			theApp.util.log("Dialing: " + phoneNo + " (" + normalised + ")");
+			theApp.util.njlog("Dialing: " + phoneNo + " (" + normalised + ")");
 		};
 
 		theApp.dialstatus.getInstance().updateStatus("Dialing: " + phoneNo);
-		theApp.util.debug("job", "dialurl=" + url);
+		theApp.util.njdebug("job", "dialurl=" + url);
 		sequence.request(url);
 	};
 
@@ -134,7 +134,7 @@ Dial: function ()
 		var abort = false;
 		if (result.response != "Success")
 		{
-			theApp.util.log("Dial Failed");
+			theApp.util.njlog("Dial Failed");
 			theApp.asterisk.getInstance().updateState("");
 			theApp.noojeeclick.resetIcon();
 			theApp.notification.getInstance().hide();
@@ -199,13 +199,13 @@ Answer: function (channel)
 
 		if (extension == null)
 		{
-			theApp.prompts.showAlert("Please enter your extension via the configuration panel first.");
+			theApp.prompts.njAlert("Please enter your extension via the configuration panel first.");
 			return;
 		}
 
 		if (context == null)
 		{
-			theApp.prompts.showAlert("Please enter the context via the configuration panel first.");
+			theApp.prompts.njAlert("Please enter the context via the configuration panel first.");
 			return;
 		}
 
@@ -220,7 +220,7 @@ Answer: function (channel)
 			localChannel += extension;
 		}
 
-		theApp.util.debug("job", "LocalChannel=" + localChannel);
+		theApp.util.njdebug("job", "LocalChannel=" + localChannel);
 
 		// dial
 		var url = theApp.job.genURL("Redirect");
@@ -229,17 +229,17 @@ Answer: function (channel)
 		url += "&Context=" + context;
 		url += "&CallerId=" + phoneNo; // + "-NoojeeClick";
 	
-		theApp.util.debug("job", "url=" + url);
+		theApp.util.njdebug("job", "url=" + url);
 
 		// Get the auto answer header if there is one
 		enableAutoAnswer = theApp.prefs.getBoolValue("enableAutoAnswer");
-		theApp.util.debug("job", "AutoAnswer=" + enableAutoAnswer + " handsetType=" + handsetType);
+		theApp.util.njdebug("job", "AutoAnswer=" + enableAutoAnswer + " handsetType=" + handsetType);
 		if (enableAutoAnswer)
 		{
 			var i = 0;
 			for (i = 0; i < theApp.noojeeclick.autoAnswerList.length; i++)
 			{
-				theApp.util.debug("job", "manufacturer(i)=" + theApp.noojeeclick.autoAnswerList[i].manufacturer);
+				theApp.util.njdebug("job", "manufacturer(i)=" + theApp.noojeeclick.autoAnswerList[i].manufacturer);
 				if (handsetType == theApp.noojeeclick.autoAnswerList[i].manufacturer)
 				{
 					url += "&Variable=" + "SIPAddHeader=" + theApp.noojeeclick.autoAnswerList[i].header;
@@ -250,15 +250,15 @@ Answer: function (channel)
 
 		url += "&Priority=1";
 
-		theApp.util.debug("job", "Answering");
+		theApp.util.njdebug("job", "Answering");
 
 		this.status = function()
 		{
-			theApp.util.log("Answering: " + phoneNo + " (" + normalised + ")");
+			theApp.util.njlog("Answering: " + phoneNo + " (" + normalised + ")");
 		};
 
 		theApp.dialstatus.getInstance().updateStatus("Answering: " + phoneNo);
-		theApp.util.debug("job", "answerurl=" + url);
+		theApp.util.njdebug("job", "answerurl=" + url);
 		sequence.request(url);
 	};
 
@@ -268,7 +268,7 @@ Answer: function (channel)
 		authRequired = false;
 		if (result.response != "Success")
 		{
-			theApp.util.log("Answer Failed");
+			theApp.util.njlog("Answer Failed");
 			theApp.asterisk.getInstance().updateState("");
 			theApp.noojeeclick.resetIcon();
 			if (result.message == "Authentication Required")
@@ -333,16 +333,16 @@ Wait: function (subSequence)
 		else
 			url += "&Timeout=30";
 
-		theApp.util.debug("job", "url=" + url);
+		theApp.util.njdebug("job", "url=" + url);
 
-		theApp.util.debug("job", "starting event monitoring");
+		theApp.util.njdebug("job", "starting event monitoring");
 
 		this.status = function()
 		{
-			theApp.util.log("WaitEvent: event monitoring initialised.");
+			theApp.util.njlog("WaitEvent: event monitoring initialised.");
 		};
 
-		theApp.util.debug("job", "waitEventurl=" + url);
+		theApp.util.njdebug("job", "waitEventurl=" + url);
 		sequence.request(url);
 	};
 
@@ -360,7 +360,7 @@ Wait: function (subSequence)
 	{
 		var abort = false;
 
-		theApp.util.debug("job", "waitEvent has returned, result=" + result);
+		theApp.util.njdebug("job", "waitEvent has returned, result=" + result);
 		if (result.response != "Success")
 		{
 			theApp.util.showError(result.response, result.message);
@@ -399,13 +399,13 @@ Wait: function (subSequence)
 		
 		if (responseText == null || responseText.length == 0)
 		{
-			theApp.util.log("Unexpected error responseText is empty, asterisk may be down.");
+			theApp.util.njlog("Unexpected error responseText is empty, asterisk may be down.");
 			theApp.dialstatus.getInstance().updateStatus("Unable to connect to Asterisk.");
 		}
 		else
 		{
 			var result = parseResponse(details.responseText);
-			theApp.util.log("Action failed " + result.message);
+			theApp.util.njlog("Action failed " + result.message);
 			theApp.util.showError(result.response, result.message);
 		}
 	};
@@ -427,39 +427,39 @@ HangupAction: function (channel)
 
 		if (extension == null)
 		{
-			theApp.prompts.showAlert("Please enter your extension via the configuration panel first.");
+			theApp.prompts.njAlert("Please enter your extension via the configuration panel first.");
 			return;
 		}
 
 		if (context == null)
 		{
-			theApp.prompts.showAlert("Please enter the context via the configuration panel first.");
+			theApp.prompts.njAlert("Please enter the context via the configuration panel first.");
 			return;
 		}
 
 		// If no tech specified then add SIP/ otherwise use the selected tech.
 		var channel = "&Channel=" + this.channel;
 
-		theApp.util.debug("job", "hangup channel=" + this.channel);
+		theApp.util.njdebug("job", "hangup channel=" + this.channel);
 
 		// dial
 		var url = theApp.job.genURL("Hangup");
 		url += channel;
 		url += "&Context=" + context;
 
-		theApp.util.debug("job", "url=" + url);
+		theApp.util.njdebug("job", "url=" + url);
 
 		url += "&Priority=1";
 
-		theApp.util.debug("job", "Hangup");
+		theApp.util.njdebug("job", "Hangup");
 
 		this.status = function()
 		{
-			theApp.util.log("Hangup: " + extension);
+			theApp.util.njlog("Hangup: " + extension);
 		};
 
 		//theApp.dialstatus.getInstance().updateStatus("Hangup: " + extension);
-		theApp.util.debug("job", "hangup url=" + url);
+		theApp.util.njdebug("job", "hangup url=" + url);
 		sequence.request(url);
 	};
 
@@ -500,13 +500,13 @@ Ping: function ()
 	this.name = "Ping";
 	this.run = function(sequence, param)
 	{
-		theApp.util.log("ping");
+		theApp.util.njlog("ping");
 		// ping
 		var url = theApp.job.genURL("Ping");
 
 		this.status = function()
 		{
-			theApp.util.log("Pinging");
+			theApp.util.njlog("Pinging");
 		};
 
 		sequence.request(url);
@@ -542,13 +542,13 @@ Status: function ()
 	
 	this.run = function(sequence, param)
 	{
-		theApp.util.log("status");
+		theApp.util.njlog("status");
 		// status
 		var url = theApp.job.genURL("Status");
 
 		this.status = function()
 		{
-			theApp.util.log("Checking Asterisk Status");
+			theApp.util.njlog("Checking Asterisk Status");
 		};
 
 		sequence.request(url);
@@ -584,11 +584,11 @@ Complete: function ()
 	
 	this.run = function(sequence, param)
 	{
-		theApp.util.debug("job", "complete");
+		theApp.util.njdebug("job", "complete");
 		// status
 		this.status = function()
 		{
-			theApp.util.debug("job", "Checking Asterisk Status");
+			theApp.util.njdebug("job", "Checking Asterisk Status");
 		};
 
 		theApp.notification.getInstance().hide();
@@ -624,20 +624,20 @@ Login: function ()
 	this.name = "Login";
 	this.run = function(sequence, phoneNo)
 	{
-		theApp.util.debug("job", "login");
+		theApp.util.njdebug("job", "login");
 		var url = theApp.job.genURL("Login");
 		var username = theApp.prefs.getValue("username");
 		var password = theApp.prefs.getValue("password");
 		theApp.asterisk.getInstance().setLoggedIn(false);
 		
-		theApp.util.debug("job", "Username: " + username);
+		theApp.util.njdebug("job", "Username: " + username);
 		url += "&Username=" + username;
 		url += "&Secret=" + password;
 		url += "&Events=call";
 
 		this.status = function()
 		{
-			theApp.util.log("Authenticating");
+			theApp.util.njlog("Authenticating");
 		};
 
 		// theApp.dialstatus.getInstance().updateStatus("Authenticating");
@@ -662,7 +662,7 @@ Login: function ()
 		else
 		{
 			theApp.asterisk.getInstance().setLoggedIn(true);
-			theApp.util.log("Login completed.");
+			theApp.util.njlog("Login completed.");
 		}
 		return abort;
 	};
@@ -686,7 +686,7 @@ Logoff: function ()
 
 		this.status = function()
 		{
-			theApp.util.log("Logging off");
+			theApp.util.njlog("Logging off");
 		};
 
 		theApp.dialstatus.getInstance().updateStatus("Logging Off");
@@ -720,7 +720,7 @@ Logoff: function ()
 // Returns the url to execute when the user clicks on the url
 genURL: function (command)
 {
-	theApp.util.debug("job", "genURL(command)=" + command);
+	theApp.util.njdebug("job", "genURL(command)=" + command);
 	var url = null;
 
 	var protocol = "http://";
@@ -738,18 +738,18 @@ genURL: function (command)
 		httpPrefix = "/";
 	else
 		httpPrefix = "/" + theApp.util.trim(httpPrefix) + "/";
-	theApp.util.debug("job", "serverType=" + serverType);
+	theApp.util.njdebug("job", "serverType=" + serverType);
 	if (serverType == theApp.noojeeclick.serverTypeList[0].type)
 		url = protocol + host + ":" + port + httpPrefix + "manager?action=" + command;
 	else if (serverType == theApp.noojeeclick.serverTypeList[1].type)
 		url = protocol + host + ":" + port + httpPrefix + "mxml?action=" + command;
 	else
 	{
-		theApp.util.log("Error: Unknown server type selected =" + serverType);
-		theApp.prompts.showAlert("Unknown server type selected =" + serverType);
+		theApp.util.njlog("Error: Unknown server type selected =" + serverType);
+		theApp.prompts.njAlert("Unknown server type selected =" + serverType);
 	}
 
-	theApp.util.debug("job", "genURL ret=" + url);
+	theApp.util.njdebug("job", "genURL ret=" + url);
 	return url;
 },
 

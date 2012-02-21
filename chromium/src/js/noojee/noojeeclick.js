@@ -76,7 +76,7 @@ noojeeClick.ns(function()
 			 */
 		    onPageLoad : function(e)
 		    {
-			    theApp.util.debug("noojeeclick", "onPageLoad called");
+			    theApp.util.njdebug("noojeeclick", "onPageLoad called");
 			    try
 			    {
 
@@ -98,12 +98,12 @@ noojeeClick.ns(function()
 						    theApp.render.addClickToDialLinks(document);
 					    }
 					    else
-						    theApp.util.error("Loading of Styles failed so init terminated");
+						    theApp.util.njerror("Loading of Styles failed so init terminated");
 				    }
 			    }
 			    catch (e)
 			    {
-				    theApp.util.log(e);
+				    theApp.util.njlog(e);
 				    theApp.util.showException("onPageLoad", e);
 			    }
 		    },
@@ -253,7 +253,7 @@ noojeeClick.ns(function()
 
 		    resetIcon : function()
 		    {
-				 theApp.util.debug("noojeeclick", "resetIcon");
+				 theApp.util.njdebug("noojeeclick", "resetIcon");
 				 chrome.browserAction.setBadgeText({text:""});
 		    },
 

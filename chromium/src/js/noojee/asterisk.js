@@ -72,7 +72,7 @@ Asterisk: function ()
 	
 	this.init = function()
 	{
-		theApp.util.log("initializing Asterisk");
+		theApp.util.njlog("initializing Asterisk");
 		var sequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.Wait(null) ], "", true);
 		sequence.run();
 	};
@@ -85,19 +85,19 @@ Asterisk: function ()
 	this.setChannel = function (_channel)
 	{
 		this.channel = _channel;
-		theApp.util.debug("asterisk", "Asterisk.channel set to " + this.channel);
+		theApp.util.njdebug("asterisk", "Asterisk.channel set to " + this.channel);
 	};
 
 	this.dial = function(phoneNo)
 	{
-		theApp.util.debug( "asterisk", "Asterisk.dial=" + phoneNo);
+		theApp.util.njdebug( "asterisk", "Asterisk.dial=" + phoneNo);
 		
 		// TODO: only set the lastDialed when we successfully dial
 		theApp.prefs.setValue("lastDialed", phoneNo);
 		
 		this.remoteDialCommenced = false;
 		this.dialing = phoneNo;
-		theApp.util.debug("asterisk", "Asterisk.channel set to null");
+		theApp.util.njdebug("asterisk", "Asterisk.channel set to null");
 		channel = null;
 		this.remoteChannel = null;
 		this.state = null;	
@@ -116,7 +116,7 @@ Asterisk: function ()
 
 	this.answer = function()
 	{
-		theApp.util.debug("asterisk", "Asterisk.answer");
+		theApp.util.njdebug("asterisk", "Asterisk.answer");
 		
 		this.remoteDialCommenced = false;
 		this.state = null;	
@@ -132,7 +132,7 @@ Asterisk: function ()
 
 	this.hangup = function()
 	{
-		theApp.util.debug("asterisk", "Asterisk.hangup called channel=" + channel);
+		theApp.util.njdebug("asterisk", "Asterisk.hangup called channel=" + channel);
 
 		// Hangup the our extension
 		// we must logon in case our session has timed out since we first logged on.
@@ -140,7 +140,7 @@ Asterisk: function ()
 		var sequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.HangupAction(this.channel), new theApp.job.Complete() ], "", false);
 		sequence.run();
 
-		theApp.util.debug("asterisk", "Asterisk.channel set to null");
+		theApp.util.njdebug("asterisk", "Asterisk.channel set to null");
 		this.channel = null;
 		this.remoteChannel = null;
 		this.state = null;
@@ -157,10 +157,10 @@ Asterisk: function ()
 
 	this.processEvent = function(events)
 	{
-		theApp.util.debug("asterisk", "Asterisk.processEventCalled");
+		theApp.util.njdebug("asterisk", "Asterisk.processEventCalled");
 		// 
 
-		theApp.util.debug("asterisk", events.length + " events found");
+		theApp.util.njdebug("asterisk", events.length + " events found");
 		for (var i = 0; i < events.length; i++)
 		{
 			events[i].apply(theApp.asterisk.getInstance());
@@ -188,14 +188,14 @@ Asterisk: function ()
 				var message = "none";
 				var response = "none";
 
-				theApp.util.debug("asterisk.low", "Parsing:" + responseText);
+				theApp.util.njdebug("asterisk.low", "Parsing:" + responseText);
 				var parser = new DOMParser();
 				xmlDoc = parser.parseFromString(responseText, "application/xhtml+xml");
 
 				var serverType = theApp.prefs.getValue("serverType"); 
 				if (serverType == theApp.noojeeclick.serverTypeList[0].type)
 				{
-					theApp.util.debug("asterisk", "running AstmanProxy");
+					theApp.util.njdebug("asterisk", "running AstmanProxy");
 					var tag = xmlDoc.getElementsByTagName("Response");
 					if (tag[0] != null)
 						response = tag[0].getAttribute("Value");
@@ -212,7 +212,7 @@ Asterisk: function ()
 				else if (serverType == theApp.noojeeclick.serverTypeList[1].type 
 				|| serverType == theApp.noojeeclick.serverTypeList[2].type)
 				{
-					theApp.util.debug("asterisk", "running AJAM or NJVision");
+					theApp.util.njdebug("asterisk", "running AJAM or NJVision");
 					var generic = xmlDoc.getElementsByTagName("generic");
 
 					if (generic.length > 0)
@@ -242,7 +242,7 @@ Asterisk: function ()
 		}
 		catch (e)
 		{
-			theApp.util.error(e);
+			theApp.util.njerror(e);
 			theApp.util.showException("parseResponse", e);
 		}
 		return result;

@@ -45,7 +45,7 @@ noojeeClick.ns(function()
 				 **/
 				this.show = function(icon, title, text, onCloseHandler)
 				{
-					theApp.util.debug("notification", "Showing " + title);
+					theApp.util.njdebug("notification", "Showing " + title);
 
 					this.hide();
 					this.curnotification = window.webkitNotifications.createNotification(icon,title,text);

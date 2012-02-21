@@ -25,13 +25,13 @@ theApp.phonepatterns =
  
 normalisePhoneNo: function (phoneNo)
 {
-	theApp.util.debug("phonepatterns", "normalizePhoneNo for " + phoneNo);
+	theApp.util.njdebug("phonepatterns", "normalizePhoneNo for " + phoneNo);
 	if ((theApp.prefs.getValue("internationalPrefix") == null 
 			|| theApp.util.trim(theApp.prefs.getValue("internationalPrefix")).length == 0)
 	        && phoneNo.indexOf("+") >= 0)
 	{
-		theApp.util.log("The International Prefix has not been set. Please set it via the configuration panel before trying again");
-		theApp.prompts.showAlert("The International Prefix has not been set. Please set it via the configuration panel before trying again");
+		theApp.util.njlog("The International Prefix has not been set. Please set it via the configuration panel before trying again");
+		theApp.prompts.njAlert("The International Prefix has not been set. Please set it via the configuration panel before trying again");
 		throw "Invalid Configuration";
 	}
 
@@ -47,7 +47,7 @@ normalisePhoneNo: function (phoneNo)
 	delimiters = delimiters.replace(/\ /g, "");
 
 	// Now strip all of the delimiters from the phone no.
-	theApp.util.debug("phonepatterns", "delimiters=" + delimiters);
+	theApp.util.njdebug("phonepatterns", "delimiters=" + delimiters);
 	for (var i = 0; i < delimiters.length; i++)
 		phoneNo = phoneNo.replace(new RegExp("\\" + delimiters.charAt(i), "g"), "");
 
@@ -65,11 +65,11 @@ normalisePhoneNo: function (phoneNo)
 	phoneNo = phoneNo.replace(/^\+/, theApp.prefs.getValue("internationalPrefix"));
 	
 	var dialPrefix = theApp.prefs.getValue("dialPrefix");
-	theApp.util.debug("phonepatterns", "dialPrefix=" + dialPrefix);
+	theApp.util.njdebug("phonepatterns", "dialPrefix=" + dialPrefix);
 	if (dialPrefix != null)
 		phoneNo = dialPrefix + phoneNo;
 	
-	theApp.util.log("normalised: " + phoneNo);
+	theApp.util.njlog("normalised: " + phoneNo);
 	return phoneNo;
 },
 
@@ -100,7 +100,7 @@ sortByLengthDesc: function (a, b)
  */
 transposePattern: function (patternList)
 {
-	theApp.util.debug("phonepatterns", "transposing pattern=" + patternList);
+	theApp.util.njdebug("phonepatterns", "transposing pattern=" + patternList);
 	var regex = new String();
 	var regIndex = 0;
 
@@ -109,7 +109,7 @@ transposePattern: function (patternList)
 	// match first when patterns overlap.
 	var patterns = theApp.util.trim(patternList).split("\n");
 	patterns.sort(this.sortByLengthDesc);
-	theApp.util.debug("phonepatterns", "sorted patterns=" + patterns);
+	theApp.util.njdebug("phonepatterns", "sorted patterns=" + patterns);
 
 	var delimiters = theApp.prefs.getValue("delimiters");
 
@@ -137,7 +137,7 @@ transposePattern: function (patternList)
 
 		for (var i = 0; i < len; i++)
 		{
-			// debug("phonepatterns", "char of pattern at pos =" + i + "'" + pattern[i] + "'");
+			// njdebug("phonepatterns", "char of pattern at pos =" + i + "'" + pattern[i] + "'");
 			if (pattern[i] == 'X')
 			{
 				builder += "\\d";
@@ -190,7 +190,7 @@ transposePattern: function (patternList)
 			}
 			else
 			{
-				theApp.util.log("Unrecognized character '" + pattern[i] + "' found in pattern " + pattern);
+				theApp.util.njlog("Unrecognized character '" + pattern[i] + "' found in pattern " + pattern);
 				validPattern = false;
 				break;
 			}
@@ -198,8 +198,8 @@ transposePattern: function (patternList)
 
 		if (inBrackets == true)
 		{
-			theApp.util.log("Invalid pattern " + pattern + " missing close bracket ']'.");
-			theApp.prompts.showAlert("Invalid pattern " + pattern + " missing close bracket ']'.");
+			theApp.util.njlog("Invalid pattern " + pattern + " missing close bracket ']'.");
+			theApp.prompts.njAlert("Invalid pattern " + pattern + " missing close bracket ']'.");
 			validPattern = false;
 		}
 
@@ -259,7 +259,7 @@ transposePattern: function (patternList)
 	}
 
 
-	theApp.util.debug("phonepatterns", "regex=" + regex);
+	theApp.util.njdebug("phonepatterns", "regex=" + regex);
 	return regex;
 },
 
