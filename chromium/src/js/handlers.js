@@ -119,7 +119,7 @@ dialSelectionMenuAction: function ()
 		return;
 	}
 
-	var result = theApp.prompts.prompt("Confirm number to dial.", phoneNo);
+	var result = theApp.prompts.njPrompt("Confirm number to dial.", phoneNo);
 	if (result.OK == true && result.value != null)
 	{
 		phoneNo = result.value;
@@ -134,7 +134,7 @@ dialFromClipboardMenuAction: function ()
 {
 	var phoneNo = theApp.util.trim(theApp.phonepatterns.extractPhoneNo(theApp.util.getClipboardText()));
 
-	var result = theApp.prompts.prompt("Confirm number to dial.", phoneNo);
+	var result = theApp.prompts.njPrompt("Confirm number to dial.", phoneNo);
 	if (result.OK == true && result.value != null)
 	{
 		phoneNo = result.value;
@@ -161,7 +161,7 @@ dialDifferentlyMenuAction: function (target)
 doDialDifferently: function (target)
 {
 	var phoneNo = target.getAttribute("phoneNo");
-	var result = theApp.prompts.prompt("Enter number to dial.", phoneNo);
+	var result = theApp.prompts.njPrompt("Enter number to dial.", phoneNo);
 	if (result.OK == true && result.value != null)
 	{
 		phoneNo = result.value;
@@ -175,7 +175,7 @@ doDialDifferently: function (target)
 dialMenuAction: function ()
 {
 	var phoneNo = "";
-	var result = theApp.prompts.prompt("Enter number to dial.", phoneNo);
+	var result = theApp.prompts.njPrompt("Enter number to dial.", phoneNo);
 	if (result.OK == true && result.value != null)
 	{
 		phoneNo = result.value;
@@ -249,7 +249,7 @@ onAddDialPatternMenuAction: function ()
 
 	if (!fault)
 	{
-		var result = theApp.prompts.prompt("Add pattern for " + phoneNo + "?", newPattern);
+		var result = theApp.prompts.njPrompt("Add pattern for " + phoneNo + "?", newPattern);
 		if (result.OK == true && result.value != null)
 		{
 			newPattern  = result.value;

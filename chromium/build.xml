@@ -28,7 +28,9 @@
 		<!-- Merge common and specific sources -->
 		<copy todir="${build}">
 			<fileset dir="../common"/>
-			<fileset dir="${src}"/>
+			<fileset dir="${src}">
+				<exclude name="js/README"/>
+			</fileset>
 		</copy>	
 	</target>
 	
