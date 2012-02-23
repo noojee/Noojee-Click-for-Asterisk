@@ -21,6 +21,7 @@
 			"js/prompts.js", 
 			"js/render.js", 
 			"js/handlers.js", 
+			"js/messagepassing.js", 
 			"js/init.js"]
 	}
 	],

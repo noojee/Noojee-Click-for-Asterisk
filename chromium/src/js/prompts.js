@@ -23,24 +23,21 @@ noojeeClick.ns(function() { with (noojeeClick.LIB) {
 theApp.prompts =
 {
 
+	njAlert: function (msg)
+	{
+		alert(msg);
+	},
 
+	njPrompt: function (msg, defaultValue)
+	{
+		var input = {value: defaultValue};
+		var check = {value: false};
+		var result = prompt(window, "Noojee Click: ", msg, input, null, check);
+		// input.value is the string user entered
+		// result - whether user clicked OK (true) or Cancel
 
-njAlert: function (msg)
-{
-	alert(msg);
-},
-
-njPrompt: function (msg, defaultValue)
-{
-	var input = {value: defaultValue};
-	var check = {value: false};
-	var result = prompt(window, "Noojee Click: ", msg, input, null, check);
-	// input.value is the string user entered
-	// result - whether user clicked OK (true) or Cancel
-
-	return {value: input.value, OK:result};
-}
-
+		return {value: input.value, OK:result};
+	}
 
 };
 

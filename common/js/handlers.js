@@ -55,7 +55,7 @@ onDial: function (e)
 	if (phoneNo == null || phoneNo.length == 0)
 		theApp.prompts.njAlert("Please enter a phone number.");
 	else {
-		chrome.extension.sendRequest({type: "dial", phoneNo: phoneNo});
+		theApp.messagepassing.dial(phoneNo);
 	}
 
 	return true;

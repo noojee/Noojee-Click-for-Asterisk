@@ -316,7 +316,7 @@ noojeeClick
 										            // character
 										            if (match.index > 0)
 										            {
-											            // log("preceeding=" +
+											            // njlog("preceeding=" +
 											            // source.substring(
 											            // match.index - 1,
 											            // match.index));
@@ -420,7 +420,7 @@ noojeeClick
 											            btn.setAttribute("name", this.njClickElementName);
 											            btn.id = "noojeeClick-btn";
 											            btn.setAttribute("title", match[0]);
-															var imgURL = chrome.extension.getURL("img/call-phone.png");
+															var imgURL = theApp.prefs.CONST_IMG_CALLPHONE;
 											            btn.setAttribute(
 																	"style",
 																	"width: 16px; height: 14px; "

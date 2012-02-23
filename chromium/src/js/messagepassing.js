@@ -18,43 +18,22 @@
  * with Noojee Click. If not, see http://www.gnu.org/licenses/.
  **/
 
+/**
+ * This class is used to pass messages from content scripts to the background process.
+ * This is specific to Chrome extension's development. 
+ **/
 noojeeClick.ns(function() { with (noojeeClick.LIB) {
 
-theApp.prefs =
+theApp.messagepassing =
 {
-	// constants
-	CONST_IMG_CALLPHONE:  chrome.extension.getURL("img/call-phone.png"),
-	
-	// for content scripts, the storage is loaded
-	// from background and set after page load
-	storage: null,
-	
-	setStorage: function (storage)
-	{
-		this.storage = storage;
-	},
-		
-	getValue: function (key)
-	{
-		return (this.storage != null ? this.storage[key] : localStorage[key]);
-	},
 
-	getBoolValue: function (key)
-	{
-		return this.getValue(key) == "true";
-	},
-
-	setValue: function (key, value)
-	{
-		localStorage[key] = value;
-	},
-
-	setBoolValue: function (key, value)
-	{
-		localStorage[key] = (value == "true" ? true : false);
-	},
-
+dial: function (phoneNo)
+{
+	chrome.extension.sendRequest({type: "dial", phoneNo: phoneNo});
+},
 
 };
 
 }});
+
+
