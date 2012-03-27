@@ -8,6 +8,12 @@
 	<property name="src"    location="src"/>
 	<property name="build"  location="build"/>
 	<property name="dist"   location="dist"/>
+	
+	<!-- The chrome browser is used to package the extension. You may need to create
+	 a symbolic link to the actual location of the browser.
+	 On my system I ran:
+	  ln -s /usr/bin/chromium-browser /usr/bin/google-chrome
+	-->
 	<property name="chrome" location="/usr/bin/google-chrome"/>
 	
 	<!-- ==============================
@@ -44,7 +50,7 @@
 		<!-- Command line packaging -->
 		<exec executable="${chrome}">
 			<arg value="--pack-extension=${build}"/>
-			<arg value="--pack-extension-key=../../noojee_click.pem"/>
+			<arg value="--pack-extension-key=private_key/noojee_click.pem"/>
 			<arg value="--no-message-box"/>
 		</exec>
 		
@@ -58,6 +64,6 @@
 	<target name="clean">
 		<delete dir="${build}"/>
 		<delete dir="${dist}"/>
-		<delete file="build.crx"/>
+		<delete quiet="yes" file="build.crx"/>
 	</target>
 </project>
