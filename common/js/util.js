@@ -32,7 +32,7 @@ njlog: function (msg)
 // @depreciated: @see theApp.logging.njdebug(msg)
 njdebug: function (module, msg)
 {
-	theApp.logging.njdebug(msg);
+	theApp.logging.njdebug(module, msg);
 },
 
 // @depreciated: @see theApp.logging.njdebug(msg)
