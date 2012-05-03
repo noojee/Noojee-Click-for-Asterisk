@@ -56,7 +56,9 @@ Dial: function ()
 		// 
 		url += "&Variable=CALLERID(Num)=" + normalised; // Hopefully sets the handsets display 
 		url += "&Variable=CALLERID(Name)=" + phoneNo + "-NoojeeClick";  //and this as well.
+		url += "&Variable=njAnswerIgnore=true";  //stops Noojee Answer thinking this is an inbound call.
 
+		
 		// If the user has configured the callerId then lets set it.
 		// We try to control the callerID that is presented to the 
 		// far end by setting CALLERID(Num).
