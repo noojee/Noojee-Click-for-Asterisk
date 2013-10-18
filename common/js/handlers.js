@@ -49,7 +49,7 @@ onMouseOut: function (e)
 onDial: function (e)
 {
 	theApp.util.njdebug("handlers", "onDial");
-	var obj = theApp.noojeeclick.ns6 ? e.target : event.srcElement;
+	var obj = e.target||e.srcElement;
 	var phoneNo = obj.getAttribute("phoneNo");
 
 	if (phoneNo == null || phoneNo.length == 0)
@@ -104,7 +104,7 @@ onDialDifferently: function (e)
 {
 	theApp.util.njdebug("handlers", 'Dial differently');
 
-	var obj = ns6 ? e.target : event.srcElement;
+	var obj = e.target||e.srcElement;
 	this.doDialDifferently(obj);
 },
 
