@@ -66,9 +66,6 @@ noojeeClick.ns(function()
 		        description : "Noojee Vision"
 		    } ],
 
-		    // globals
-		    ie : window.document.all,
-		    ns6 : window.document.getElementById && !window.document.all,
 
 		    /*
 			 * Called when a page finishes loading This is hooked by the
@@ -113,7 +110,7 @@ noojeeClick.ns(function()
 					alert('onDialDifferently');
 // 			    theApp.util.njlog('Dial differently');
 // 
-// 			    var obj = ns6 ? e.target : event.srcElement;
+// 			    var obj = e.target||e.srcElement;
 // 			    this.doDialDifferently(obj);
 		    },
 
@@ -121,7 +118,7 @@ noojeeClick.ns(function()
 		    {
 				 alert('onDial');
 // 			    theApp.util.njlog("onDial");
-// 			    var obj = ns6 ? e.target : event.srcElement;
+// 			    var obj = e.target||e.srcElement;
 // 			    var phoneNo = obj.getAttribute("phoneNo");
 // 
 // 			    if (phoneNo == null || phoneNo.length == 0)
