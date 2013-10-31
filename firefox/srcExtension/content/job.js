@@ -54,15 +54,21 @@ Dial: function ()
 		// will drop the call if it contains non-digits.
 		// The CALLERID(Name) is set for sip phones that can display text (I think this might work)
 		// 
-		url += "&Variable=CALLERID(Num)=" + normalised; // Hopefully sets the handsets display 
-		url += "&Variable=CALLERID(Name)=" + phoneNo + "-NoojeeClick";  //and this as well.
-		url += "&Variable=njAnswerIgnore=true";  //stops Noojee Answer thinking this is an inbound call.
-
+	
 		
 		// If the user has configured the callerId then lets set it.
 		// We try to control the callerID that is presented to the 
 		// far end by setting CALLERID(Num).
 		var callerID = theApp.prefs.getValue("callerId");
+		var quickpickActive = theApp.prefs.getValue("clidquickpick.active");
+		if (quickpickActive != null && quickpickActive != "")
+		{
+			theApp.util.njdebug("job", "active clid quickpick=" + quickpickActive);
+			theApp.util.njdebug("job", "getting quickpick for=" + "clidquickpick.pick-" + quickpickActive + "-clid");
+			callerID = theApp.prefs.getValue("clidquickpick.pick-" + quickpickActive + "-clid");
+			theApp.util.njdebug("job", "quickpick clid=" + callerID);
+		}
+		
 		if (callerID != null)
 		{
 			url += "&CallerId=" + callerID;
@@ -70,6 +76,10 @@ Dial: function ()
 		else 
 			url += "&CallerId=" + normalised; // no caller id so we like to display the number we dialling
 												// on the users handset.
+
+		url += "&Variable=CALLERID(Num)=" + normalised; // Hopefully sets the handsets display 
+		url += "&Variable=CALLERID(Name)=" + "Dialing: " + phoneNo ;  //and this as well.
+		url += "&Variable=njAnswerIgnore=true";  //stops Noojee Answer thinking this is an inbound call.
 
 		theApp.util.njdebug("job", "url=" + url);
 
