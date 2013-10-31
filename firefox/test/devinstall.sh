@@ -1,5 +1,5 @@
 $!/bin/bash
-target=~/.mozilla/firefox/3g0nlpt5.default/extensions
+target=~/.mozilla/firefox/z3syeynd.default/extensions
 
 echo ${target}
 rm -rf ${target}/noojeeclick@noojee.com.au
