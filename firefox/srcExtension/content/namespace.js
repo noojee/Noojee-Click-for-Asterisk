@@ -7,8 +7,7 @@ var noojeeClick =
 	// var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
 	// .getService(Components.interfaces.nsIConsoleService);
 
-	var nsLoginInfo = new Components.Constructor("@mozilla.org/login-manager/loginInfo;1", Components.interfaces.nsILoginInfo,
-	        "init");
+	var nsLoginInfo = new Components.Constructor("@mozilla.org/login-manager/loginInfo;1", Components.interfaces.nsILoginInfo, "init");
 	var nsLoginManager = Components.classes["@mozilla.org/login-manager;1"].getService(Components.interfaces.nsILoginManager);
 
 	var url = "chrome://noojeeclick";
@@ -20,7 +19,8 @@ var noojeeClick =
 	// it registers itself as a namespace by calling noojeeClick.ns(...).
 	this.ns = function(fn)
 	{
-		var aNamespace = {};
+		var aNamespace =
+		{};
 		namespaces.push(fn, aNamespace);
 
 		return aNamespace;
@@ -35,7 +35,8 @@ var noojeeClick =
 			Branch.setBoolPref(key, value);
 		else
 			Branch.setCharPref(key, value);
-	};
+	}
+	;
 
 	/*
 	 * Used to support the above function onConfigurationLoad. This method is an
@@ -46,36 +47,34 @@ var noojeeClick =
 		var value = null;
 		try
 		{
-			var prefObj = Components.classes["@mozilla.org/preferences-service;1"]
-			        .getService(Components.interfaces.nsIPrefService);
+			var prefObj = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
 			var Branch = prefObj.getBranch("extensions.noojeeclick.");
 			value = Branch.getBoolPref(key);
-		}
-		catch (e)
+		} catch (e)
 		{
 			// ignored as just means that key doesn't exist.
 		}
 
 		return value;
-	};
+	}
+	;
 
 	function getValue(key)
 	{
 		var value = null;
 		try
 		{
-			var prefObj = Components.classes["@mozilla.org/preferences-service;1"]
-			        .getService(Components.interfaces.nsIPrefService);
+			var prefObj = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
 			var Branch = prefObj.getBranch("extensions.noojeeclick.");
 			value = Branch.getCharPref(key);
-		}
-		catch (e)
+		} catch (e)
 		{
 			// ignored as it probably means that this preference hasn't been
 			// set.
 		}
 		return value;
-	};
+	}
+	;
 
 	// duplicate of njdebug so we can still output debug messages during
 	// initilisation.
@@ -95,11 +94,32 @@ var noojeeClick =
 				var mil = now.getMilliseconds();
 				// for debugging as we can't use njdebug during the
 				// initialisation.
-				var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
-				        .getService(Components.interfaces.nsIConsoleService);
+				var consoleService = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
 
 				consoleService.logStringMessage(hour + ":" + min + ":" + sec + ":" + mil + " debug (" + module + "): " + msg);
 			}
+		}
+	}
+	;
+
+	function ns_alert(msg)
+	{
+		try
+		{
+			var iPrompt = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
+			iPrompt.alert(window, "Noojee Click", msg);
+		} catch (e)
+		{
+			var now = new Date();
+			var hour = now.getHours();
+			var min = now.getMinutes();
+			var sec = now.getSeconds();
+			var mil = now.getMilliseconds();
+			// for debugging as we can't use njdebug during the
+			// initialisation.
+			var consoleService = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
+
+			consoleService.logStringMessage(hour + ":" + min + ":" + sec + ":" + mil + " alert: " + msg);
 		}
 	}
 	;
@@ -133,8 +153,7 @@ var noojeeClick =
 
 	function PrefListener(branchName, func)
 	{
-		var prefService = Components.classes["@mozilla.org/preferences-service;1"]
-		        .getService(Components.interfaces.nsIPrefService);
+		var prefService = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
 		var branch = prefService.getBranch(branchName);
 		branch.QueryInterface(Components.interfaces.nsIPrefBranch2);
 
@@ -150,12 +169,14 @@ var noojeeClick =
 
 		this.unregister = function unregister()
 		{
-			if (branch) branch.removeObserver("", this);
+			if (branch)
+				branch.removeObserver("", this);
 		};
 
 		this.observe = function(subject, topic, data)
 		{
-			if (topic == "nsPref:changed") func(branch, data);
+			if (topic == "nsPref:changed")
+				func(branch, data);
 		};
 	}
 	;
@@ -174,6 +195,10 @@ var noojeeClick =
 			}
 
 			// Noojee Click specific initialisation
+
+			// Add a listener to for preference changes so we can refresh the
+			// click icons
+			// if a pattern match changes.
 			var myListener = new PrefListener("extensions.noojeeclick.", function(branch, name)
 			{
 				try
@@ -184,10 +209,9 @@ var noojeeClick =
 						// noojeeClick.onRefresh();
 						break;
 					}
-				}
-				catch (e)
+				} catch (e)
 				{
-					alert("Error occured calling onRefresh during a preference change to a 'pattern'");
+					ns_alert("Error occured calling onRefresh during a preference change to a 'pattern'");
 				}
 			});
 			myListener.register();
@@ -217,17 +241,18 @@ var noojeeClick =
 			{
 				var appcontent = window.document.getElementById("appcontent");
 				if (appcontent != undefined && appcontent != null)
-				    appcontent.addEventListener("DOMContentLoaded", noojeeClick.onPageLoad, false);
+					appcontent.addEventListener("DOMContentLoaded", noojeeClick.onPageLoad, false);
 			}
 
 			// Add a context menu handler so we can dynamically show/hide
 			// specific menu items.
 			var contextMenu = document.getElementById("contentAreaContextMenu");
-			if (contextMenu) contextMenu.addEventListener("popupshowing", noojeeClick.showMenuHideItems, false);
-		}
+			if (contextMenu)
+				contextMenu.addEventListener("popupshowing", noojeeClick.showMenuHideItems, false);
+		} 
 		catch (e)
 		{
-			alert("Noojee Click error in init" + e);
+			ns_alert("Noojee Click error in init" + e);
 		}
 	};
 
@@ -267,10 +292,9 @@ var noojeeClick =
 	function storeCredentials(hostname, username, password)
 	{
 
-		if (hostname == null || hostname.length == 0 || username == null || username.length == 0 || password == null
-		        || password.length == 0)
+		if (hostname == null || hostname.length == 0 || username == null || username.length == 0 || password == null || password.length == 0)
 		{
-			alert("Error: You can't save the Noojee Click configuration with an empty Host, Username or Password.");
+			ns_alert("Error: You can't save the Noojee Click configuration with an empty Host, Username or Password.");
 		}
 		else
 		{
@@ -279,7 +303,8 @@ var noojeeClick =
 			// Auth',
 			username, password, "", "");
 			var existingLoginInfo = findCredentials(hostname, username);
-			if (existingLoginInfo != null) nsLoginManager.removeLogin(existingLoginInfo);
+			if (existingLoginInfo != null)
+				nsLoginManager.removeLogin(existingLoginInfo);
 
 			nsLoginManager.addLogin(newLoginInfo);
 		}
@@ -331,7 +356,8 @@ var noojeeClick =
 		var password = null;
 		var login = findCredentials(hostname, username);
 
-		if (login != null) password = login.password;
+		if (login != null)
+			password = login.password;
 
 		return password;
 	}
@@ -369,12 +395,80 @@ var noojeeClick =
 				var passwordField = window.document.getElementById('njcPassword');
 				passwordField.value = password;
 			}
-		}
-		catch (e)
+		} catch (e)
 		{
-			alert("error loading configuration " + e);
+			ns_alert("error loading configuration " + e);
 		}
 
+	};
+
+	this.retrieveQuickPicks = function()
+	{
+		var quickPickUrl = getValue("clidquickpick.url");
+
+		ns_debug("quickpicks", "retrieving CLID quickpicks: url=" + quickPickUrl);
+
+		var xmlhttp;
+		xmlhttp = new XMLHttpRequest();
+
+		// setup the call back handler
+		xmlhttp.onreadystatechange = function()
+		{
+
+			try
+			{
+				ns_debug("quickpicks", "readstate changed state=" + xmlhttp.readyState);
+
+				if (xmlhttp.readyState == 4)
+				{
+					if (xmlhttp.status == 200)
+					{
+						// We have a success so lets load the pick list and save
+						// it to properties.
+
+						var xmlResponse = xmlhttp.responseXML;
+						ns_debug("quickpicks", "quickpicks recieved: data=" + xmlResponse);
+
+						var quickPicks = xmlResponse.getElementsByTagName('CLID-Quick-Pick');
+
+						var count = quickPicks.length;
+						ns_debug("quickpicks", "quickpicks count: " + count);
+						setValue("clidquickpick.count", count);
+
+						for ( var i = 0; i < count; i++)
+						{
+							var name = quickPicks[i].getAttribute("name");
+							var clid = quickPicks[i].getAttribute("clid");
+
+							ns_debug("quickpicks", "received quickpick: " + name + ", " + clid);
+							setValue("clidquickpick.pick-" + i + "-name", name);
+							setValue("clidquickpick.pick-" + i + "-clid", clid);
+						}
+					}
+					else
+					{
+						ns_debug("quickpicks", "An error occured attempting to retrieve the CLID Quick Pick list. " + xmlhttp.responseXML);
+					}
+
+					ns_debug("quickpicks", "exiting state=" + xmlhttp.readyState);
+					// Flag that the menu needs to be reloaded.
+					setBoolValue("clidquickpick.reset", "true");
+				}
+			} catch (e)
+			{
+				ns_debug("quickpicks", "exception " + e);
+			}
+		};
+
+		ns_debug("quickpicks", "calling open on url");
+		xmlhttp.open("GET", quickPickUrl, false);
+
+		// xmlhttp.open("GET", quickPickUrl + ((/\?/).test(url) ? "&" : "?") +
+		// (new Date()).getTime(), true);
+		// xmlhttp.withCredentials = "true";
+		ns_debug("quickpicks", "calling send on url");
+		xmlhttp.send();
+		ns_debug("quickpicks", "calling send complete");
 	};
 
 	this.onConfigurationClosed = function()
@@ -389,11 +483,18 @@ var noojeeClick =
 				var usernameField = window.document.getElementById('username');
 				var passwordField = window.document.getElementById('njcPassword');
 				this.storeCredentials(hostField.value, usernameField.value, passwordField.value);
+
+				// If clid quick picks are enabled the refresh the list now.
+				var quickPickEnabled = getBoolValue("clidquickpick.enabled");
+				ns_debug("quickpicks", "clidquickpick.enable:" + quickPickEnabled);
+				if (quickPickEnabled == true)
+				{
+					this.retrieveQuickPicks();
+				}
 			}
-		}
-		catch (e)
+		} catch (e)
 		{
-			alert("error saving configuration " + e);
+			ns_alert("error saving configuration " + e);
 			ns_debug("config", "Exception: " + e);
 		}
 
