@@ -171,7 +171,7 @@ noojeeClick.ns(function()
 						    // The user has done a right click on the Noojee
 						    // click to dial icon so show
 						    // the dial differently menu item.
-						    var menuItem = document.getElementById("njcontextDialDifferently");
+						    var menuItem = document.getElementById("njClick.njcontextDialDifferently");
 						    menuItem.hidden = false;
 						    // and the dial menu item
 						    var menuItem = document.getElementById("njClick.contextDialSelection");
@@ -191,7 +191,7 @@ noojeeClick.ns(function()
 					    // we don't need the dial different option (the standard
 					    // dial option lets them dial
 					    // differently).
-					    var menuItem = document.getElementById("njcontextDialDifferently");
+					    var menuItem = document.getElementById("njClick.njcontextDialDifferently");
 					    menuItem.hidden = true;
 					    visibleItems--;
 				    }
@@ -278,7 +278,7 @@ noojeeClick.ns(function()
 		    onDialDifferentlyShowing : function(menu)
 		    {
 			    theApp.util.njdebug("noojeeclick", "onDialDifferentlyShowing");
-			    var menuItem = document.getElementById('njcontextDialDifferently');
+			    var menuItem = document.getElementById('njClick.njcontextDialDifferently');
 			    menuItem.hidden = false;
 		    },
 
@@ -448,7 +448,8 @@ noojeeClick.ns(function()
 				    else
 				    {
 				    	var quickPickMenu = document.getElementById('njClick.menu_ClidQuickPick');
-				    	quickPickMenu.hidden = true;
+				    	if (quickPickMenu != null)
+				    		quickPickMenu.hidden = true;
 				    }
 		    	}
 		    	catch (e)

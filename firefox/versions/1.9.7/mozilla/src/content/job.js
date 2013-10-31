@@ -60,8 +60,11 @@ Dial: function ()
 		// We try to control the callerID that is presented to the 
 		// far end by setting CALLERID(Num).
 		var callerID = theApp.prefs.getValue("callerId");
+		
+		var quickpickEnabled = theApp.prefs.getBoolValue("clidquickpick.enabled");
 		var quickpickActive = theApp.prefs.getValue("clidquickpick.active");
-		if (quickpickActive != null && quickpickActive != "")
+		
+		if (quickpickEnabled && quickpickActive != null && quickpickActive != "")
 		{
 			theApp.util.njdebug("job", "active clid quickpick=" + quickpickActive);
 			theApp.util.njdebug("job", "getting quickpick for=" + "clidquickpick.pick-" + quickpickActive + "-clid");

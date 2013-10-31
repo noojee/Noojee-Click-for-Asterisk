@@ -249,7 +249,8 @@ var noojeeClick =
 			var contextMenu = document.getElementById("contentAreaContextMenu");
 			if (contextMenu)
 				contextMenu.addEventListener("popupshowing", noojeeClick.showMenuHideItems, false);
-		} catch (e)
+		} 
+		catch (e)
 		{
 			ns_alert("Noojee Click error in init" + e);
 		}

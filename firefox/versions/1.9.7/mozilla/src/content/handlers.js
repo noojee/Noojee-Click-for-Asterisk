@@ -178,20 +178,6 @@ redialMenuAction: function ()
 		theApp.prompts.njAlert("Redial string is empty."); // this shouldn't happen.
 },
 
-//clidQuickPickMenuAction: function ()
-//{
-//	theApp.util.njdebug("handlers", "clidQuickPickMenuAction called");
-//	var phoneNo = theApp.prefs.getValue("lastDialed");
-//	if (phoneNo != null && phoneNo.length > 0)
-//	{
-//		theApp.asterisk.getInstance().dial(phoneNo);
-//	}
-//	else
-//		theApp.prompts.njAlert("Redial string is empty."); // this shouldn't happen.
-//},
-
-
-
 onAddDialPatternMenuAction: function ()
 {
 	var fault = false;

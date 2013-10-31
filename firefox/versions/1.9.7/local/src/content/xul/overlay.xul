@@ -10,7 +10,7 @@
    
     <popup id="contentAreaContextMenu" popupshowing="noojeeClick.noojeeclick.onDialDifferentlyShowing(this);">
 		<menuseparator id="njClick.contextSeparator"/>
-        <menuitem id="njcontextDialDifferently"
+        <menuitem id="njClick.njcontextDialDifferently"
                   label="Dial Differently..."
                   observes="Tasks:njClick.dialDifferently"
                   class="menu-iconic-wide"	
