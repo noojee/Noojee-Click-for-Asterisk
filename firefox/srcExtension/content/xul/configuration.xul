@@ -101,6 +101,10 @@
 				name="extensions.noojeeclick.debugFilter" type="unichar" />
 			<preference id="extensions.noojeeclick.exclusions" name="extensions.noojeeclick.exclusions"
 				type="unichar" />
+			<preference id="extensions.noojeeclick.clidquickpick.enabled"
+				name="extensions.noojeeclick.clidquickpick.enabled" type="bool" />
+			<preference id="extensions.noojeeclick.clidquickpick.url" name="extensions.noojeeclick.clidquickpick.url"
+				type="unichar" />
 		</preferences>
 
 		<tabbox id="njConfigTabbox">
@@ -132,8 +136,7 @@
 										id="extension"  inputtooltiptext="hi"/>
 								</row>
 								<row  align="center">
-									<label value="Auto Answer:" control="enableAutoAnswer"/>
-									<checkbox preference="extensions.noojeeclick.enableAutoAnswer"
+									<checkbox label="Auto Answer:" preference="extensions.noojeeclick.enableAutoAnswer"
 										id="enableAutoAnswer" />
 								</row>
 
@@ -315,21 +318,21 @@
 								</row>
 								<row  align="center">
 
-									<label value="Host:" />
+									<label value="Asterisk Hostname:" />
 									<textbox preference="extensions.noojeeclick.host" id="host" />
 
 								</row>
 								<row  align="center">
-									<label value="Port:" />
+									<label value="Manager Port:" />
 									<textbox preference="extensions.noojeeclick.port" id="port" />
 								</row>
 								<row  align="center">
-									<label value="Username:" />
+									<label value="Manager Username:" />
 									<textbox preference="extensions.noojeeclick.username"
 										id="username" />
 								</row>
 								<row  align="center">
-									<label value="Password:" />
+									<label value="Manager Secret:" />
 									<textbox 
 										id="njcPassword" type="password" />
 								</row>
@@ -337,13 +340,6 @@
 									<label value="Context:" />
 									<textbox preference="extensions.noojeeclick.context"
 										id="context" />
-								</row>
-								<row  align="center">
-									<hbox>
-										<checkbox preference="extensions.noojeeclick.useHttps"
-											id="useHttps" />
-										<label value="Use HTTPS" />
-									</hbox>
 								</row>
 								<!--
 								<row  align="center">
@@ -398,6 +394,18 @@
 
 							</row>
 							<row  align="center">
+									<hbox>
+										<checkbox label="Enable CLID Quick Pick" 
+											preference="extensions.noojeeclick.clidquickpick.enabled"
+											id="quickPickEnable" />
+									</hbox>
+							</row>
+							<row  align="center">
+								<label value="Quick Pick URL:" />
+								<textbox preference="extensions.noojeeclick.clidquickpick.url"
+									id="quickPickUrl" />
+							</row>
+							<row  align="center">
 								<label value="Delimiters:" />
 								<textbox preference="extensions.noojeeclick.delimiters"
 									id="delimiters" />
@@ -405,27 +413,22 @@
 							</row>
 <!-- Removed until mozilla fixes their performance problems with monitoring pages. 							
 							<row  align="center">
-								<label value="Monitor Pages:" />
-								<checkbox preference="extensions.noojeeclick.monitor"
+								<checkbox  label="Monitor Pages:" preference="extensions.noojeeclick.monitor"
 									id="monitor" />
 
 							</row>
 -->						
 							<row  align="center">
 									<hbox>
-										<checkbox preference="extensions.noojeeclick.enableLogging"
+										<checkbox label="Enable Logging" preference="extensions.noojeeclick.enableLogging"
 											id="enableLogging" />
-										<label value="Enable Logging" />
-											
-
 									</hbox>
 
 							</row>
 <row  >
 									<hbox>
-										<checkbox preference="extensions.noojeeclick.enableDebugging"
+										<checkbox label="Enable Debugging" preference="extensions.noojeeclick.enableDebugging"
 											id="enableDebugging" />
-										<label value="Enable Debugging" />
 								</hbox>
 </row>
 

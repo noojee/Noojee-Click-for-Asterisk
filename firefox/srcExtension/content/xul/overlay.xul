@@ -9,22 +9,22 @@
 
    
     <popup id="contentAreaContextMenu" popupshowing="noojeeClick.noojeeclick.onDialDifferentlyShowing(this);">
-		<menuseparator id="njcontextSeparator"/>
-        <menuitem id="njcontextDialDifferently"
+		<menuseparator id="njClick.contextSeparator"/>
+        <menuitem id="njClick.njcontextDialDifferently"
                   label="Dial Differently..."
-                  observes="Tasks:dialDifferently"
+                  observes="Tasks:njClick.dialDifferently"
                   class="menu-iconic-wide"	
 				  popupshowing="noojeeClick.noojeeclick.onDialDifferentlyShowing(document.popupNode);"
                   />
-        <menuitem id="njcontextDialSelection"
+        <menuitem id="njClick.contextDialSelection"
                   label="Dial Selection..."
-                  observes="Tasks:dialSelection"
+                  observes="Tasks:njClick.dialSelection"
                   class="menu-iconic-wide"
 				  popupshowing="noojeeClick.noojeeclick.onDialSelectionShowing(document.popupNode);"
                   />
-        <menuitem id="njcontextDialAddPattern"
+        <menuitem id="njClick.contextDialAddPattern"
                   label="Add Dial Pattern..."
-                  observes="Tasks:dialAddPattern"
+                  observes="Tasks:njClick.dialAddPattern"
                   class="menu-iconic-wide"
 				  popupshowing="noojeeClick.noojeeclick.onDialAddPatternShowing(document.popupNode);"
                   />
@@ -35,16 +35,17 @@
   commandupdater="true"
   events="focus"
   oncommandupdate="goUpdateCommand('Task:enable');goUpdateCommand('Task:redail');">
-    <command id="Tasks:dial" oncommand="noojeeClick.handlers.dialMenuAction();"/>
-    <command id="Tasks:redial" oncommand="noojeeClick.handlers.redialMenuAction();"/>
-    <command id="Tasks:dialFromClipboard" oncommand="noojeeClick.handlers.dialFromClipboardMenuAction();"/>
-    <command id="Tasks:dialSelection" oncommand="noojeeClick.handlers.dialSelectionMenuAction();"/>
-    <command id="Tasks:dialDifferently" oncommand="noojeeClick.handlers.dialDifferentlyMenuAction();"/>
-    <command id="Tasks:configuration" oncommand="noojeeClick.prefs.onConfiguration();"/>
-	<command id="Tasks:dialAddPattern" oncommand="noojeeClick.handlers.onAddDialPatternMenuAction();"/>
-	<command id="Tasks:refresh" oncommand="noojeeClick.render.onRefresh();"/> 
-    <command id="Tasks:showClickIcons" oncommand="noojeeClick.handlers.onShowClickIcons();"/>
-    <command id="Tasks:hangup" oncommand="noojeeClick.handlers.onHangup();"/>
+    <command id="Tasks:njClick.dial" oncommand="noojeeClick.handlers.dialMenuAction();"/>
+    <command id="Tasks:njClick.redial" oncommand="noojeeClick.handlers.redialMenuAction();"/>
+	<command id="Tasks:njClick.switchCLID" oncommand="noojeeClick.handlers.clidQuickPickMenuAction();"/> 
+    <command id="Tasks:njClick.dialFromClipboard" oncommand="noojeeClick.handlers.dialFromClipboardMenuAction();"/>
+    <command id="Tasks:njClick.dialSelection" oncommand="noojeeClick.handlers.dialSelectionMenuAction();"/>
+    <command id="Tasks:njClick.dialDifferently" oncommand="noojeeClick.handlers.dialDifferentlyMenuAction();"/>
+    <command id="Tasks:njClick.configuration" oncommand="noojeeClick.prefs.onConfiguration();"/>
+	<command id="Tasks:njClick.dialAddPattern" oncommand="noojeeClick.handlers.onAddDialPatternMenuAction();"/>
+	<command id="Tasks:njClick.refresh" oncommand="noojeeClick.render.onRefresh();"/> 
+    <command id="Tasks:njClick.showClickIcons" oncommand="noojeeClick.handlers.onShowClickIcons();"/>
+    <command id="Tasks:njClick.hangup" oncommand="noojeeClick.handlers.onHangup();"/>
     
   </commandset>
 
@@ -60,35 +61,34 @@
       <statusbarpanel id="noojeeMenu"
                       class="statusbarpanel-menu-iconic"
                       src="chrome://noojeeclick/content/images/small.png"
-                      contextmenu="menuDial">
-	      <menupopup id="menuDial" onpopupshowing="noojeeClick.noojeeclick.onShowClickIconsShowing(this);noojeeClick.noojeeclick.onRedialShowing(this);">
-	        <menuitem id="menu_Dial"
+                      contextmenu="njClick.menuDial">
+	      <menupopup id="njClick.menuDial" onpopupshowing="noojeeClick.noojeeclick.onMenuOpen(this);">
+	        <menuitem id="njClick.menu_Dial"
 	              label="Dial..."
-	              observes="Tasks:dial"
+	              observes="Tasks:njClick.dial"
 	              class="menu-iconic-wide"/>
-	        <menuitem id="menu_Redial"
+	        <menuitem id="njClick.menu_Redial"
 	              label="Redial:"
-	              observes="Tasks:redial"
+	              observes="Tasks:njClick.redial"
 	              popupshowing="noojeeClick.noojeeclick.onRedialShowing(this);"
 	              class="menu-iconic-wide"/>
 	        <menuitem id="menu_DialClipboard"
 	              label="Dial from Clipboard..."
-	              observes="Tasks:dialFromClipboard"
+	              observes="Tasks:njClick.dialFromClipboard"
 	              class="menu-iconic-wide"/>
-	        <menuitem id="menu_Configuration"
+	        <menuitem id="njClick.menu_Configuration"
 	              label="Configuration..."
-	              observes="Tasks:configuration"
+	              observes="Tasks:njClick.configuration"
 	              class="menu-iconic-wide"/>
-	        <menuitem id="menu_ShowClickIcons"
+	        <menuitem id="njClick.menu_ShowClickIcons"
 	              label="Show Click Icons"
 	              type="checkbox"
-	              observes="Tasks:showClickIcons"
+	              observes="Tasks:njClick.showClickIcons"
 	              popupshowing="noojeeClick.noojeeclick.onShowClickIconsShowing(this);"
 	              class="menu-iconic-wide"/>
-	        
-	        <menuitem id="menu_Refresh"
+	        <menuitem id="njClick.menu_Refresh"
 	              label="Refresh"
-	              observes="Tasks:refresh"
+	              observes="Tasks:njClick.refresh"
 	              class="menu-iconic-wide"/>
 	        </menupopup>
       </statusbarpanel>	
