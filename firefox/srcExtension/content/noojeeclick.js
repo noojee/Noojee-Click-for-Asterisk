@@ -448,7 +448,8 @@ noojeeClick.ns(function()
 				    else
 				    {
 				    	var quickPickMenu = document.getElementById('njClick.menu_ClidQuickPick');
-				    	quickPickMenu.hidden = true;
+				    	if (quickPickMenu != null)
+				    		quickPickMenu.hidden = true;
 				    }
 		    	}
 		    	catch (e)
