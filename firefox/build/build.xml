@@ -1,12 +1,12 @@
-<project basedir="/home/bsutton/dev/NoojeeClick/" default="all">
+<project basedir="/home/bsutton/git/Noojee-Click-for-Chrome/firefox" default="all">
 	<description>
 		Builds the Noojee Click xpi file ready for deployment.
 	</description>
 
-	<property name="version" value="1.9.2" />
-	<property name="maxMozillaFirefoxVersion" value="10.*" />
-	<property name="maxLocalFirefoxVersion" value="15.*" />
-	<property name="maxClientFirefoxVersion" value="10.*" />
+	<property name="version" value="1.9.7" />
+	<property name="maxMozillaFirefoxVersion" value="30.*" />
+	<property name="maxLocalFirefoxVersion" value="30.*" />
+	<property name="maxClientFirefoxVersion" value="30.*" />
 	<property name="urlHost" value="www.noojee.com.au/" />
 	<property name="src" value="${basedir}/srcExtension" />
 	<property name="build" value="${basedir}/build" />
@@ -172,19 +172,8 @@
 		</copy>
 	</target>
 
-	<target name="2hippo">
-		<description>
-			Builds an xpi suitable for 2hippo
-		</description>
-		<property name="urlHost" value="me.2hippo.com" />
-		<echo>Building 2Hippo</echo>
-		<defineIncludes  fromPath="2hippo" toPath="${versionDir}/2hippo" />
-		<filterSrc fromPath="build/templates/2hippo" toPath="${versionDir}/2hippo" maxFireFoxVersion="${maxClientFirefoxVersion}"/>
-		<createDirs  fromPath="2hippo" toPath="${versionDir}/2hippo"  />
-	</target>
 
-
-	<target name="all" depends="mozilla,local,2hippo,debug">
+	<target name="all" depends="mozilla,local,debug">
 	</target>
 	
 	
