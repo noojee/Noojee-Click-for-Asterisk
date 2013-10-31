@@ -39,6 +39,38 @@ njdebug: function (module, msg)
 	}
 },
 
+/**
+ * Use this alert to get around a bug in firefox when popup messages are block.
+ * If popups are blocked the 'alert' fails and everything stops.
+ * Apparently there is a fix in the works so that alert will fail silently.
+ * In the mean time this code will fail silently but out put a debug message.
+ * 
+ * @param msg
+ */
+njalert: function(msg)
+{
+	try
+	{
+		var iPrompt = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+        	.getService(Components.interfaces.nsIPromptService);
+		iPrompt.alert(window, "Noojee Click", msg);
+	}
+	catch (e)
+	{
+		var now = new Date();
+		var hour = now.getHours();
+		var min = now.getMinutes();
+		var sec = now.getSeconds();
+		var mil = now.getMilliseconds();
+		// for debugging as we can't use njdebug during the
+		// initialisation.
+		var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
+		        .getService(Components.interfaces.nsIConsoleService);
+	
+		consoleService.logStringMessage(hour + ":" + min + ":" + sec + ":" + mil + " alert: " + msg);
+	}
+},
+
 njerror: function (msg)
 {
 		var now = new Date();
@@ -320,9 +352,12 @@ getClipboardText: function ()
 		return false;
 	var trans = Components.classes["@mozilla.org/widget/transferable;1"]
 	        .createInstance(Components.interfaces.nsITransferable);
+	
 	if (!trans)
 		return false;
 
+	trans.init(null);
+	
 	trans.addDataFlavor("text/unicode");
 
 	clip.getData(trans, clip.kGlobalClipboard);
