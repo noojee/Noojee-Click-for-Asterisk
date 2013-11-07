@@ -42,7 +42,7 @@ noojeeClick.ns(function()
 					return "event";
 				}
 
-				if (window.event && (event.type == vExpression.type))
+				if (window.event && (window.event.type == vExpression.type))
 				{
 					return "event";
 				}
