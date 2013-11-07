@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xhtml>
+<body>
+<h1>Release notes</h1>
+<p>Version 1.9.8</p>
+Added 'wait' event triggers to every dial sequence in order to get over the problem where we can't hangup and the connection status
+fails to update.
+As far as I can see the fail to hangup is caused by the wait events stopping. The logic of this change is to always restart waitevents.
+
+<p>If you have feature requests or installation/configuration problems post them at http://forums.noojee.com.au</p>
+</body>
+</xhtml>
