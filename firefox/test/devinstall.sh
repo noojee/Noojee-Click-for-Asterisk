@@ -1,7 +1,15 @@
+#
 $!/bin/bash
-target=~/.mozilla/firefox/z3syeynd.default/extensions
+
+#
+# Make certain the target matches the path to your development profile for firefox.
+# read the notes in restartfirefox.sh for details on creating the development profile.
+# 
+target=~/.mozilla/firefox/k56g72oa.development/extensions
 
 echo ${target}
+
+# Make certain that the path in the file test/noojeeclick@noojee.com.au points to the source code in your test environment. 
 rm -rf ${target}/noojeeclick@noojee.com.au
 cp test/noojeeclick@noojee.com.au ${target}
 
