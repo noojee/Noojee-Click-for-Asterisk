@@ -48,12 +48,6 @@ Dial: function ()
 		url += channel;
 		url += "&Exten=" + normalised;
 		url += "&Context=" + context;
-		// The next two variables are set to display the number that
-		// is being dialled on the local handset's LCD.
-		// The CallerId must only contain numbers as the likes of trixbox
-		// will drop the call if it contains non-digits.
-		// The CALLERID(Name) is set for sip phones that can display text (I think this might work)
-		// 
 	
 		
 		// If the user has configured the callerId then lets set it.
@@ -70,15 +64,22 @@ Dial: function ()
 			theApp.util.njdebug("job", "getting quickpick for=" + "clidquickpick.pick-" + quickpickActive + "-clid");
 			callerID = theApp.prefs.getValue("clidquickpick.pick-" + quickpickActive + "-clid");
 			theApp.util.njdebug("job", "quickpick clid=" + callerID);
+
 		}
 		
+		// The CallerId must only contain numbers as the likes of trixbox
+		// will drop the call if it contains non-digits.
 		if (callerID != null)
 		{
 			url += "&CallerId=" + callerID;
 		}
 		else 
-			url += "&CallerId=" + normalised; // no caller id so we like to display the number we dialling
+			url += "&CallerId=" + normalised; // no caller id so we like to display the number we dialing
 												// on the users handset.
+
+		// The next two variables are set to display the number that
+		// is being dialed on the local handset's LCD.
+		// The CALLERID(Name) is set for sip phones that can display text (I think this might work)
 
 		url += "&Variable=CALLERID(Num)=" + normalised; // Hopefully sets the handsets display 
 		url += "&Variable=CALLERID(Name)=" + "Dialing: " + phoneNo ;  //and this as well.
@@ -127,9 +128,9 @@ Dial: function ()
 			theApp.noojeeclick.resetIcon();
 			if (result.message == "Authentication Required")
 			{
-				theApp.dialstatus.getInstance().updateStatus("The connection to Asterisk was lost.");
+				theApp.dialstatus.getInstance().updateStatus("The connection to Asterisk was lost. Wait whilst we reconnect.");
 		
-				var sequence = new theApp.sequence.Sequence( [ new Login(), new Wait(null) ], "", false);
+				var sequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.Wait(null) ], "", false);
 				sequence.run();
 			}
 			else if (result.message.indexOf("Permission denied") == 0)
@@ -259,9 +260,9 @@ Answer: function (channel)
 			theApp.noojeeclick.resetIcon();
 			if (result.message == "Authentication Required")
 			{
-				theApp.dialstatus.getInstance().updateStatus("The connection to Asterisk was lost.");
+				theApp.dialstatus.getInstance().updateStatus("The connection to Asterisk was lost. Wait whilst we reconnect.");
 		
-				var sequence = new theApp.sequence.Sequence( [ new this.Login(), new this.Wait(null) ], "", false);
+				var sequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.Wait(null) ], "", false);
 				sequence.run();
 			}
 			else if (result.message.indexOf("Permission denied") == 0)
@@ -424,13 +425,13 @@ HangupAction: function (channel)
 		}
 
 		// If no tech specified then add SIP/ otherwise use the selected tech.
-		var channel = "&Channel=" + this.channel;
+		var channelArg = "&Channel=" + this.channel;
 
 		theApp.util.njdebug("job", "hangup channel=" + this.channel);
 
 		// dial
 		var url = theApp.job.genURL("Hangup");
-		url += channel;
+		url += channelArg;
 		url += "&Context=" + context;
 
 		theApp.util.njdebug("job", "url=" + url);
@@ -647,6 +648,7 @@ Login: function ()
 		else
 		{
 			theApp.asterisk.getInstance().setLoggedIn(true);
+			theApp.asterisk.getInstance().updateState("Login successful! Ready to dial.");
 			theApp.util.njlog("Login completed.");
 		}
 		return abort;
