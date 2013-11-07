@@ -169,24 +169,30 @@ showError: function (response, message)
 showException: function (method, e)
 {
 	this.njdebug("util", "Exception caught in method '" + method + "' " + e);
-	var message = "An exeption occured in method '" + method + "' " + e.name + ". Error description: " + e.description
+	var message = "An exeption occured in method '" + method + "' " + e.name 
 	        + ". Error number: " + e.number + ". Error message: " + e.message;
 	this.njlog(message);
 
-	this.njdebug("util", this.stacktrace());
+	this.njdebug("util", this.stacktrace(e));
 	theApp.prompts.njAlert(message);
 },
 
-stacktrace: function ()
+stacktrace: function (e)
 {
-	var f = this.stacktrace;
-	var stack = "Stack trace:";
-	while (f)
-	{
-		if (f != this.stacktrace)
-			stack += "\n" + f.name;
-		f = f.caller;
-	}
+	
+//	var e = new Error('dummy');
+	var stack = e.stack.replace(/^[^\(]+?[\n$]/gm, '') // remove lines without '('
+	  .replace(/^\s+at\s+/gm, '') // remove prefix text ' at '
+	  .split('\n');
+	
+//	var f = this.stacktrace;
+//	var stack = "Stack trace:";
+//	while (f)
+//	{
+//		if (f != this.stacktrace)
+//			stack += "\n" + f.name;
+//		f = f.caller;
+//	}
 	return stack;
 
 },
