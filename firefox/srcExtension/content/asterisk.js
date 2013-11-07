@@ -81,7 +81,7 @@ Asterisk: function ()
 			//dialSequence = new theApp.sequence.Sequence( [ new theApp.job.Dial(), new theApp.job.Complete() ], phoneNo, false);
 		//else
 		
-		dialSequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.Dial(), new theApp.job.Complete() ], phoneNo, false);
+		dialSequence = new theApp.sequence.Sequence( [new theApp.job.Dial(), new theApp.job.Complete() ], phoneNo, false);
 		dialSequence.run();
 	};
 
@@ -96,7 +96,7 @@ Asterisk: function ()
 //		if (this.loggedIn)
 	//		answerSequence = new theApp.sequence.Sequence( [ new theApp.job.Answer(), new theApp.job.Complete() ], this.remoteChannel, false);
 		//else
-			answerSequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.Answer(), new theApp.job.Complete() ], this.remoteChannel, false);
+			answerSequence = new theApp.sequence.Sequence( [ new theApp.job.Answer(), new theApp.job.Complete() ], this.remoteChannel, false);
 			
 		answerSequence.run();
 	};
@@ -108,7 +108,7 @@ Asterisk: function ()
 		// Hangup the our extension
 		// we must logon in case our session has timed out since we first logged on.
 		
-		var sequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.HangupAction(this.channel), new theApp.job.Complete() ], "", false);
+		var sequence = new theApp.sequence.Sequence( [new theApp.job.HangupAction(this.channel), new theApp.job.Complete() ], "", false);
 		sequence.run();
 
 		theApp.util.njdebug("asterisk", "Asterisk.channel set to null");
@@ -137,7 +137,9 @@ Asterisk: function ()
 		theApp.util.njdebug("asterisk", events.length + " events found");
 		for (var i = 0; i < events.length; i++)
 		{
+			theApp.util.njdebug("event.low", "Calling apply for: events[" + i + "]=" + events[i].name);
 			events[i].apply(theApp.asterisk.getInstance());
+			theApp.util.njdebug("event.low", "Apply returned for: events[" + i + "]=" + events[i].name);
 		}
 	};
 	
