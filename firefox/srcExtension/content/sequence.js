@@ -152,7 +152,8 @@ noojeeClick
 
 						        // Only increment the step if the current job
 								// has finished
-						        if (!seq.currentJob.doContinue()) seq.currentStep++;
+						        if (!seq.currentJob.doContinue()) 
+						        	seq.currentStep++;
 
 						        theApp.util.njdebug("sequence", "running step=" + seq.currentStep);
 						        theApp.util.njdebug("sequence", "jobs=" + theApp.job.toString(seq.jobs));
