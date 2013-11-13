@@ -338,7 +338,7 @@ Wait: function (subSequence)
 		// The first time through we want wait to return immediately so we can
 		// start the subSequence
 		if (this.ranOnce == false && this.subSequence != null)
-			url += "&Timeout=1";
+			url += "&Timeout=0";
 		else
 			url += "&Timeout=30";
 
