@@ -4,8 +4,6 @@ noojeeClick.ns(function() { with (noojeeClick.LIB) {
 theApp.prompts =
 {
 
-
-
 njAlert: function (msg)
 {
 	try
@@ -16,7 +14,7 @@ njAlert: function (msg)
 	}
 	catch (e)
 	{
-		theApp.util.njdebug("config", "Error trying to 'alert' message:" + msg + " error:" + e);
+		theApp.logging.njdebug("config", "Error trying to 'alert' message:" + msg + " error:" + e);
 	}
 	
 },
@@ -36,7 +34,7 @@ njPrompt: function (msg, defaultValue)
 	}
 	catch (e)
 	{
-		theApp.util.njdebug("config", "Error trying to 'prompt user' message:" + msg + " error:" + e);
+		theApp.logging.njdebug("config", "Error trying to 'prompt user' message:" + msg + " error:" + e);
 	}
 
 	return {value: input.value, OK:result};

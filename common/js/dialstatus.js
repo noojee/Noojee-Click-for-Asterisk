@@ -42,7 +42,7 @@ noojeeClick.ns(function()
 		    {
 			    this.updateStatus = function(status)
 			    {
-				    theApp.util.njdebug("status", "updateStatus to " + status);
+				    theApp.logging.njdebug("status", "updateStatus to " + status);
 				    if (this.getStatusWindow() != null)
 				    {
 					    if (status == null || theApp.util.trim(status).length == 0)
@@ -65,7 +65,7 @@ noojeeClick.ns(function()
 				    {
 					    if (window.document != null)
 						    this.statusWindow = window.document.getElementById('noojeeStatus');
-					    theApp.util.njdebug("status", "statusWindow=null");
+					    theApp.logging.njdebug("status", "statusWindow=null");
 				    }
 
 				    return this.statusWindow;

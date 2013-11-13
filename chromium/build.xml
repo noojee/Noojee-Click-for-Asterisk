@@ -1,7 +1,7 @@
 <project name="NoojeeClick" default="dist" basedir=".">
 
 	<description>
-		Build file for Chrome/Chromium extension.
+		Builds the Noojee Click for Chrome/Chromium extension ready for deployment.
 	</description>
 	
 	<!-- set global properties for this build -->
@@ -30,6 +30,12 @@
 	<target name="build" depends="init">
 		<!-- Create the build directory -->
 		<mkdir dir="${build}"/>
+		
+		<!-- copy the defaults -->
+		<mkdir dir="${build}/defaults" />
+		<copy todir="${build}/defaults">
+			<fileset dir="../common/defaults/preferences" />
+		</copy>
 		
 		<!-- Merge common and specific sources -->
 		<copy todir="${build}">

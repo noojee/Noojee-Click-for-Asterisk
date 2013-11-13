@@ -7,7 +7,7 @@
  *  configuration.
  *  
  *  The first time Noojee click runs the username/password will be cleared from the default settings
- *  and moved into the Mozilla Login Manager.
+ *  and moved into the Browsers Login Manager.
 */
 pref("extensions.noojeeclick.host", "");
 pref("extensions.noojeeclick.port", "8088");
@@ -60,7 +60,7 @@ pref("extensions.noojeeclick.handsetType", "Yealink");
 pref("extensions.noojeeclick.dialPrefix", "");
 pref("extensions.noojeeclick.enableLogging", false);
 pref("extensions.noojeeclick.enableDebugging", false);
-pref("extensions.noojeeclick.debugFilter", "config, api, asterisk, events.high, job, noojeeclick, phonepatterns, prefs, render, sequence, util, monitor, excluded, remove");
+pref("extensions.noojeeclick.debugFilter", "config, api, asterisk, event.low, event.high, job, noojeeclick, phonepatterns, prefs, render, sequence, util, monitor, excluded, remove");
 pref("extensions.noojeeclick.httpPrefix", "asterisk");
 pref("extensions.noojeeclick.useHttps", false);
 pref("extensions.noojeeclick.callerId", "");

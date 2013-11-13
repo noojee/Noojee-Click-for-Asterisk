@@ -1,15 +1,22 @@
-// Noojee Click for Asterisk
-// Author: Brett Sutton
-// Copyright: Noojee IT
-//
-// License: you are free to use Noojee Click as is but may not redistribute the
-// code without prior permission.
-// Use at your own risk ;)
-// AutoAnswer SIP headers
-//
-// If you phone isn't supported then just copy one of the following lines and
-// add your entry. Thats all that is required to support new auto answer headers.
-//
+/**
+ * Copyright 2012 Brett Sutton
+ * (Adapted for Google Chrome by Sven Werlen)
+ *
+ * This file is part of Noojee Click.
+ * 
+ * Noojee Click is free software: you can redistribute it and/or modify it 
+ * under the terms of the GNU General Public License as published by the 
+ * Free Software Foundation, either version 3 of the License, or (at your 
+ * option) any later version.
+ * 
+ * Noojee Click is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License 
+ * for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along 
+ * with Noojee Click. If not, see http://www.gnu.org/licenses/.
+ **/
 
 noojeeClick.ns(function()
 {
@@ -91,7 +98,7 @@ noojeeClick.ns(function()
 
 			    theApp.api.njAPIonLoad(document);
 
-			    theApp.util.njdebug("noojeeclick", "onPageLoad called");
+			    theApp.logging.njdebug("noojeeclick", "onPageLoad called");
 			    try
 			    {
 
@@ -113,19 +120,19 @@ noojeeClick.ns(function()
 						    theApp.render.addClickToDialLinks(document);
 					    }
 					    else
-						    theApp.util.njerror("Loading of Styles failed so init terminated");
+						    theApp.logging.njerror("Loading of Styles failed so init terminated");
 				    }
 			    }
 			    catch (e)
 			    {
-				    theApp.util.njlog(e);
-				    theApp.util.showException("onPageLoad", e);
+				    theApp.logging.njerror(e);
+				    theApp.util.showException("noojeeclick.onPageLoad", e);
 			    }
 		    },
 
 		    onDialDifferently : function(e)
 		    {
-			    theApp.util.njlog('Dial differently');
+			    theApp.logging.njlog('Dial differently');
 
 			    var obj = e.target||e.srcElement;
 			    this.doDialDifferently(obj);
@@ -133,7 +140,7 @@ noojeeClick.ns(function()
 
 		    onDial : function(e)
 		    {
-			    theApp.util.njlog("onDial");
+			    theApp.logging.njlog("onDial");
 			    var obj = e.target||e.srcElement;
 			    var phoneNo = obj.getAttribute("phoneNo");
 
@@ -147,7 +154,7 @@ noojeeClick.ns(function()
 
 		    onAnswer : function(e)
 		    {
-			    theApp.util.njlog("onAnswer");
+			    theApp.logging.njlog("onAnswer");
 			    theApp.asterisk.getInstance().answer();
 
 			    return true;
@@ -158,10 +165,10 @@ noojeeClick.ns(function()
 			    var visibleItems = 3;
 			    try
 			    {
-				    theApp.util.njdebug("noojeeclick", "showMenuHideItems event=" + event);
-				    theApp.util.njdebug("noojeeclick", "document.popupNode=" + document.popupNode);
+				    theApp.logging.njdebug("noojeeclick", "showMenuHideItems event=" + event);
+				    theApp.logging.njdebug("noojeeclick", "document.popupNode=" + document.popupNode);
 
-				    theApp.util.njdebug("noojeeclick", "popupNode name=" + document.popupNode.hasAttribute("name"));
+				    theApp.logging.njdebug("noojeeclick", "popupNode name=" + document.popupNode.hasAttribute("name"));
 
 				    var checkForSelection = true;
 				    var hideDialDifferently = true;
@@ -170,7 +177,7 @@ noojeeClick.ns(function()
 				    {
 					    if (document.popupNode.getAttribute("name") == theApp.render.njClickElementName)
 					    {
-						    theApp.util.njdebug("noojeeclick", "found element with name=" + theApp.render.njClickElementName);
+						    theApp.logging.njdebug("noojeeclick", "found element with name=" + theApp.render.njClickElementName);
 
 						    // The user has done a right click on the Noojee
 						    // click to dial icon so show
@@ -209,7 +216,7 @@ noojeeClick.ns(function()
 					    {
 						    // The user has selected some text AND it contains a
 						    // number
-						    theApp.util.njdebug("noojeeclick", "popup - text selected");
+						    theApp.logging.njdebug("noojeeclick", "popup - text selected");
 						    var menuItem = document.getElementById("njClick.contextDialSelection");
 						    menuItem.hidden = false;
 						    menuItem = document.getElementById("njClick.contextDialAddPattern");
@@ -219,7 +226,7 @@ noojeeClick.ns(function()
 					    {
 						    // either their is no selection or it doesn't
 						    // contain a number so suppress both menus.
-						    theApp.util.njdebug("noojeeclick", "popup - text not selected");
+						    theApp.logging.njdebug("noojeeclick", "popup - text not selected");
 						    var menuItem = document.getElementById("njClick.contextDialSelection");
 						    menuItem.hidden = true;
 						    visibleItems--;
@@ -231,7 +238,7 @@ noojeeClick.ns(function()
 
 				    if (visibleItems == 0)
 				    {
-					    theApp.util.njdebug("noojeeclick", "removing separator");
+					    theApp.logging.njdebug("noojeeclick", "removing separator");
 					    // all of the menu items have been suppressed so remove
 					    // the
 					    // separator.
@@ -241,15 +248,15 @@ noojeeClick.ns(function()
 			    }
 			    catch (e)
 			    {
-				    theApp.util.showException("showMenuHideItems", e);
-				    theApp.prompts.njAlert(e);
+			    	theApp.logging.njerror(e);
+				    theApp.util.showException("noojeeclick.showMenuHideItems", e);
 			    }
 
 		    },
 
 		    showHangupIcon : function()
 		    {
-			    theApp.util.njdebug("noojeeclick", "showHangupIcon");
+			    theApp.logging.njdebug("noojeeclick", "showHangupIcon");
 			    if (window.document != null)
 			    {
 				    var menuIcon = window.document.getElementById("noojeeMenu");
@@ -262,7 +269,7 @@ noojeeClick.ns(function()
 
 		    resetIcon : function()
 		    {
-			    theApp.util.njdebug("noojeeclick", "resetIcon");
+			    theApp.logging.njdebug("noojeeclick", "resetIcon");
 			    if (window.document != null)
 			    {
 				    var menuIcon = window.document.getElementById("noojeeMenu");
@@ -281,14 +288,14 @@ noojeeClick.ns(function()
 
 		    onDialDifferentlyShowing : function(menu)
 		    {
-			    theApp.util.njdebug("noojeeclick", "onDialDifferentlyShowing");
+			    theApp.logging.njdebug("noojeeclick", "onDialDifferentlyShowing");
 			    var menuItem = document.getElementById('njClick.njcontextDialDifferently');
 			    menuItem.hidden = false;
 		    },
 
 		    onDialSelectionShowing : function(menu)
 		    {
-			    theApp.util.njdebug("noojeeclick", "onDialSelectionShowing called");
+			    theApp.logging.njdebug("noojeeclick", "onDialSelectionShowing called");
 			    var selected = theApp.util.getSelectedText();
 			    if (selected == null || selected.length == 0)
 			    {
@@ -318,7 +325,7 @@ noojeeClick.ns(function()
 		    
 		    onShowClickIconsShowing : function(menu)
 		    {
-			    theApp.util.njdebug("noojeeclick", "onShowClickIconsShowing called");
+			    theApp.logging.njdebug("noojeeclick", "onShowClickIconsShowing called");
 			    var showClickIcons = theApp.prefs.getBoolValue("showClickIcons");
 			    var showClickIconsMenu = document.getElementById('njClick.menu_ShowClickIcons');
 			    showClickIconsMenu.setAttribute("checked", showClickIcons);
@@ -327,7 +334,7 @@ noojeeClick.ns(function()
 		    
 		    onRedialShowing : function(menu)
 		    {
-			    theApp.util.njdebug("noojeeclick", "onRedialShowing called");
+			    theApp.logging.njdebug("noojeeclick", "onRedialShowing called");
 			    var lastDialed = theApp.prefs.getValue("lastDialed");
 			    var redialMenu = document.getElementById('njClick.menu_Redial');
 			    if (lastDialed != null && lastDialed.length > 0)
@@ -343,15 +350,15 @@ noojeeClick.ns(function()
 		    {
 		    	try
 		    	{
-		    		theApp.util.njdebug("quickpicks", "MenuItem=" + menuItem + " id=" + menuItem.id);
+		    		theApp.logging.njdebug("quickpicks", "MenuItem=" + menuItem + " id=" + menuItem.id);
 		    		
 		    		var clidIndex = menuItem.getAttribute("clid-index");
 		    		
-			    	theApp.util.njdebug("quickpicks", "User selected menu clidIndex=" + clidIndex);
+			    	theApp.logging.njdebug("quickpicks", "User selected menu clidIndex=" + clidIndex);
 			    	
 	    			var name = theApp.prefs.getValue("clidquickpick.pick-" + clidIndex + "-name");
 	    			
-	    			theApp.util.njdebug("quickpicks", "setting active clid to: " + name);
+	    			theApp.logging.njdebug("quickpicks", "setting active clid to: " + name);
 	    			theApp.prefs.setValue("clidquickpick.active", clidIndex);
 	    			
 	    			// Show a tick next to the active clid.
@@ -376,7 +383,7 @@ noojeeClick.ns(function()
 	    		listMenu.setAttribute("id", "njClick.menu_ClidQuickPick");
 
 	    		var menuDial = document.getElementById('njClick.menuDial');
-	    		theApp.util.njdebug("quickpicks", "retrieved menu: " + menuDial);
+	    		theApp.logging.njdebug("quickpicks", "retrieved menu: " + menuDial);
 	    		menuDial.appendChild(listMenu);
 
 //	    		// Reset the quick pick list menu
@@ -387,7 +394,7 @@ noojeeClick.ns(function()
 	    		
 	    		// Get the active menu item.
 	    		var activeQuickPick = theApp.prefs.getValue("clidquickpick.active");
-	    		theApp.util.njdebug("quickpicks", "active quickpick: " + activeQuickPick);
+	    		theApp.logging.njdebug("quickpicks", "active quickpick: " + activeQuickPick);
 	    		
 	    		// get the no. of quick picks.
 	    		var count = theApp.prefs.getValue("clidquickpick.count");
@@ -397,7 +404,7 @@ noojeeClick.ns(function()
 	    			var clid = theApp.prefs.getValue("clidquickpick.pick-" + i + "-clid");
 	    			
 	    			
-	    			theApp.util.njdebug("quickpicks", "retrieved quickpick: " + name + ", " + clid);
+	    			theApp.logging.njdebug("quickpicks", "retrieved quickpick: " + name + ", " + clid);
 
 	    			// Create the clid menu item.
 	    			item = listMenu.appendItem(name);
@@ -410,7 +417,7 @@ noojeeClick.ns(function()
 	    			// If there is currently no active quick pick then set the first one as active.
 	    			if (i == 0 && activeQuickPick == "")
 	    			{
-	    				theApp.util.njdebug("quickpicks", "setting active quickpick to:" + i);
+	    				theApp.logging.njdebug("quickpicks", "setting active quickpick to:" + i);
 	    				theApp.prefs.setValue("clidquickpick.active", i);
 	    			}
 	    				
@@ -420,7 +427,7 @@ noojeeClick.ns(function()
 	    			//item.addEventListener("onClick", function() {noojeeClick.noojeeclick.onSelectClidQuickPick()}, false);
 	    			if (i == activeQuickPick)
 	    			{
-	    				theApp.util.njdebug("quickpicks", "set active quickpick: " + i);
+	    				theApp.logging.njdebug("quickpicks", "set active quickpick: " + i);
 	    				theApp.prefs.setValue("clidquickpick.active", i);
 	    				item.setAttribute("checked", "true");
 	    			}
@@ -432,9 +439,9 @@ noojeeClick.ns(function()
 		    	try
 		    	{
 
-				    theApp.util.njdebug("quickpicks", "onQuickPickShowing called");
+				    theApp.logging.njdebug("quickpicks", "onQuickPickShowing called");
 				    var enabled = theApp.prefs.getBoolValue("clidquickpick.enabled");
-				    theApp.util.njdebug("quickpicks", "quickPickMenu:  enabled: " + enabled);
+				    theApp.logging.njdebug("quickpicks", "quickPickMenu:  enabled: " + enabled);
 				    if (enabled)
 				    {
 				    	var reset = theApp.prefs.getBoolValue("clidquickpick.reset");

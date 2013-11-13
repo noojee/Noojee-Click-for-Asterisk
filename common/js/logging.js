@@ -27,12 +27,7 @@ njlog: function (msg)
 {
 	if (theApp.prefs.getBoolValue("enableLogging") == true)
 	{
-		var now = new Date();
-		var hour = now.getHours();
-		var min = now.getMinutes();
-		var sec = now.getSeconds();
-		var mil = now.getMilliseconds();
-		console.log(arguments.callee.caller.name + " " + hour + ":" + min + ":" + sec + ":" + mil + " info: " + msg);
+		console.log("NJClick: " + arguments.callee.caller.name + " info: " + msg);
 	}
 },
 
@@ -42,27 +37,17 @@ njdebug: function (module, msg)
 	if (theApp.prefs.getBoolValue("enableDebugging") == true)
 	{
 		var filter = theApp.prefs.getValue("debugFilter");
-
-		if (filter.search(module, "i") >= 0)
+		
+		if (filter == null || filter.search(module, "i") >= 0)
 		{
-			var now = new Date();
-			var hour = now.getHours();
-			var min = now.getMinutes();
-			var sec = now.getSeconds();
-			var mil = now.getMilliseconds();
-			console.log(arguments.callee.caller.name + " " + hour + ":" + min + ":" + sec + ":" + mil+ " debug (" + module + "): " + msg);
+			console.log("NJClick: " + arguments.callee.caller.name + " debug (" + module + "): " + msg);
 		}
 	}
 },
 
 njerror: function (msg)
 {
-		var now = new Date();
-		var hour = now.getHours();
-		var min = now.getMinutes();
-		var sec = now.getSeconds();
-		var mil = now.getMilliseconds();
-		console.error(arguments.callee.caller.name + " " + hour + ":" + min + ":" + sec + ":" + mil + " error: " + msg);
+	console.log("NJClick: " + arguments.callee.caller.name + " error: " + msg);
 },
 
 };

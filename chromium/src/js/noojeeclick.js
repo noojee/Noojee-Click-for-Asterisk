@@ -29,7 +29,7 @@ noojeeClick.ns(function()
 		    autoAnswerList : [
 		    {
 		        manufacturer : "Aastra",
-		        header : "'Call-Info: Answer-After=0"
+		        header : "Call-Info: Answer-After=0"
 		    },
 		    {
 		        manufacturer : "GrandStream",
@@ -46,6 +46,10 @@ noojeeClick.ns(function()
 		    {
 		        manufacturer : "Snom",
 		        header : "Call-Info:\\\\; answer-after=0"
+		    },
+		    {
+		        manufacturer : "Snom - post firmware v8.7",
+		        header : "Alert-Info:http://www.ignored.com\\;info=alert-autoanswer\\;delay=0"
 		    },
 		    {
 		        manufacturer : "Yealink",
@@ -67,13 +71,14 @@ noojeeClick.ns(function()
 		    } ],
 
 
+
 		    /*
 			 * Called when a page finishes loading This is hooked by the
 			 * namespace.initialise()
 			 */
 		    onPageLoad : function(e)
 		    {
-			    theApp.util.njdebug("noojeeclick", "onPageLoad called");
+			    theApp.logging.njdebug("noojeeclick", "onPageLoad called");
 			    try
 			    {
 
@@ -95,20 +100,20 @@ noojeeClick.ns(function()
 						    theApp.render.addClickToDialLinks(document);
 					    }
 					    else
-						    theApp.util.njerror("Loading of Styles failed so init terminated");
+						    theApp.logging.njerror("Loading of Styles failed so init terminated");
 				    }
 			    }
 			    catch (e)
 			    {
-				    theApp.util.njlog(e);
-				    theApp.util.showException("onPageLoad", e);
+				    theApp.logging.njerror(e);
+				    theApp.util.showException("noojeeclick.onPageLoad", e);
 			    }
 		    },
 
 		    onDialDifferently : function(e)
 		    {
 					alert('onDialDifferently');
-// 			    theApp.util.njlog('Dial differently');
+// 			    theApp.logging.njlog('Dial differently');
 // 
 // 			    var obj = e.target||e.srcElement;
 // 			    this.doDialDifferently(obj);
@@ -117,7 +122,7 @@ noojeeClick.ns(function()
 		    onDial : function(e)
 		    {
 				 alert('onDial');
-// 			    theApp.util.njlog("onDial");
+// 			    theApp.logging.njlog("onDial");
 // 			    var obj = e.target||e.srcElement;
 // 			    var phoneNo = obj.getAttribute("phoneNo");
 // 
@@ -132,7 +137,7 @@ noojeeClick.ns(function()
 		    onAnswer : function(e)
 		    {
 				  alert('onAnswer');
-// 			    theApp.util.njlog("onAnswer");
+// 			    theApp.logging.njlog("onAnswer");
 // 			    theApp.asterisk.getInstance().answer();
 
 			    return true;
@@ -144,10 +149,10 @@ noojeeClick.ns(function()
 // 			    var visibleItems = 3;
 // 			    try
 // 			    {
-// 				    theApp.util.njdebug("noojeeclick", "showMenuHideItems event=" + event);
-// 				    theApp.util.njdebug("noojeeclick", "document.popupNode=" + document.popupNode);
+// 				    theApp.logging.njdebug("noojeeclick", "showMenuHideItems event=" + event);
+// 				    theApp.logging.njdebug("noojeeclick", "document.popupNode=" + document.popupNode);
 // 
-// 				    theApp.util.njdebug("noojeeclick", "popupNode name=" + document.popupNode.hasAttribute("name"));
+// 				    theApp.logging.njdebug("noojeeclick", "popupNode name=" + document.popupNode.hasAttribute("name"));
 // 
 // 				    var checkForSelection = true;
 // 				    var hideDialDifferently = true;
@@ -156,7 +161,7 @@ noojeeClick.ns(function()
 // 				    {
 // 					    if (document.popupNode.getAttribute("name") == theApp.render.njClickElementName)
 // 					    {
-// 						    theApp.util.njdebug("noojeeclick", "found element with name=" + theApp.render.njClickElementName);
+// 						    theApp.logging.njdebug("noojeeclick", "found element with name=" + theApp.render.njClickElementName);
 // 
 // 						    // The user has done a right click on the Noojee
 // 						    // click to dial icon so show
@@ -195,7 +200,7 @@ noojeeClick.ns(function()
 // 					    {
 // 						    // The user has selected some text AND it contains a
 // 						    // number
-// 						    theApp.util.njdebug("noojeeclick", "popup - text selected");
+// 						    theApp.logging.njdebug("noojeeclick", "popup - text selected");
 // 						    var menuItem = document.getElementById("njcontextDialSelection");
 // 						    menuItem.hidden = false;
 // 						    menuItem = document.getElementById("njcontextDialAddPattern");
@@ -205,7 +210,7 @@ noojeeClick.ns(function()
 // 					    {
 // 						    // either their is no selection or it doesn't
 // 						    // contain a number so suppress both menus.
-// 						    theApp.util.njdebug("noojeeclick", "popup - text not selected");
+// 						    theApp.logging.njdebug("noojeeclick", "popup - text not selected");
 // 						    var menuItem = document.getElementById("njcontextDialSelection");
 // 						    menuItem.hidden = true;
 // 						    visibleItems--;
@@ -217,7 +222,7 @@ noojeeClick.ns(function()
 // 
 // 				    if (visibleItems == 0)
 // 				    {
-// 					    theApp.util.njdebug("noojeeclick", "removing separator");
+// 					    theApp.logging.njdebug("noojeeclick", "removing separator");
 // 					    // all of the menu items have been suppressed so remove
 // 					    // the
 // 					    // separator.
@@ -237,7 +242,7 @@ noojeeClick.ns(function()
 		    {
 				 
 				 alert('showHangupIcon');
-// 			    theApp.util.njdebug("noojeeclick", "showHangupIcon");
+// 			    theApp.logging.njdebug("noojeeclick", "showHangupIcon");
 // 			    if (window.document != null)
 // 			    {
 // 				    var menuIcon = window.document.getElementById("noojeeMenu");
@@ -250,14 +255,14 @@ noojeeClick.ns(function()
 
 		    resetIcon : function()
 		    {
-				 theApp.util.njdebug("noojeeclick", "resetIcon");
+				 theApp.logging.njdebug("noojeeclick", "resetIcon");
 				 chrome.browserAction.setBadgeText({text:""});
 		    },
 
 		    onDialDifferentlyShowing : function(menu)
 		    {
 				 alert('onDialDifferentlyShowing');
-// 			    theApp.util.njdebug("noojeeclick", "onDialDifferentlyShowing");
+// 			    theApp.logging.njdebug("noojeeclick", "onDialDifferentlyShowing");
 // 			    var menuItem = document.getElementById('njcontextDialDifferently');
 // 			    menuItem.hidden = false;
 		    },
@@ -265,7 +270,7 @@ noojeeClick.ns(function()
 		    onDialSelectionShowing : function(menu)
 		    {
 				 alert('onDialSelectionShowing');
-// 			    theApp.util.njdebug("noojeeclick", "onDialSelectionShowing called");
+// 			    theApp.logging.njdebug("noojeeclick", "onDialSelectionShowing called");
 // 			    var selected = theApp.util.getSelectedText();
 // 			    if (selected == null || selected.length == 0)
 // 			    {
@@ -288,7 +293,7 @@ noojeeClick.ns(function()
 		    onShowClickIconsShowing : function(menu)
 		    {
 				 alert('onShowClickIconsShowing');
-// 			    theApp.util.njdebug("noojeeclick", "onShowClickIconsShowing called");
+// 			    theApp.logging.njdebug("noojeeclick", "onShowClickIconsShowing called");
 // 			    var showClickIcons = theApp.prefs.getBoolValue("showClickIcons");
 // 			    var showClickIconsMenu = document.getElementById('menu_ShowClickIcons');
 // 			    showClickIconsMenu.setAttribute("checked", showClickIcons);
@@ -297,7 +302,7 @@ noojeeClick.ns(function()
 		    onRedialShowing : function(menu)
 		    {
 				 alert('onRedialShowing');
-// 			    theApp.util.njdebug("noojeeclick", "onRedialShowing called");
+// 			    theApp.logging.njdebug("noojeeclick", "onRedialShowing called");
 // 			    var lastDialed = theApp.prefs.getValue("lastDialed");
 // 			    var redialMenu = document.getElementById('menu_Redial');
 // 			    if (lastDialed != null && lastDialed.length > 0)

@@ -45,7 +45,7 @@ noojeeClick.ns(function()
 				 **/
 				this.show = function(icon, title, text, onCloseHandler)
 				{
-					theApp.util.njdebug("notification", "Showing " + title);
+					theApp.logging.njdebug("notification", "Showing " + title);
 
 					this.hide();
 					this.curnotification = window.webkitNotifications.createNotification(icon,title,text);
@@ -64,7 +64,21 @@ noojeeClick.ns(function()
 						this.curnotification = null;
 					}
 				}
+				
+				this.dialing = function(message)
+				{
+					// desktop notification "Dialing ...."
+					this.show(
+						'img/call.png',
+						message,
+						'Close this notification to hang-up immediately.',
+						function() { theApp.asterisk.getInstance().hangup(); }
+					);
+
+				}
 			}
+			
+			
 
 		};
 

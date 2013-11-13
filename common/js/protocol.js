@@ -67,7 +67,7 @@ noojeeClick.ns(function()
 		        {
 			        var uri = Components.classes[SIMPLEURI_CONTRACTID].createInstance(nsIURI);
 			        uri.spec = spec;
-			        theApp.util.njdebug("uri", "newUri.spec=" + spec);
+			        theApp.logging.njdebug("uri", "newUri.spec=" + spec);
 			        return uri;
 		        },
 
@@ -79,7 +79,7 @@ noojeeClick.ns(function()
 			        // URI is of the form callto://nnnnnnnn
 
 			        var phoneNo = fullURI.substring(fullURI.indexof("//") + 2);
-			        theApp.util.njdebug("uri", "newChannel=" + fullURI + " phoneNo=" + phoneNo);
+			        theApp.logging.njdebug("uri", "newChannel=" + fullURI + " phoneNo=" + phoneNo);
 
 			        var ios = Components.classes[kIOSERVICE_CONTRACTID].getService(nsIIOService);
 

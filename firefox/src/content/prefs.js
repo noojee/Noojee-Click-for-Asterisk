@@ -4,6 +4,9 @@ noojeeClick.ns(function() { with (noojeeClick.LIB) {
 theApp.prefs =
 {
 
+		// constants
+		CONST_IMG_CALLPHONE:  "chrome://noojeeclick/content/images/call-phone.png",
+
   
 
 onConfiguration: function (e)
@@ -78,7 +81,7 @@ setValue: function (key, value)
 },
 
 /*
- * set a boolean noojee click preference. 
+ * set a boolean noojee click preference.
  */
 setBoolValue: function (key, value)
 {
@@ -88,6 +91,18 @@ setBoolValue: function (key, value)
 
 	Branch.setBoolPref(key, value);
 },
+
+getUsername : function()
+{
+	return noojeeClick.getUsername();
+},
+
+getPassword : function(username)
+{
+	return noojeeClick.retrieveCredentials(theApp.prefs.getValue("host"), username);
+},
+
+
 
 
 };

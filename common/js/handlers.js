@@ -31,7 +31,7 @@ onMouseOver: function (e)
 	// might do something unexpected.
 	e.stopPropagation();
 
-	theApp.util.njdebug("handlers", "onMouseOver");
+	theApp.logging.njdebug("handlers", "onMouseOver");
 	e.preventDefault();
 },
 
@@ -42,21 +42,21 @@ onMouseOut: function (e)
 	// might do something unexpected.
 	e.stopPropagation();
 	
-	theApp.util.njdebug("handlers", "onMouseOut");
+	theApp.logging.njdebug("handlers", "onMouseOut");
 	e.preventDefault();
 },
 
 onDial: function (e)
 {
-	theApp.util.njdebug("handlers", "onDial");
+	theApp.logging.njdebug("handlers", "onDial");
 	var obj = e.target||e.srcElement;
 	var phoneNo = obj.getAttribute("phoneNo");
 
 	if (phoneNo == null || phoneNo.length == 0)
 		theApp.prompts.njAlert("Please enter a phone number.");
-	else {
+	else 
 		theApp.messagepassing.dial(phoneNo);
-	}
+	
 
 	return true;
 },
@@ -67,7 +67,7 @@ onDial: function (e)
 */
 onHangup: function ()
 {
-	theApp.util.njdebug("handlers", "onHangup");
+	theApp.logging.njdebug("handlers", "onHangup");
 	theApp.asterisk.getInstance().hangup();
 	theApp.noojeeclick.resetIcon();
 
@@ -77,7 +77,7 @@ onHangup: function ()
 // Just do the simple dial
 onDialHandler: function (e)
 {
-	theApp.util.njdebug("handlers", "onDialHandler");
+	theApp.logging.njdebug("handlers", "onDialHandler");
 	try
 	{
 		if (!e)
@@ -93,8 +93,8 @@ onDialHandler: function (e)
 	}
 	catch (e)
 	{
-		theApp.util.njlog(e);
-		theApp.util.showException("onDialHandler", e);
+		theApp.logging.njerror(e);
+		theApp.util.showException("handlers.onDialHandler", e);
 	}
 	e.preventDefault();
 },
@@ -102,7 +102,7 @@ onDialHandler: function (e)
 
 onDialDifferently: function (e)
 {
-	theApp.util.njdebug("handlers", 'Dial differently');
+	theApp.logging.njdebug("handlers", 'Dial differently');
 
 	var obj = e.target||e.srcElement;
 	this.doDialDifferently(obj);
@@ -111,7 +111,7 @@ onDialDifferently: function (e)
 
 dialSelectionMenuAction: function ()
 {
-	theApp.util.njdebug("handlers", "dialSelectionMenuAction called");
+	theApp.logging.njdebug("handlers", "dialSelectionMenuAction called");
 	var phoneNo = theApp.util.getSelectedText();
 	if (phoneNo == null || phoneNo.length == 0)
 	{
@@ -148,7 +148,7 @@ dialFromClipboardMenuAction: function ()
 dialDifferentlyMenuAction: function (target)
 {
 	target = document.popupNode;
-	theApp.util.njdebug("handlers", "target=" + target);
+	theApp.logging.njdebug("handlers", "target=" + target);
 
 	// if (target.onImage)
 	{
@@ -188,7 +188,7 @@ dialMenuAction: function ()
 
 redialMenuAction: function ()
 {
-	theApp.util.njdebug("handlers", "redialMenuAction called");
+	theApp.logging.njdebug("handlers", "redialMenuAction called");
 	var phoneNo = theApp.prefs.getValue("lastDialed");
 	if (phoneNo != null && phoneNo.length > 0)
 	{

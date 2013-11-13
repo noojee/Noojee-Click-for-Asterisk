@@ -26,8 +26,9 @@ noojeeClick
 		        theApp.render =
 		        {
 
-		            // List of tags whose children we will scan looking for
-		            // phone numbers
+		            /*
+					 * List of tags whose children we will scan looking for phone numbers
+					 */
 		            tagsOfInterest : [ "a", "abbr", "acronym", "address", "applet", "b", "bdo", "big", "blockquote", "body",
 		                    "caption", "center", "cite", "code", "dd", "del", "div", "dfn", "dt", "em", "fieldset", "font",
 		                    "form", "h1", "h2", "h3", "h4", "h5", "h6", "i", "iframe", "ins", "kdb", "li", "object", "pre",
@@ -49,21 +50,18 @@ noojeeClick
 		            onRefreshOne : function(doc)
 		            {
 
-			            theApp.util.njdebug("render", "onRefreshOne called for doc=" + doc);
+			            theApp.logging.njdebug("render", "onRefreshOne called for doc=" + doc);
 			            try
 			            {
 				            try
 				            {
-					            // Special check. It looks like an interaction
-					            // problem between the monitor
-					            // and fckEditor. Anyway I'm guessing document
-					            // has gone away by the time
-					            // the monitor kicks in. Any reference to the
-					            // document will throw an error.
-					            // Given we don't want to add click to dial
-					            // links to these type of pages
-					            // we just suppress the error by catching it and
-					            // returning.
+					            /*
+								 * Special check. It looks like an interaction problem between the monitor and fckEditor. Anyway
+								 * I'm guessing document has gone away by the time the monitor kicks in. Any reference to the
+								 * document will throw an error. Given we don't want to add click to dial links to these type of
+								 * pages we just suppress the error by catching it and returning. Note: the monitor is currently
+								 * disabled due to massive performance problems with firefox.
+								 */
 					            if (doc == null || doc.location == null || doc.location.href == null)
 					            {
 						            return;
@@ -71,14 +69,14 @@ noojeeClick
 				            }
 				            catch (e)
 				            {
-					            theApp.util.njerror("excluded document with null href");
+					            theApp.logging.njerror("excluded document with null href");
 					            return;
 				            }
 
 				            // First remove any noojeeClick spans.
 				            var spans = doc.getElementsByName("noojeeClick");
-				            theApp.util.njdebug("remove", "noojeeClick spans=" + spans);
-				            theApp.util.njdebug("remove", "span.length=" + spans.length);
+				            theApp.logging.njdebug("remove", "noojeeClick spans=" + spans);
+				            theApp.logging.njdebug("remove", "span.length=" + spans.length);
 
 				            var removalSpanArray = [];
 				            var removedSpanItemCount = 0;
@@ -94,15 +92,15 @@ noojeeClick
 					            for ( var j = children.length - 1; j >= 0; j--)
 					            {
 						            var child = children[j];
-						            theApp.util.njdebug("remove", "found child.nodeName=" + child.nodeName);
-						            theApp.util.njdebug("remove", "child.nodeValue=" + child.nodeValue);
+						            theApp.logging.njdebug("remove", "found child.nodeName=" + child.nodeName);
+						            theApp.logging.njdebug("remove", "child.nodeValue=" + child.nodeValue);
 
 						            var deleted = false;
 						            if (child.nodeName.toLowerCase() == this.njClickElementType.toLowerCase())
 						            {
 							            if (child.name.toLowerCase() == this.njClickElementName.toLowerCase())
 							            {
-								            theApp.util.njdebug("remove", "removing child.nodeName=" + child.nodeName);
+								            theApp.logging.njdebug("remove", "removing child.nodeName=" + child.nodeName);
 								            removalImageArray[removedImageItemCount++] = child;
 								            deleted = true;
 							            }
@@ -130,7 +128,7 @@ noojeeClick
 						            parentNode.normalize();
 					            }
 					            else
-						            theApp.util.njdebug("remove", "unexpected null parentNode for: " + removalSpanArray[l]);
+						            theApp.logging.njdebug("remove", "unexpected null parentNode for: " + removalSpanArray[l]);
 				            }
 
 				            // Now add the Noojee Dial icons back in.
@@ -142,8 +140,8 @@ noojeeClick
 			            }
 			            catch (e)
 			            {
-				            theApp.util.njerror(e);
-				            theApp.util.showException("onRefreshOne", e);
+				            theApp.logging.njerror(e);
+				            theApp.util.showException("render.onRefreshOne", e);
 			            }
 		            },
 
@@ -152,258 +150,244 @@ noojeeClick
 			            try
 			            {
 				            if (this.excluded(document) == true)
-					            theApp.util.njdebug("render", "excluded=" + document.location.href);
+					            theApp.logging.njdebug("render", "excluded=" + document.location.href);
 				            else
 				            {
-					            theApp.util.njdebug("render", "rendering: "
+					            theApp.logging.njdebug("render", "rendering: "
 					                    + (document.location ? document.location.href : document));
 
 					            var pattern = theApp.prefs.getValue("pattern");
 					            var delimiters = theApp.prefs.getValue("delimiters");
-					            theApp.util.njdebug("render", "pattern =" + pattern);
+					            theApp.logging.njdebug("render", "pattern =" + pattern);
 
 					            if (pattern != null && theApp.util.trim(pattern).length != 0)
 					            {
-						            // Get the list of tags that we are gong to
-						            // search for matching
-						            // phone numbers.
+						            /*
+									 * Get the list of tags that we are gong to search for matching phone numbers.
+									 */
 						            var xpath = "//text()[(parent::" + this.tagsOfInterest.join(" or parent::") + ")]";
-						            var candidates = document.evaluate(xpath, document, null,
+						            
+						            /**
+						             * Seach the document for any tag which is in the set of 'tagsOfInterest'.
+						             * candidateTags contain the list of tags from the active document
+						             * which we need to search for phone numbers.
+						             */
+						            var candidateTags = document.evaluate(xpath, document, null,
 						                    XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null);
 
-						            // Get the list of regex patterns we are to
-						            // match on.
-						            var trackRegex = new RegExp(theApp.phonepatterns.transposePattern(pattern), "ig");
-						            theApp.util.njdebug("render", "regex=" + trackRegex);
+						            /*
+									 * Get the list of regex patterns we are to match on.
+									 */
+						            var phonePatternRegex = new RegExp(theApp.phonepatterns.transposePattern(pattern), "ig");
+						            theApp.logging.njdebug("render", "regex=" + phonePatternRegex);
 
-						            // Loop through and test every candidate for
-						            // a match.
-						            for ( var cand = null, i = 0; (cand = candidates.snapshotItem(i)); i++)
+						            /*
+									 * Loop through and test every candidateTag to see if it contains a phone number.
+									 */
+						            for ( var candidateTag = null, i = 0; (candidateTag = candidateTags.snapshotItem(i)); i++)
 						            {
 
-							            theApp.util.njdebug("render", "examining node=" + cand.nodeValue);
-							            if (trackRegex.test(cand.nodeValue))
+							            theApp.logging.njdebug("render", "examining node=" + candidateTag.nodeValue);
+							            /*
+							             * Examine the candidateTags content (nodeValue) to see if it has a phone number.
+							             */
+							            if (phonePatternRegex.test(candidateTag.nodeValue))
 							            {
+							            	/* Looks like the candidateTag contains a phone number */
+							            	
+								            /*
+											 * Check that the node isn't owned by a document which is in design mode (i.e. an
+											 * editor such as fckeditor). If it is then we skip the node.
+											 */
+								            theApp.logging.njdebug("render", "Scanning for an editor parent for cand=" + candidateTag);
 
-								            // Check that the node isn't owned
-								            // by a document which is in
-								            // design mode (i.e. an editor such
-								            // as fckeditor).
-								            // If it is then we skip the node.
+								            /*
+											 * Scan all of the owners checking for an editor. If we are owned by an editor then
+											 * skip this tag.
+											 */
 
-								            theApp.util.njdebug("render", "Scanning for an editor parent for cand=" + cand);
-
-								            // Scan all of the owners checking
-								            // for an editor
-								            var parent = cand.parentNode;
+								            var parent = candidateTag.parentNode;
 								            var editable = false;
 								            while (parent != null)
 								            {
 									            if (parent.designMode == "on" || parent.designMode == "true"
 									                    || parent.contentEditable == "on" || parent.contentEditable == "true")
 									            {
-										            theApp.util.njdebug("render", "Found node in designMode, skipping");
+										            theApp.logging.njdebug("render", "Found node in designMode, skipping");
 										            editable = true;
 										            break;
 									            }
 									            else if (parent.designMode == "off" || parent.designMode == "false"
 									                    || parent.contentEditable == "off" || parent.contentEditable == "false")
 									            {
-										            // parent isn't editable so
-										            // search no further.
+										            /*
+													 * parent isn't editable so search no further.
+													 */
 										            break;
 									            }
 									            if (parent == parent.parentNode)
 									            {
-										            theApp.util.njerror("render", "bugger, self referencing parent.");
-										            // definition:bugger, from
-										            // the latin australias -
-										            // woe is
-										            // me, that shouldn't have
-										            // happened.
+										            theApp.logging.njerror("render", "bugger, self referencing parent.");
+										            /*
+													 * definition:bugger, from the latin australias - Woe is me, that shouldn't
+													 * have happened.
+													 */
 										            break;
 									            }
 
 									            parent = parent.parentNode;
 								            }
 
+								            /*
+								             * If the candidateTag is editable then we aren't interested so lets skip out of here.
+								             */
 								            if (editable) continue;
 
-								            // First check that the parent isn't
-								            // already a noojeeClick
-								            // element
-								            // In some cases we appear to be
-								            // processing the document
-								            // twice
-								            // but I've not found a simple way
-								            // to suppress it so we do
-								            // this simple check
-								            if (cand.parentNode != null
-								                    && cand.parentNode.getAttribute("name") != "noojeeClick")
+								            /*
+											 * First check that the parent isn't already a noojeeClick element. In some cases we
+											 * appear to be processing the document twice but I've not found a simple way to
+											 * suppress it so we do this simple check
+											 */
+								            if (candidateTag.parentNode != null
+								                    && candidateTag.parentNode.getAttribute("name") != "noojeeClick")
 								            {
-									            var candParent = cand.parentNode;
+									            var candParent = candidateTag.parentNode;
 
-									            // We now remove the candidate
-									            // as we are going to
-									            // re-insert it back into the
-									            // parent piecemeal with
-									            // noojeeclick
-									            // spans inserted around each
-									            // phone number.
-									            // Remember each candidate can
-									            // have multiple phone number
-									            // present.
-									            candParent.removeChild(cand);
+									            /*
+									             * Start by determining where to re-insert the tag
+									             * i.e. some candidate tags will have siblings.
+									             */
+									            var insertPosition = candidateTag.nextSibling;
+									            
 
-									            var source = cand.nodeValue;
-									            theApp.util.njdebug("render", "source=" + source);
-									            trackRegex.lastIndex = 0;
+									            /*
+												 * We now remove the candidateTag as we are going to re-insert it back into the
+												 * parent piecemeal with noojeeclick spans inserted around each phone number.
+												 * Remember each candidateTag can have multiple phone numbers present.
+												 */
+									            candParent.removeChild(candidateTag);
+									            
+									            var candidateContents = candidateTag.nodeValue;
+									            theApp.logging.njdebug("render.build", "candidateContents=" + candidateContents);
+									            phonePatternRegex.lastIndex = 0;
 
-									            // In a single piece of text we
-									            // may have multiple
-									            // matches
-									            // so we need to iterate over
-									            // the list of matches.
-									            // We go through the 'text'
-									            // identifying each phone
-									            // number
-									            // which we wrap in an image tag
-									            // with the noojee click
-									            // icon.
-									            // As we go we re-insert the
-									            // text back into the parent
-									            // (which
-									            // we removed it from)
-									            for ( var match = null, lastLastIndex = 0; (match = trackRegex.exec(source));)
+									            /*
+												 * In a single piece of text we may have multiple matches so we need to iterate
+												 * over the list of matches. We go through the 'text' identifying each phone
+												 * number which we wrap in an span tag with the noojee click icon. As we go we
+												 * re-insert the text back into the parent (which we removed it from)
+												 */
+									            for ( var match = null, lastLastIndex = 0; (match = phonePatternRegex.exec(candidateContents));)
 									            {
-										            // OK so we having a
-										            // matching string
-										            theApp.util.njdebug("render", "match=" + match);
+										            /*
+													 * OK so we having a matching string
+													 */
+									            	theApp.logging.njdebug("render.build", "match=" + match);
 
-										            // rebuild the original
-										            // source string as we go by
-										            // adding the non-matching
-										            // substrings
-										            // between the matching
-										            // substrings.
+										            /*
+													 * rebuild the original source string as we go by adding the non-matching
+													 * substrings between the matching substrings.
+													 */
 
-										            // Add the non-matching
-										            // substring which appears
-										            // between
-										            // the matching substrings
-										            // into the new parent node.
-										            var nonMatching = source.substring(lastLastIndex, match.index);
+										            /*
+													 * Add the non-matching substring which appears between the matching
+													 * substrings into the new parent node.
+													 */
+										            var nonMatching = candidateContents.substring(lastLastIndex, match.index);
 
-										            // Check the characters
-										            // immediately before and
-										            // after the matching digit.
-										            // If we find a digit,
-										            // period,
-										            // comma, plus or minus sign
-										            // or one of the defined
-										            // delimiters before or
-										            // after the
-										            // matching region then the
-										            // match region is probably
-										            // part of some bigger
-										            // number which isn't
-										            // actually
-										            // a phone number. So mark
-										            // it as non-matching and
-										            // move on.
+										            /*
+													 * Check the characters immediately before and after the matching digit. If
+													 * we find a digit, period, comma, plus or minus sign or one of the defined
+													 * delimiters before or after the matching region then the match region is
+													 * probably part of some bigger number which isn't actually a phone number.
+													 * So mark it as non-matching and move on.
+													 */
 
-										            // check the preceding
-										            // character
+										            /*
+													 * check the preceding character
+													 */
 										            if (match.index > 0)
 										            {
-											            // njlog("preceeding=" +
-											            // source.substring(
-											            // match.index - 1,
-											            // match.index));
-											            if ("0123456789+-,.".indexOf(source.substring(match.index - 1,
+											            /*
+														 * njlog("preceeding=" + source.substring( match.index - 1,
+														 * match.index));
+														 */
+											            if ("0123456789+-,.".indexOf(candidateContents.substring(match.index - 1,
 											                    match.index)) != -1)
 											            {
-												            // the non match had
-												            // an invalid
-												            // character so
-												            // our number
-												            // mustn't be a
-												            // phone number.
-												            continue;
+												            /*
+															 * the non match had an invalid character so our number mustn't be a
+															 * phone number. 
+															 */
+											            	continue;
 											            }
-											            if (delimiters.indexOf(source.substring(match.index - 1, match.index)) != -1)
+											            if (delimiters.indexOf(candidateContents.substring(match.index - 1, match.index)) != -1)
 											            {
-												            // the non match had
-												            // an invalid
-												            // character so
-												            // our number
-												            // mustn't be a
-												            // phone number.
-												            continue;
+												            /*
+															 * the non match contained a delimiter so our number mustn't be a
+															 * phone number. 
+															 */
+											            	continue;
 											            }
 										            }
 
-										            // check the following
-										            // character.
-										            if (match.index + match[0].length < source.length - 1)
+										            /*
+													 * check the following character.
+													 */
+										            if (match.index + match[0].length < candidateContents.length - 1)
 										            {
-											            // njlog("following=" +
-											            // source.substring(
-											            // match.index +
-											            // match[0].length,
-											            // match.index +
-											            // match[0].length +
-											            // 1));
-
-											            if ("0123456789+-,.".indexOf(source.substring(match.index
+											            /*
+														 * njlog("following=" + source.substring( match.index + match[0].length,
+														 * match.index + match[0].length + 1));
+														 */
+											            if ("0123456789+-,.".indexOf(candidateContents.substring(match.index
 											                    + match[0].length, match.index + match[0].length + 1)) != -1)
 											            {
-												            // the non match had
-												            // an invalid
-												            // character so
-												            // our number
-												            // mustn't be a
-												            // phone number.
+												            /*
+															 * the non match had an invalid character so our number mustn't be a
+															 * phone number.
+															 */
 												            continue;
 											            }
-											            if (delimiters.indexOf(source.substring(match.index + match[0].length,
+											            if (delimiters.indexOf(candidateContents.substring(match.index + match[0].length,
 											                    match.index + match[0].length + 1)) != -1)
 											            {
-												            // the non match had
-												            // an invalid
-												            // character so
-												            // our number
-												            // mustn't be a
-												            // phone number.
+												            /*
+															 * the non match had an invalid character so our number mustn't be a
+															 * phone number.
+															 */
 												            continue;
 											            }
 
 										            }
-										            theApp.util.njdebug("render", "match is good");
+										            theApp.logging.njdebug("render.build", "match is good");
 
-										            candParent.appendChild(document.createTextNode(nonMatching));
+										            theApp.logging.njdebug("render.build", "appending" + nonMatching);
+										            if (insertPosition == null)
+										            	candParent.appendChild(document.createTextNode(nonMatching));
+										            else
+										            	candParent.insertBefore(document.createTextNode(nonMatching), insertPosition);
 
-										            // Now render the matching
-										            // substring (phone number)
-										            // with the noojee Click
-										            // element wrapping it so it
-										            // becomes clickable.
-										            // We support a growing
-										            // number of render styles.
+										            /*
+													 * Now render the matching substring (phone number) with the noojee Click
+													 * element wrapping it so it becomes clickable. We support a growing number
+													 * of render styles.
+													 */
 										            var renderStyle = "button";
 										            var text = document.createTextNode(match[0]);
 										            var clickElement = null;
 										            if (renderStyle == "anchor")
 										            {
-											            // Anchor link which is
-											            // clickable but doesn't
-											            // present with an icon
+											            /*
+														 * Anchor link which is clickable but doesn't present with an icon
+														 */
 											            clickElement = document.createElement("a");
 											            clickElement.setAttribute("style", "cursor:pointer;");
 											            clickElement.addEventListener("click", theApp.handlers.onDialHandler,
 											                    true);
-											            // a.addEventListener("mouseover",
-											            // numInfo, false);
+											            /*
+														 * a.addEventListener("mouseover", numInfo, false);
+														 */
 											            clickElement.appendChild(text);
 											            clickElement.setAttribute("PhoneNo", match[0]);
 
@@ -415,7 +399,7 @@ noojeeClick
 											            clickElement.setAttribute("name", "noojeeClick");
 											            clickElementid = "noojeeClick-click";
 
-											            theApp.util.njdebug("render", "match[0]=" + match[0]);
+											            theApp.logging.njdebug("render", "match[0]=" + match[0]);
 											            var btn = document.createElement(this.njClickElementType);
 											            btn.setAttribute("name", this.njClickElementName);
 											            btn.id = "noojeeClick-btn";
@@ -428,10 +412,10 @@ noojeeClick
 																		+ "border: 0; padding: 0;");
 																	  
 											            btn.addEventListener("click", theApp.handlers.onDialHandler, false);
-											            // We need to suppress
-											            // any mouse action we
-											            // may inherit from
-											            // parent element
+											            /*
+														 * We need to suppress any mouse action we may inherit from parent
+														 * element
+														 */
 											            btn.addEventListener("mouseover", theApp.handlers.onMouseOver, false);
 											            btn.addEventListener("mouseout", theApp.handlers.onMouseOut, false);
 
@@ -440,23 +424,32 @@ noojeeClick
 											            clickElement.appendChild(text);
 											            clickElement.appendChild(btn);
 										            }
+										            theApp.logging.njdebug("render.build", "appending" + clickElement);
+										            if (insertPosition == null)
 										            candParent.appendChild(clickElement);
-										            lastLastIndex = trackRegex.lastIndex;
+										            else
+										            	candParent.insertBefore(clickElement, insertPosition);
+
+										            lastLastIndex = phonePatternRegex.lastIndex;
 									            }
-									            candParent
-									                    .appendChild(document.createTextNode(source.substring(lastLastIndex)));
+									            theApp.logging.njdebug("render.build", "appending" + candidateContents.substring(lastLastIndex));
+									            if (insertPosition == null)
+									            	candParent.appendChild(document.createTextNode(candidateContents.substring(lastLastIndex)));
+									            else
+									            	candParent.insertBefore(document.createTextNode(candidateContents.substring(lastLastIndex)), insertPosition);
+									            
 									            candParent.normalize();
 								            }
 							            }
 						            }
 					            }
-					            theApp.util.njdebug("render", "rendering complete:" + new Date());
+					            theApp.logging.njdebug("render", "rendering complete:" + new Date());
 				            }
 			            }
 			            catch (e)
 			            {
-				            theApp.util.njerror(e);
-				            theApp.util.showException("addClickToDialLinks", e);
+				            theApp.logging.njerror(e);
+				            theApp.util.showException("render.addClickToDialLinks", e);
 			            }
 
 		            },
@@ -473,12 +466,12 @@ noojeeClick
 			            {
 				            if (doc.location != null && doc.location.href != null)
 				            {
-					            theApp.util.njdebug("excluded", "checking exclusion for url=" + doc.location.href);
+					            theApp.logging.njdebug("excluded", "checking exclusion for url=" + doc.location.href);
 
 					            var exclusions = theApp.prefs.getValue("exclusions");
 					            if (exclusions != null && exclusions.length != 0)
 					            {
-						            theApp.util.njdebug("excluded", "exclusions=" + exclusions);
+						            theApp.logging.njdebug("excluded", "exclusions=" + exclusions);
 						            exclusions = exclusions.split("\n");
 						            for ( var i = 0; i < exclusions.length; i++)
 						            {
@@ -487,7 +480,7 @@ noojeeClick
 							            {
 								            if (doc.location.href != null && doc.location.href.indexOf(exclusion) == 0)
 								            {
-									            theApp.util.njdebug("excluded", "excluded: " + doc.location.href);
+									            theApp.logging.njdebug("excluded", "excluded: " + doc.location.href);
 									            excluded = true;
 									            break;
 								            }
@@ -495,14 +488,14 @@ noojeeClick
 						            }
 					            }
 					            else
-						            theApp.util.njdebug("excluded", "No Exclusions.");
+						            theApp.logging.njdebug("excluded", "No Exclusions.");
 				            }
 
 			            }
 			            catch (e)
 			            {
-				            theApp.util.njerror(e);
-				            theApp.util.showException("excluded", e);
+				            theApp.logging.njerror(e);
+				            theApp.util.showException("render.excluded", e);
 			            }
 
 			            return excluded;

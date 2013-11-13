@@ -59,7 +59,7 @@ Monitor: function ()
 				return;
 			}
 			
-			theApp.util.njdebug("monitor", "init called for document=" + document);
+			theApp.logging.njdebug("monitor", "init called for document=" + document);
 			this.document = document;
 			//var self = this;
 			//document.addEventListener("DOMSubtreeModified", function() { self.domModified(); }, false);
@@ -69,7 +69,7 @@ Monitor: function ()
 		}
 		catch (e)
 		{
-			theApp.util.njerror("monitor ignoring document with null href");
+			theApp.logging.njerror("monitor ignoring document with null href");
 			return;
 		}
 		*/
@@ -83,13 +83,13 @@ Monitor: function ()
 	 */
 	this.monitorPage = function(self)
 	{
-		theApp.util.njdebug("monitor", "monitorPage called with ID=" + this.pageMonitorID.toString()
+		theApp.logging.njdebug("monitor", "monitorPage called with ID=" + this.pageMonitorID.toString()
 			+ " check=" + this.lastModificationCheck.toString()  + " actual=" + this.lastModified);
 		var duration = this.duration;
 		
 		if (this.lastModificationCheck != this.lastModified)
 		{
-			theApp.util.njdebug("monitor", "Monitored document still changing=" + this.document.location);
+			theApp.logging.njdebug("monitor", "Monitored document still changing=" + this.document.location);
 			this.lastModificationCheck = this.lastModified;
 
 			// The page is still changing so keep monitoring.
@@ -99,10 +99,10 @@ Monitor: function ()
 		{
 			// The document has stopped changing and a refresh is required.
 			this.suppressDomModification = true;
-			theApp.util.njdebug("monitor", "Dom has stopped changing so forcing refresh of document=" + this.document.location);
+			theApp.logging.njdebug("monitor", "Dom has stopped changing so forcing refresh of document=" + this.document.location);
 			theApp.render.onRefreshOne(this.document);
 			this.pageMonitorID = null;
-			theApp.util.njdebug("monitor", "Page Monitor stopped, refresh complete for document=" + this.document.location);
+			theApp.logging.njdebug("monitor", "Page Monitor stopped, refresh complete for document=" + this.document.location);
 			this.suppressDomModification = false;
 			this.wasModified = false; 
 		}
@@ -111,10 +111,10 @@ Monitor: function ()
 
 	this.startPageMonitor = function()
 	{
-		theApp.util.njdebug("monitor", "Page Monitor Started for: " + this.document.location);
+		theApp.logging.njdebug("monitor", "Page Monitor Started for: " + this.document.location);
 
 		this.pageMonitorID = window.setTimeout(function(self) {self.monitorPage(self); }, this.duration, this);
-		theApp.util.njdebug("monitor", "Page Monitor Timer ID=" + this.pageMonitorID);
+		theApp.logging.njdebug("monitor", "Page Monitor Timer ID=" + this.pageMonitorID);
 	};
 	
 	/**

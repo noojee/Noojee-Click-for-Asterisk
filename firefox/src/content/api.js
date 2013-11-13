@@ -20,7 +20,7 @@ njClickAPI: new Object(),
  */
 njAPIonLoad: function (document)
 {
-	theApp.util.njdebug("api", "njAPIonLoad called");
+	theApp.logging.njdebug("api", "njAPIonLoad called");
 	//var HTMLWin = document.getElementById("htmlIFrame").contentWindow; 
 	//HTMLWin.njClickAPI = njClickAPI;
 	
@@ -38,7 +38,7 @@ njSetExtension: function (extension)
 
 njAPIinit: function ()
 {
-	theApp.util.njdebug("api", "njAPIinit called");
+	theApp.logging.njdebug("api", "njAPIinit called");
 	// disabled until I understand the security implications.
 	this.njClickAPI.setExtension = this.njSetExtension;
 },

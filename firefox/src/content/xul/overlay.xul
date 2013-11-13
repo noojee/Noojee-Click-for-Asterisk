@@ -109,6 +109,8 @@
        src="chrome://noojeeclick/content/api.js"/>
     <script type="application/x-javascript"
        src="chrome://noojeeclick/content/prefs.js"/>
+    <script type="application/x-javascript"
+       src="chrome://noojeeclick/content/logging.js"/>
 	<script type="application/x-javascript"
        src="chrome://noojeeclick/content/dialstatus.js"/>
     <script type="application/x-javascript"
@@ -128,8 +130,14 @@
 	<script type="application/x-javascript"
        src="chrome://noojeeclick/content/asterisk.js"/>
     <script type="application/x-javascript"
+       src="chrome://noojeeclick/content/messagepassing.js"/>
+    <script type="application/x-javascript"
        src="chrome://noojeeclick/content/noojeeclick.js"/>
     <script type="application/x-javascript"
+       src="chrome://noojeeclick/content/notification.js"/>
+    <script type="application/x-javascript"
        src="chrome://noojeeclick/content/configuration.js"/>
+       
+       
  
 </overlay>

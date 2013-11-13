@@ -48,7 +48,7 @@ noojeeClick
 
 				        var xmlHttpRequest = null;
 
-				        theApp.util.njdebug("sequence", "sequence: " + theApp.job.toString(jobs) + ":" + param);
+				        theApp.logging.njdebug("sequence", "sequence: " + theApp.job.toString(jobs) + ":" + param);
 
 				        this.currentStep = -1;
 				        this.currentJob = null;
@@ -70,12 +70,12 @@ noojeeClick
 				        {
 					        try
 					        {
-						        theApp.util.njdebug("sequence", "jobs=" + theApp.job.toString(jobs));
+						        theApp.logging.njdebug("sequence", "jobs=" + theApp.job.toString(jobs));
 						        if (navigator.onLine)
 						        {
 							        self.currentStep = 0;
 							        self.currentJob = self.jobs[self.currentStep];
-							        theApp.util.njdebug("sequence", "currentJob =" + self.currentJob.name);
+							        theApp.logging.njdebug("sequence", "currentJob =" + self.currentJob.name);
 							        self.currentJob.run(self, param);
 						        }
 						        else
@@ -83,13 +83,15 @@ noojeeClick
 					        }
 					        catch (e)
 					        {
-						        theApp.util.njlog(e);
-						        theApp.util.showException("run", e);
+						        theApp.logging.njerror(e);
+						        theApp.util.showException("sequence.runCallback", e);
 					        }
 				        };
 
 				        this.request = function(requestURL)
 				        {
+				        	theApp.logging.njdebug("sequence", "Sending request URL=" + requestURL);
+				        	
 					        xmlHttpRequest = new XMLHttpRequest();
 					        // xmlHttpRequest.onreadystate = this.callback;
 					        xmlHttpRequest.onload = this.load;
@@ -98,7 +100,7 @@ noojeeClick
 					        xmlHttpRequest.open("GET", requestURL, true);
 					        xmlHttpRequest.send("");
 
-					        theApp.util.njdebug("sequence", "request=" + requestURL);
+					        theApp.logging.njdebug("sequence", "request=" + requestURL);
 					        return true;
 				        }
 
@@ -133,7 +135,7 @@ noojeeClick
 				        {
 					        var details = this;
 
-					        // theApp.util.njdebug("sequence", "sequence.load: "
+					        // theApp.logging.njdebug("sequence", "sequence.load: "
 							// + details.readyState + ":" + details.status + ":"
 							// + details.statusText + ":"
 					        // + details.responseHeader + ":" +
@@ -152,39 +154,43 @@ noojeeClick
 						        }
 						        else
 						        {
-							        theApp.util.njdebug("sequence",
+							        theApp.logging.njdebug("sequence",
 							                "No response parser found for current job, using default parser");
 
 							        result = parseResponse(details.responseText);
-							        theApp.util.njdebug("sequence", "responseText=" + details.responseText);
-							        theApp.util.njdebug("sequence", "result.response=" + result.response);
-							        theApp.util.njdebug("sequence", "result.message=" + result.message);
+							        theApp.logging.njdebug("sequence", "responseText=" + details.responseText);
+							        theApp.logging.njdebug("sequence", "result.response=" + result.response);
+							        theApp.logging.njdebug("sequence", "result.message=" + result.message);
 						        }
-
-						        // If handleResponse returns false then we abort
-								// the entire
-						        // sequence.
-						        if (seq.currentJob.handleResponse(result))
+						        
+						        if (result.response != "ignore")
 						        {
-							        theApp.util.njdebug("sequence", "sequence completed");
-							        return;
-						        }
-
-						        // Only increment the step if the current job
-								// has finished
-						        if (!seq.currentJob.doContinue()) seq.currentStep++;
-
-						        theApp.util.njdebug("sequence", "running step=" + seq.currentStep);
-						        theApp.util.njdebug("sequence", "jobs=" + theApp.job.toString(seq.jobs));
-
-						        if (seq.currentStep < seq.jobs.length)
-						        {
-							        seq.currentJob = seq.jobs[seq.currentStep];
-							        seq.currentJob.run(seq, param);
-						        }
-						        else
-						        {
-							        theApp.util.njdebug("sequence", "sequence complete");
+							        // If handleResponse returns false then we abort
+									// the entire
+							        // sequence.
+							        if (seq.currentJob.handleResponse(result))
+							        {
+								        theApp.logging.njdebug("sequence", "sequence completed");
+								        return;
+							        }
+	
+							        // Only increment the step if the current job
+									// has finished
+							        if (!seq.currentJob.doContinue()) 
+							        	seq.currentStep++;
+	
+							        theApp.logging.njdebug("sequence", "running step=" + seq.currentStep);
+							        theApp.logging.njdebug("sequence", "jobs=" + theApp.job.toString(seq.jobs));
+	
+							        if (seq.currentStep < seq.jobs.length)
+							        {
+								        seq.currentJob = seq.jobs[seq.currentStep];
+								        seq.currentJob.run(seq, param);
+							        }
+							        else
+							        {
+								        theApp.logging.njdebug("sequence", "sequence complete");
+							        }
 						        }
 					        }
 					        else if (details.status == 404)
@@ -196,7 +202,7 @@ noojeeClick
 					        }
 					        else
 					        {
-						        theApp.util.njdebug("sequence", "response error, status=" + details.status);
+						        theApp.logging.njdebug("sequence", "response error, status=" + details.status);
 						        theApp.prompts.njAlert(details.responseText);
 					        }
 
@@ -208,11 +214,11 @@ noojeeClick
 					        {
 						        var details = this;
 						        var seq = this.sequence;
-						        theApp.util.njdebug("sequence", "error this=" + seq.currentJob.name);
+						        theApp.logging.njdebug("sequence", "error this=" + seq.currentJob.name);
 						        theApp.noojeeclick.resetIcon();
 						        theApp.asterisk.getInstance().updateState("");
 
-						        theApp.util.njdebug("sequence", "sequence.error: " + details.readyState + ":" + details.status
+						        theApp.logging.njdebug("sequence", "sequence.error: " + details.readyState + ":" + details.status
 						                + ":"
 						                // + details.statusText +":"
 						                + details.responseHeader + ":" + details.responseXML + ":" + details.responseText);
@@ -228,7 +234,7 @@ noojeeClick
 						        {
 							        if (details.responseText == null || details.responseText.length == 0)
 							        {
-								        theApp.util.njlog("Unexpected error responseText is empty, asterisk may be down.");
+								        theApp.logging.njlog("Unexpected error responseText is empty, asterisk may be down.");
 								        if (!initialising)
 								            theApp.util
 								                    .showError(details.responseText,
@@ -237,21 +243,21 @@ noojeeClick
 							        else
 							        {
 								        var result = parseResponse(details.responseText);
-								        theApp.util.njlog("Action failed " + result.message);
+								        theApp.logging.njlog("Action failed " + result.message);
 								        theApp.util.showError(result.response, result.message);
 							        }
 						        }
 					        }
 					        catch (e)
 					        {
-						        theApp.util.showException("error", e);
+						        theApp.util.showException("sequence.error", e);
 					        }
 					        ;
 				        }
 
 				        this.timeout = function()
 				        {
-					        theApp.util.njdebug("sequence", "requestTimeout");
+					        theApp.logging.njdebug("sequence", "requestTimeout");
 					        this.sequence.cancel();
 				        };
 
@@ -259,5 +265,5 @@ noojeeClick
 
 		        };
 
-	        }
+	        };
         });

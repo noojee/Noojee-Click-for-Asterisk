@@ -72,7 +72,9 @@ Asterisk: function ()
 	
 	this.init = function()
 	{
-		theApp.util.njlog("initializing Asterisk");
+		// We login on startup as this warns the user early in the process if we have any problems rather than
+		// waiting for them to dial to find out.
+		theApp.logging.njlog("initializing Asterisk");
 		var sequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.Wait(null) ], "", true);
 		sequence.run();
 	};
@@ -85,62 +87,58 @@ Asterisk: function ()
 	this.setChannel = function (_channel)
 	{
 		this.channel = _channel;
-		theApp.util.njdebug("asterisk", "Asterisk.channel set to " + this.channel);
+		theApp.logging.njdebug("asterisk", "Asterisk.channel set to " + this.channel);
 	};
 
 	this.dial = function(phoneNo)
 	{
-		theApp.util.njdebug( "asterisk", "Asterisk.dial=" + phoneNo);
+		theApp.logging.njdebug( "asterisk", "Asterisk.dial=" + phoneNo);
 		
-		// TODO: only set the lastDialed when we successfully dial
+		// TODO: only set the lastDialed when we dialed successfully
 		theApp.prefs.setValue("lastDialed", phoneNo);
 		
 		this.remoteDialCommenced = false;
 		this.dialing = phoneNo;
-		theApp.util.njdebug("asterisk", "Asterisk.channel set to null");
+		theApp.logging.njdebug("asterisk", "Asterisk.channel set to null");
 		channel = null;
 		this.remoteChannel = null;
 		this.state = null;	
 		
 		this.inLocalDial = true;
 		
-		var dialSequence = null;
+		// Create the dial sequence
+		var dialSequence = new theApp.sequence.Sequence( [ new theApp.job.Dial(), new theApp.job.Complete() ], phoneNo, false);
 		
-//		if (this.loggedIn)
-			//dialSequence = new theApp.sequence.Sequence( [ new theApp.job.Dial(), new theApp.job.Complete() ], phoneNo, false);
-		//else
-		
-		dialSequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.Dial(), new theApp.job.Complete() ], phoneNo, false);
-		dialSequence.run();
+		// Nest it within a login sequence as we can't always tell if our asterisk session has timedout.
+		// By always authing it doesn't matter if we have timed out.
+		var loginSequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.Wait(dialSequence) ], "", true);
+		loginSequence.run();
 	};
 
 	this.answer = function()
 	{
-		theApp.util.njdebug("asterisk", "Asterisk.answer");
+		theApp.logging.njdebug("asterisk", "Asterisk.answer");
 		
 		this.remoteDialCommenced = false;
 		this.state = null;	
 		
-		var answerSequence;
-//		if (this.loggedIn)
-	//		answerSequence = new theApp.sequence.Sequence( [ new theApp.job.Answer(), new theApp.job.Complete() ], this.remoteChannel, false);
-		//else
-			answerSequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.Answer(), new theApp.job.Complete() ], this.remoteChannel, false);
+		var answerSequence = new theApp.sequence.Sequence( [ new theApp.job.Answer(), new theApp.job.Complete() ], this.remoteChannel, false);
+		var loginSequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.Wait(answerSequence) ], "", true);
 			
-		answerSequence.run();
+		loginSequence.run();
 	};
 
 	this.hangup = function()
 	{
-		theApp.util.njdebug("asterisk", "Asterisk.hangup called channel=" + channel);
+		theApp.logging.njdebug("asterisk", "Asterisk.hangup called channel=" + channel);
 
-		// Hangup the our extension
+		// Hangup our extension
 		// we must logon in case our session has timed out since we first logged on.
-		
-		var sequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.HangupAction(this.channel), new theApp.job.Complete() ], "", false);
-		sequence.run();
+		var hagupSequence = new theApp.sequence.Sequence( [ new theApp.job.HangupAction(this.channel), new theApp.job.Complete() ], "", false);
+		var loginSequence = new theApp.sequence.Sequence( [ new theApp.job.Login(), new theApp.job.Wait(hagupSequence) ], "", true);
+		loginSequence.run();
 
-		theApp.util.njdebug("asterisk", "Asterisk.channel set to null");
+		theApp.logging.njdebug("asterisk", "Asterisk.channel set to null");
 		this.channel = null;
 		this.remoteChannel = null;
 		this.state = null;
@@ -157,10 +155,10 @@ Asterisk: function ()
 
 	this.processEvent = function(events)
 	{
-		theApp.util.njdebug("asterisk", "Asterisk.processEventCalled");
+		theApp.logging.njdebug("asterisk", "Asterisk.processEventCalled");
 		// 
 
-		theApp.util.njdebug("asterisk", events.length + " events found");
+		theApp.logging.njdebug("asterisk", events.length + " events found");
 		for (var i = 0; i < events.length; i++)
 		{
 			events[i].apply(theApp.asterisk.getInstance());
@@ -178,72 +176,74 @@ Asterisk: function ()
 		var result =
 		{
 		    response :"Error",
-		    message :"No Response from Server"
+		    message :"Invalid Response from Server: " + responseText
 		};
 		try
 		{
 			var xmlDoc;
-			if (typeof (DOMParser) != "undefined")
+			var message = "none";
+			var response = "none";
+
+			theApp.logging.njdebug("asterisk.low", "Parsing:" + responseText);
+			var parser = new DOMParser();
+			xmlDoc = parser.parseFromString(responseText, "application/xhtml+xml");
+			
+
+			var serverType = theApp.prefs.getValue("serverType"); 
+			if (serverType == theApp.noojeeclick.serverTypeList[0].type)
 			{
-				var message = "none";
-				var response = "none";
+				theApp.logging.njdebug("asterisk", "running AstmanProxy");
+				var tag = xmlDoc.getElementsByTagName("Response");
+				if (tag[0] != null)
+					response = tag[0].getAttribute("Value");
+				tag = xmlDoc.getElementsByTagName("Message");
+				if (tag[0] != null)
+					message = tag[0].getAttribute("Value");
 
-				theApp.util.njdebug("asterisk.low", "Parsing:" + responseText);
-				var parser = new DOMParser();
-				xmlDoc = parser.parseFromString(responseText, "application/xhtml+xml");
-
-				var serverType = theApp.prefs.getValue("serverType"); 
-				if (serverType == theApp.noojeeclick.serverTypeList[0].type)
+				result =
 				{
-					theApp.util.njdebug("asterisk", "running AstmanProxy");
-					var tag = xmlDoc.getElementsByTagName("Response");
-					if (tag[0] != null)
-						response = tag[0].getAttribute("Value");
-					tag = xmlDoc.getElementsByTagName("Message");
-					if (tag[0] != null)
-						message = tag[0].getAttribute("Value");
+				    response :response,
+				    message :message
+				};
+			}
+			else if (serverType == theApp.noojeeclick.serverTypeList[1].type 
+			|| serverType == theApp.noojeeclick.serverTypeList[2].type)
+			{
+				theApp.logging.njdebug("asterisk", "running AJAM or NJVision");
+				var generic = xmlDoc.getElementsByTagName("generic");
 
+				if (generic.length > 0)
+				{
+					response = generic[0].getAttribute("response");
+					message = generic[0].getAttribute("message");
 					result =
 					{
 					    response :response,
 					    message :message
 					};
 				}
-				else if (serverType == theApp.noojeeclick.serverTypeList[1].type 
-				|| serverType == theApp.noojeeclick.serverTypeList[2].type)
+				else
 				{
-					theApp.util.njdebug("asterisk", "running AJAM or NJVision");
-					var generic = xmlDoc.getElementsByTagName("generic");
-
-					if (generic.length > 0)
-					{
-						response = generic[0].getAttribute("response");
-						message = generic[0].getAttribute("message");
-						result =
-						{
-						    response :response,
-						    message :message
-						};
-					}
+					result.response = "ignore";
+					theApp.logging.njerror("Invalid AJAM Result: " + responseText + " : ignored as this could be an asterisk bug.");
 				}
-				
-				if (result.response == "Success")
-				{
-					// Check for any events
-					var events = theApp.event.eventFactory(xmlDoc);
-					if (events != null && events.length > 0)
-					{
-						theApp.asterisk.getInstance().processEvent(events);
-					}
-				}
-
-
 			}
+			
+			if (result.response == "Success")
+			{
+				// Check for any events
+				var events = theApp.event.eventFactory(xmlDoc);
+				if (events != null && events.length > 0)
+				{
+					theApp.asterisk.getInstance().processEvent(events);
+				}
+			}
+
 		}
 		catch (e)
 		{
-			theApp.util.njerror(e);
-			theApp.util.showException("parseResponse", e);
+			theApp.logging.njerror(e);
+			theApp.util.showException("asterisk.parseResponse", e);
 		}
 		return result;
 	};
