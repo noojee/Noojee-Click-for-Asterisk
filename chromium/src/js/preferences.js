@@ -20,11 +20,17 @@
 
 /**
  * Initializes localStorage with default values
- * (required by js/noojee/defaults/preferences.js)
+ * (required by js/noojee/defaults/preferences/preferences.js)
  **/
-function pref(key, value) {
+function pref(key, value) 
+{
+	// For compatibility with the Firefox version we strip the key prefix.
+	if (key.indexOf("extensions.noojeeclick.") == 0)
+		key = key.substring(23);
+	
 	// check that value is not already set
-	if( !localStorage[key] ) {
+	if( !localStorage[key] ) 
+	{
 		localStorage[key] = value;
 	}
 }

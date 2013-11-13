@@ -53,7 +53,16 @@ theApp.prefs =
 	{
 		localStorage[key] = (value == "true" ? true : false);
 	},
-
+	
+	getUsername: function()
+	{
+		return theApp.prefs.getValue("username");
+	},
+	
+	getPassword: function(username)
+	{
+		return theApp.prefs.getValue("password");	
+	},
 
 };
 

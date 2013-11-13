@@ -23,25 +23,6 @@ noojeeClick.ns(function() { with (noojeeClick.LIB) {
 theApp.util =
 {
 
-// @depreciated: @see theApp.logging.njlog(msg)
-njlog: function (msg)
-{
-	theApp.logging.njlog(msg);
-},
-
-// @depreciated: @see theApp.logging.njdebug(msg)
-njdebug: function (module, msg)
-{
-	theApp.logging.njdebug(module, msg);
-},
-
-// @depreciated: @see theApp.logging.njdebug(msg)
-njerror: function (msg)
-{
-	theApp.logging.njerror(msg);
-},
-
-
 Right: function(str, n)
 {
 	if (n <= 0)
@@ -116,51 +97,59 @@ hasGlobalStyle: function (document)
 	var noojeeStyle = document.getElementById("noojeeClickStyle");
 	if (noojeeStyle != null)
 		hasStyle = true;
-	this.njdebug("util", "hasStyle=" + hasStyle);
+	theApp.logging.njdebug("util", "hasStyle=" + hasStyle);
 	return hasStyle;
 },
 
 showError: function (response, message)
 {
-	this.njlog("showError r=" + response + " m=" + message);
+	theApp.logging.njerror("showError r=" + response + " m=" + message);
 	theApp.prompts.njAlert(message);
 	//theApp.dialstatus.getInstance().updateStatus(message);
 },
 
 showException: function (method, e)
 {
-	this.njdebug("util", "Exception caught in method '" + method + "' " + e);
 	var message = 
 		"An exeption occured in method '" + method + "' " + e.name + ".\n" +
-		"Error description: " + e.description + ".\n" +
-		"Error number: " + e.number + ".\n" +
+		"filename: " + e.filename + ".\n" +
+		"lineNumber: " + e.lineNumber + ".\n" +
 		"Error message: " + e.message;
-	this.njlog(message);
+	theApp.logging.njerror(message);
 
-	this.njdebug("util", this.stacktrace());
+	//theApp.logging.njerror(this.stacktrace(e));
 	theApp.prompts.njAlert(message);
 },
 
-stacktrace: function ()
+/**
+ * Unfortunately due to security concerns Mozilla deprecated the ability to dumpe a stacktrace.
+ */
+stacktrace: function (e)
 {
-	var f = this.stacktrace;
-	var stack = "Stack trace:";
-	while (f)
-	{
-		if (f != this.stacktrace)
-			stack += "\n" + f.name;
-		f = f.caller;
-	}
-	return stack;
+	return "";
+//	var e = new Error('dummy');
+//	var stack = e.stack.replace(/^[^\(]+?[\n$]/gm, '') // remove lines without '('
+//	  .replace(/^\s+at\s+/gm, '') // remove prefix text ' at '
+//	  .split('\n');
+	
+//	var f = this.stacktrace;
+//	var stack = "Stack trace:";
+//	while (f)
+//	{
+//		if (f != this.stacktrace)
+//			stack += "\n" + f.name;
+//		f = f.caller;
+//	}
+//	return stack;
 
 },
 
 showTree: function (node)
 {
-	this.njdebug("util", "showTree");
+	theApp.logging.njdebug("util", "showTree");
 	while (node != null)
 	{
-		this.njdebug("util", node + ":" + node.nodeName + ":" + node.nodeValue + (node.text != undefined ? (":" + node.text) : ""));
+		theApp.logging.njdebug("util", node + ":" + node.nodeName + ":" + node.nodeValue + (node.text != undefined ? (":" + node.text) : ""));
 		node = node.parentNode;
 	}
 },
@@ -172,7 +161,7 @@ getWindowList: function ()
 	var documentList = [];
 	var count = 0;
 
-	this.njdebug("util", "getWindowList a");
+	theApp.logging.njdebug("util", "getWindowList a");
 	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
 	        .getService(Components.interfaces.nsIWindowMediator);
 	var enumerator = wm.getEnumerator(null);
@@ -180,16 +169,16 @@ getWindowList: function ()
 	{
 		var win = enumerator.getNext();
 
-		this.njdebug("util", win);
+		theApp.logging.njdebug("util", win);
 		if (win.content != undefined && this.isHtmlDocument(win.content.document))
 		{
 			documentList[count++] = win.content.document;
-			this.njdebug("util", "added=" + win.content.document);
+			theApp.logging.njdebug("util", "added=" + win.content.document);
 
 		}
 	}
 
-	this.njdebug("util", "winList count=" + count);
+	theApp.logging.njdebug("util", "winList count=" + count);
 	return documentList;
 },
 
@@ -240,12 +229,12 @@ isDigit: function (str)
 
 getParentDocument: function (element)
 {
-	this.njdebug("util", "element=" + element);
+	theApp.logging.njdebug("util", "element=" + element);
 	var doc = element;
 	while (!(doc instanceof HTMLDocument))
 	{
 		doc = doc.parentNode;
-		this.njdebug("util", "doc=" + doc);
+		theApp.logging.njdebug("util", "doc=" + doc);
 	}
 	return doc;
 },
@@ -319,6 +308,8 @@ getClipboardText: function ()
 	if (!trans)
 		return false;
 
+	trans.init(null);
+	
 	trans.addDataFlavor("text/unicode");
 
 	clip.getData(trans, clip.kGlobalClipboard);
@@ -336,7 +327,7 @@ getClipboardText: function ()
 			
 			// remove duplicate strings
 			temp = temp.replace(/\ \ /g, " ");
-			this.njdebug("util", "clipboard: removed doublspaces" + temp);
+			theApp.logging.njdebug("util", "clipboard: removed doublspaces" + temp);
 		}
 
 		pasteText = temp;
@@ -345,7 +336,7 @@ getClipboardText: function ()
 	catch (e)
 	{
 		// Clipboard is empty (we think)
-		this.njlog("clipboard access threw exception, may just be empty " + e);
+		theApp.logging.njerror("clipboard access threw exception, may just be empty " + e);
 	}
 
 	return pasteText;

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xhtml>
+<body>
+<h1>Release notes</h1>
+<p>Version 1.9.3</p>
+Added support for firefox 1,000,000.x. as we are expecting it to be released any day now.
+
+Modified the terminology in the Asterisk configuration panel so it is consistent with Noojee's FreePBX module.
+
+
+
+<p>If you have feature requests or installation/configuration problems post them at http://forums.noojee.com.au</p>
+</body>
+</xhtml>

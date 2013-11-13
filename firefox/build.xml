@@ -1,0 +1,275 @@
+<project name="NoojeeClick" default="all" basedir=".">
+
+	<description>
+		Builds the Noojee Click for Firefox extension ready for deployment.
+	</description>
+
+	<!-- set global properties for this build -->
+	<property name="src" location="src" />
+	<property name="build" location="build" />
+	<property name="dist" location="dist" />
+
+	<property name="version" value="2.0.0" />
+	<property name="maxMozillaFirefoxVersion" value="28.0" />
+	<property name="maxLocalFirefoxVersion" value="35.0" />
+	<property name="maxClientFirefoxVersion" value="35.0" />
+	<property name="urlHost" value="www.noojee.com.au/" />
+	<property name="xpiName" value="noojeeclick-${version}.xpi" />
+	<property name="zipName" value="noojeeclick-${version}.zip" />
+
+	<macrodef name="defineIncludes">
+		<attribute name="fromPath" />
+		<attribute name="toPath" />
+		<sequential>
+			<fileset id="includes" dir="${src}">
+				<include name="**/*.xml" />
+				<include name="**/*.js" />
+				<include name="**/*.manifest" />
+				<include name="**/*.xul" />
+				<exclude name="**/.*" />
+				<include name="${basedir}/templates/@{fromPath}/updateinfo.xml" />
+				<include name="@{toPath}/src/update.rdf" />
+				<include name="@{toPath}/src/install.rdf" />
+			</fileset>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="filterSrc">
+		<attribute name="fromPath" />
+		<attribute name="toPath" />
+		<attribute name="maxFirefoxVersion" />
+		<sequential>
+			<description>
+				Sub target which is responsible for substituting tokens found in files
+			</description>
+			<!-- copy all of the core files and update the version no. in the about box -->
+			<copy todir="@{toPath}" overwrite="True">
+				<fileset refid="includes" />
+				<filterchain>
+					<replacetokens>
+						<token key="version" value="${version}" />
+						<token key="maxFirefoxVersion" value="@{maxFirefoxVersion}" />
+						<token key="urlHost" value="${urlHost}" />
+					</replacetokens>
+				</filterchain>
+			</copy>
+
+			<!-- copy images with no filter as they are binary and filters corrupt them -->
+			<copy todir="@{toPath}" overwrite="True">
+				<fileset dir="${src}">
+					<include name="**/*.png" />
+					<exclude name="**/.*" />
+				</fileset>
+			</copy>
+
+			<!-- create the update.rdf using the @{path} specific setting -->
+			<echo>Copy update.rdf</echo>
+			<copy file="@{fromPath}/update.rdf" tofile="@{toPath}/update.rdf" overwrite="True">
+				<filterchain>
+					<replacetokens>
+						<token key="version" value="${version}" />
+						<token key="maxFirefoxVersion" value="@{maxFirefoxVersion}" />
+						<token key="urlHost" value="${urlHost}" />
+					</replacetokens>
+				</filterchain>
+			</copy>
+
+			<!-- create the install.rdf using the @{path} specific setting -->
+			<echo>Copy install.rdf</echo>
+			<copy file="@{fromPath}/install.rdf" tofile="@{toPath}/install.rdf" overwrite="True">
+				<filterchain>
+					<replacetokens>
+						<token key="version" value="${version}" />
+						<token key="maxFirefoxVersion" value="@{maxFirefoxVersion}" />
+						<token key="urlHost" value="${urlHost}" />
+					</replacetokens>
+				</filterchain>
+			</copy>
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="copyCommon">
+		<attribute name="toPath" />
+		<sequential>
+			<!-- Merge common sources -->
+			<copy todir="@{toPath}/content">
+				<fileset dir="../common/js" />
+			</copy>
+			<!-- copy the defaults -->
+			<mkdir dir="@{toPath}/defaults/preferences" />
+			<copy todir="@{toPath}/defaults/preferences">
+				<fileset dir="../common/defaults/preferences" />
+			</copy>
+		</sequential>
+	</macrodef>
+
+
+	<macrodef name="buildXPI">
+		<attribute name="fromPath" />
+		<attribute name="toPath" />
+		<sequential>
+			<echo message="Building ${xpiName}" />
+			<mkdir dir="@{toPath}" />
+			<delete file="@{toPath}/${xpiName}" />
+			<jar basedir="@{fromPath}" duplicate="fail" excludes="**/*" destfile="@{toPath}/${xpiName}">
+				<fileset dir="@{fromPath}">
+					<include name="**/*.xml" />
+					<include name="**/*.js" />
+					<include name="**/*.png" />
+					<include name="**/*.manifest" />
+					<include name="**/*.rdf" />
+					<include name="**/*.xul" />
+					<exclude name="**/.*" />
+				</fileset>
+			</jar>
+			<copy file="@{fromPath}/update.rdf" tofile="@{toPath}/update.rdf" overwrite="True">
+			</copy>
+			<copy file="${basedir}/templates/updateinfo.xml" tofile="@{toPath}/updateinfo.xml" overwrite="True">
+			</copy>
+
+			<zip basedir="@{fromPath}" duplicate="fail" excludes="**/*" destfile="@{toPath}/${zipName}">
+				<fileset dir="@{fromPath}">
+					<include name="*.xml" />
+					<include name="*.rdf" />
+					<include name="*.htm" />
+					<include name="*.xpi" />
+					<exclude name="**/.*" />
+				</fileset>
+			</zip>
+
+		</sequential>
+	</macrodef>
+	
+	<!-- TARGETS START HERE -->
+
+	<target name="init">
+		<tstamp />
+	</target>
+
+	<!-- ==============================
+		Builds the NoojeeClick extension
+		Merges common and specific sources
+		-->
+	<target name="createDirs">
+		<!-- Create the build directory -->
+		<mkdir dir="${build}" />
+		<!-- Create the distribution directory -->
+		<mkdir dir="${dist}" />
+	</target>
+
+	<!-- ==============================
+			Packages NoojeeClick extension
+			-->
+	<target name="buildDistributable" depends="mozilla,local,debug,init">
+	</target>
+
+
+	<!-- Build the XPI to upload to the Mozilla website -->
+	<target name="mozilla" depends="createDirs">
+		<description>
+			Builds an xpi suitable for hosting on the mozilla plugin website.
+		</description>
+		<echo>Building mozilla</echo>
+		<property name="maxFirefoxVersion" value="${maxMozillaFirefoxVersion}" />
+		<defineIncludes fromPath="mozilla" toPath="${build}/mozilla" />
+		<copyCommon toPath="${build}/mozilla" />
+		<filterSrc fromPath="${basedir}/templates/mozilla" toPath="${build}/mozilla" maxFireFoxVersion="${maxMozillaFirefoxVersion}" />
+		<buildXPI fromPath="${build}/mozilla" toPath="${dist}/mozilla" />
+	</target>
+
+	
+	<!-- Build the XPI to upload to our own website -->
+	<target name="local" depends="createDirs">
+		<description>
+			Builds an xpi suitable for hosting locally
+		</description>
+		<echo>Building Local</echo>
+		<property name="maxFirefoxVersion" value="${maxLocalFirefoxVersion}" />
+		<defineIncludes fromPath="local" toPath="${build}/local" />
+		<copyCommon toPath="${build}/local" />
+		<filterSrc fromPath="${basedir}/templates/local" toPath="${build}/local" maxFireFoxVersion="${maxLocalFirefoxVersion}" />
+		<buildXPI fromPath="${build}/local" toPath="${dist}/local" />
+	</target>
+
+	<!-- Build source tree for doing local debugs -->
+	<target name="debug" depends="createDirs">
+		<description>
+			Builds an source tree suitable for debugging directly from
+		</description>
+		<echo>Building Debug version</echo>
+		<property name="maxFirefoxVersion" value="${maxDebugFirefoxVersion}" />
+		<defineIncludes fromPath="debug" toPath="${build}/debug" />
+		<copyCommon toPath="${build}/debug" />
+		<filterSrc fromPath="${basedir}/templates/debug" toPath="${build}/debug" maxFireFoxVersion="${maxLocalFirefoxVersion}" />
+	</target>
+
+	<target name="debugOld">
+		<description>
+			sets the required files for debugging
+		</description>
+		<echo>Building Debug version</echo>
+		<copyCommon toPath="${build}/debug" />
+		<echo>Copy install.rdf</echo>
+		<copy file="${basedir}/templates/install.rdf" tofile="${build}/debug/install.rdf" overwrite="True">
+			<filterchain>
+				<replacetokens>
+					<token key="version" value="${version}" />
+					<token key="maxFirefoxVersion" value="${maxLocalFirefoxVersion}" />
+					<token key="urlHost" value="${urlHost}" />
+				</replacetokens>
+			</filterchain>
+		</copy>
+
+		<copy file="${basedir}/templates/update.rdf" tofile="${build}/debug/update.rdf" overwrite="True">
+			<filterchain>
+				<replacetokens>
+					<token key="version" value="${version}" />
+					<token key="maxFirefoxVersion" value="${maxLocalFirefoxVersion}" />
+					<token key="urlHost" value="${urlHost}" />
+				</replacetokens>
+			</filterchain>
+		</copy>
+		<buildXPI fromPath="debug" toPath="${build}/debug" />
+
+	</target>
+
+
+	<target name="all" depends="buildDistributable">
+	</target>
+
+
+	<target name="install" depends="all">
+		<!-- Install noojee click into firefox -->
+		<exec dir="." executable="/bin/bash">
+			<arg value="--login" />
+			<arg value="-i" />
+			<arg value="-c" />
+			<arg value="./test/devinstall.sh" />
+		</exec>
+		<!-- kill firefox as we must restart after installing xul -->
+		<exec dir="." executable="/bin/bash">
+			<arg value="--login" />
+			<arg value="-i" />
+			<arg value="-c" />
+			<arg value="killall firefox" />
+		</exec>
+
+		<exec dir="." executable="/bin/bash">
+			<arg value="--login" />
+			<arg value="-i" />
+			<arg value="-c" />
+			<arg value="killall firefox-bin" />
+		</exec>
+
+		<!-- now restart firefox -->
+		<exec dir="." executable="/bin/bash">
+			<arg value="./test/restartfirefox.sh" />
+		</exec>
+	</target>
+
+
+</project>
+
+
+
+
