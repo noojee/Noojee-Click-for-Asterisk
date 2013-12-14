@@ -398,6 +398,7 @@ var noojeeClick = {};
 			{
 				var tabBox = window.document.getElementById('njConfigTabbox');
 				var asteriskTab = tabBox.tabs.getItemAtIndex(3);
+				var advancedTab = tabBox.tabs.getItemAtIndex(4);
 
 				// Check if we need to disable the asterisk tab
 				if (getBoolValue("tab.asterisk.enabled") == false)
@@ -408,6 +409,16 @@ var noojeeClick = {};
 				}
 				else
 					ns_debug("config", "asterisk tab enabled");
+
+				// Check if we need to disable the advanced tab
+				if (getBoolValue("tab.advanced.enabled") == false)
+				{
+					ns_debug("config", "advanced tab disabled");
+					advancedTab.disabled = true;
+					advancedTab.collapsed = true;
+				}
+				else
+					ns_debug("config", "advanced tab enabled");
 
 				// retrieve the password
 				var password = this.retrieveCredentials(getValue("host"), this.getUsername());
@@ -448,7 +459,7 @@ var noojeeClick = {};
 						var xmlResponse = xmlhttp.responseXML;
 						ns_debug("quickpicks", "quickpicks recieved: data=" + xmlResponse);
 
-						var quickPicks = xmlResponse.getElementsByTagName('CLID-Quick-Pick');
+						var quickPicks = xmlResponse.getElementsByTagName('clid-quick-pick');
 
 						var count = quickPicks.length;
 						ns_debug("quickpicks", "quickpicks count: " + count);
