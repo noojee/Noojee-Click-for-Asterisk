@@ -53,7 +53,7 @@ Monitor: function ()
 			// and fckEditor. Anyway I'm guessing document has gone away by the time
 			// the monitor kicks in. Any reference to the document will throw an error.
 			// Given we don't want to add click to dial links to these type of pages
-			// we just supress the error by catching it and returning.
+			// we just suppress the error by catching it and returning.
 			if (document == null || document.location == null || document.location.href == null)
 			{
 				return;
