@@ -9,10 +9,10 @@
  *  The first time Noojee click runs the username/password will be cleared from the default settings
  *  and moved into the Browsers Login Manager.
 */
-pref("extensions.noojeeclick.host", "");
+pref("extensions.noojeeclick.host", "noojee.pmdomain.local");
 pref("extensions.noojeeclick.port", "8088");
-pref("extensions.noojeeclick.username", "");
-pref("extensions.noojeeclick.password", "");
+pref("extensions.noojeeclick.username", "click");
+pref("extensions.noojeeclick.password", "Vei6Re0R");
 
 /* setting firstrun to 'true' causes the above password to be moved into secure
  * storage the first time Noojee Click runs. The password is then removed from the
@@ -33,7 +33,8 @@ fiddle with the Asterisk settings. If you do this you need to
 set the default Asterisk host, port and context via this file
 before shipping the xpi.
  */
-pref("extensions.noojeeclick.tab.asterisk.enabled", true);
+pref("extensions.noojeeclick.tab.asterisk.enabled", false);
+pref("extensions.noojeeclick.tab.advanced.enabled", false);
 
 /* The follow control regional specific settings.
 Australia:
@@ -55,7 +56,7 @@ pref("extensions.noojeeclick.showClickIcons", true);
 pref("extensions.noojeeclick.initialised", false);
 pref("extensions.noojeeclick.serverType", "AJAM");
 pref("extensions.noojeeclick.extension", "");
-pref("extensions.noojeeclick.enableAutoAnswer", false);
+pref("extensions.noojeeclick.enableAutoAnswer", true);
 pref("extensions.noojeeclick.handsetType", "Yealink");
 pref("extensions.noojeeclick.dialPrefix", "");
 pref("extensions.noojeeclick.enableLogging", false);
@@ -68,6 +69,11 @@ pref("extensions.noojeeclick.delimiters", "()-/.");
 pref("extensions.noojeeclick.monitor", true);
 pref("extensions.noojeeclick.exclusions", "http://www.noojee.com.au");
 pref("extensions.noojeeclick.lastDialed", "");
+
+pref("extensions.noojeeclick.clidquickpick.enabled", true);
+pref("extensions.noojeeclick.clidquickpick.url", "http://noojee.pmdomain.local/servicemanager/NoojeeClickCallerId");
+
+pref("extensions.noojeeclick.suppressNoojeeAnswerBar.enabled", false);
 
 /* debug options */
 /*
