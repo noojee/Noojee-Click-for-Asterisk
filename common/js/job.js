@@ -103,6 +103,8 @@ Dial: function ()
 
 		url += "&Variable=CALLERID(Num)=" + normalised; // Hopefully sets the handsets display 
 		url += "&Variable=CALLERID(Name)=" + "Dialing: " + phoneNo ;  //and this as well.
+		url += "&Variable=njClickOriginated=true";  //Tells Noojee Answer and everybody else that NJ click started the call.
+		
 		var supressNjAnswer = theApp.prefs.getBoolValue("supressNoojeeAnswerBar.enabled");
 		if (supressNjAnswer)
 			url += "&Variable=njAnswerIgnore=true";  //Tells Noojee Answer to ignore the call. If you want pops on NJ Click originated calls then enable 'suspressNjAnswer on the Advanced tab
