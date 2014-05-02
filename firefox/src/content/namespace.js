@@ -429,7 +429,6 @@ var noojeeClick = {};
 		{
 			ns_alert("error loading configuration " + e);
 		}
-
 	};
 
 	this.retrieveQuickPicks = function()
@@ -438,13 +437,17 @@ var noojeeClick = {};
 
 		ns_debug("quickpicks", "retrieving CLID quickpicks: url=" + quickPickUrl);
 
+		setTimeout("backgroundRetrieveQuickPicks();", 100);
+	}
+	
+	this.backgroundRetrieveQuickPicks = function()
+	{
 		var xmlhttp;
 		xmlhttp = new XMLHttpRequest();
 
 		// setup the call back handler
 		xmlhttp.onreadystatechange = function()
 		{
-
 			try
 			{
 				ns_debug("quickpicks", "readstate changed state=" + xmlhttp.readyState);
@@ -491,7 +494,7 @@ var noojeeClick = {};
 		};
 
 		ns_debug("quickpicks", "calling open on url");
-		xmlhttp.open("GET", quickPickUrl, false);
+		xmlhttp.open("GET", quickPickUrl, true);
 
 		// xmlhttp.open("GET", quickPickUrl + ((/\?/).test(url) ? "&" : "?") +
 		// (new Date()).getTime(), true);
