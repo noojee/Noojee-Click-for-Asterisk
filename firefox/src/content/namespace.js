@@ -41,7 +41,7 @@ var noojeeClick = {};
 		var aNamespace =
 		{};
 		namespaces.push(fn, aNamespace);
-
+		
 		return aNamespace;
 	};
 
@@ -199,6 +199,83 @@ var noojeeClick = {};
 		};
 	}
 	;
+	
+	this.reloadQuickPicks = function()
+	{
+		setBoolValue("clidquickpick.reload", true);
+	}
+	
+	this.retrieveQuickPicks = function()
+	{
+		if (getBoolValue("clidquickpick.reload"))
+		{
+			setBoolValue("clidquickpick.reload", false);
+			var quickPickUrl = getValue("clidquickpick.url");
+	
+			ns_debug("quickpicks", "retrieving CLID quickpicks: url=" + quickPickUrl);
+			var xmlhttp;
+			xmlhttp = new XMLHttpRequest();
+	
+			// setup the call back handler
+			xmlhttp.onreadystatechange = function()
+			{
+				try
+				{
+					ns_debug("quickpicks", "readstate changed state=" + xmlhttp.readyState);
+	
+					if (xmlhttp.readyState == 4)
+					{
+						if (xmlhttp.status == 200)
+						{
+							// We have a success so lets load the pick list and save
+							// it to properties.
+	
+							var xmlResponse = xmlhttp.responseXML;
+							ns_debug("quickpicks", "quickpicks recieved: data=" + xmlResponse);
+	
+							var quickPicks = xmlResponse.getElementsByTagName('clid-quick-pick');
+	
+							var count = quickPicks.length;
+							ns_debug("quickpicks", "quickpicks count: " + count);
+							setValue("clidquickpick.count", count);
+	
+							for ( var i = 0; i < count; i++)
+							{
+								var name = quickPicks[i].getAttribute("name");
+								var clid = quickPicks[i].getAttribute("clid");
+	
+								ns_debug("quickpicks", "received quickpick: " + name + ", " + clid);
+								setValue("clidquickpick.pick-" + i + "-name", name);
+								setValue("clidquickpick.pick-" + i + "-clid", clid);
+							}
+						}
+						else
+						{
+							ns_debug("quickpicks", "An error occured attempting to retrieve the CLID Quick Pick list. " + xmlhttp.responseXML);
+						}
+	
+						ns_debug("quickpicks", "exiting state=" + xmlhttp.readyState);
+						// Flag that the menu needs to be reloaded.
+						setBoolValue("clidquickpick.reset", "true");
+					}
+				} catch (e)
+				{
+					ns_debug("quickpicks", "exception " + e);
+				}
+			};
+	
+			ns_debug("quickpicks", "calling open on url");
+			xmlhttp.open("GET", quickPickUrl, true);
+	
+			// xmlhttp.open("GET", quickPickUrl + ((/\?/).test(url) ? "&" : "?") +
+			// (new Date()).getTime(), true);
+			// xmlhttp.withCredentials = "true";
+			ns_debug("quickpicks", "calling send on url");
+			xmlhttp.send();
+			ns_debug("quickpicks", "calling send complete");
+		}
+	};
+
 
 	// Initialization
 	this.initialize = function()
@@ -268,6 +345,14 @@ var noojeeClick = {};
 			var contextMenu = document.getElementById("contentAreaContextMenu");
 			if (contextMenu)
 				contextMenu.addEventListener("popupshowing", noojeeClick.showMenuHideItems, false);
+			
+			
+			// every 5 seconds check if quick picks need to be reloaded.
+			// We orginally did this off the back of the configuration window close event
+			// but when the window closes all timers are killed (as well as any outstanding ajax calls).
+			// hence we now have this timer.
+			setInterval(noojeeClick.retrieveQuickPicks(), 5000);
+
 		} 
 		catch (e)
 		{
@@ -431,78 +516,7 @@ var noojeeClick = {};
 		}
 	};
 
-	this.retrieveQuickPicks = function()
-	{
-		var quickPickUrl = getValue("clidquickpick.url");
-
-		ns_debug("quickpicks", "retrieving CLID quickpicks: url=" + quickPickUrl);
-
-		setTimeout("backgroundRetrieveQuickPicks();", 100);
-	}
 	
-	this.backgroundRetrieveQuickPicks = function()
-	{
-		var xmlhttp;
-		xmlhttp = new XMLHttpRequest();
-
-		// setup the call back handler
-		xmlhttp.onreadystatechange = function()
-		{
-			try
-			{
-				ns_debug("quickpicks", "readstate changed state=" + xmlhttp.readyState);
-
-				if (xmlhttp.readyState == 4)
-				{
-					if (xmlhttp.status == 200)
-					{
-						// We have a success so lets load the pick list and save
-						// it to properties.
-
-						var xmlResponse = xmlhttp.responseXML;
-						ns_debug("quickpicks", "quickpicks recieved: data=" + xmlResponse);
-
-						var quickPicks = xmlResponse.getElementsByTagName('clid-quick-pick');
-
-						var count = quickPicks.length;
-						ns_debug("quickpicks", "quickpicks count: " + count);
-						setValue("clidquickpick.count", count);
-
-						for ( var i = 0; i < count; i++)
-						{
-							var name = quickPicks[i].getAttribute("name");
-							var clid = quickPicks[i].getAttribute("clid");
-
-							ns_debug("quickpicks", "received quickpick: " + name + ", " + clid);
-							setValue("clidquickpick.pick-" + i + "-name", name);
-							setValue("clidquickpick.pick-" + i + "-clid", clid);
-						}
-					}
-					else
-					{
-						ns_debug("quickpicks", "An error occured attempting to retrieve the CLID Quick Pick list. " + xmlhttp.responseXML);
-					}
-
-					ns_debug("quickpicks", "exiting state=" + xmlhttp.readyState);
-					// Flag that the menu needs to be reloaded.
-					setBoolValue("clidquickpick.reset", "true");
-				}
-			} catch (e)
-			{
-				ns_debug("quickpicks", "exception " + e);
-			}
-		};
-
-		ns_debug("quickpicks", "calling open on url");
-		xmlhttp.open("GET", quickPickUrl, true);
-
-		// xmlhttp.open("GET", quickPickUrl + ((/\?/).test(url) ? "&" : "?") +
-		// (new Date()).getTime(), true);
-		// xmlhttp.withCredentials = "true";
-		ns_debug("quickpicks", "calling send on url");
-		xmlhttp.send();
-		ns_debug("quickpicks", "calling send complete");
-	};
 
 	this.onConfigurationClosed = function()
 	{
@@ -519,10 +533,10 @@ var noojeeClick = {};
 
 				// If clid quick picks are enabled the refresh the list now.
 				var quickPickEnabled = getBoolValue("clidquickpick.enabled");
-				ns_debug("quickpicks", "clidquickpick.enable:" + quickPickEnabled);
+				ns_debug("quickpicks", "clidquickpick.enabled:" + quickPickEnabled);
 				if (quickPickEnabled == true)
 				{
-					this.retrieveQuickPicks();
+					this.reloadQuickPicks();
 				}
 			}
 		} catch (e)

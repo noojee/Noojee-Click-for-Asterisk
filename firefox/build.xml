@@ -9,10 +9,10 @@
 	<property name="build" location="build" />
 	<property name="dist" location="dist" />
 
-	<property name="version" value="2.0.4" />
-	<property name="maxMozillaFirefoxVersion" value="28.0" />
-	<property name="maxLocalFirefoxVersion" value="35.0" />
-	<property name="maxClientFirefoxVersion" value="35.0" />
+	<property name="version" value="2.0.6" />
+	<property name="maxMozillaFirefoxVersion" value="32.0" />
+	<property name="maxLocalFirefoxVersion" value="45.0" />
+	<property name="maxClientFirefoxVersion" value="45.0" />
 	<property name="urlHost" value="www.noojee.com.au/" />
 	<property name="xpiName" value="noojeeclick-${version}.xpi" />
 	<property name="zipName" value="noojeeclick-${version}.zip" />

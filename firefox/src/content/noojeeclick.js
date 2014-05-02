@@ -407,7 +407,7 @@ noojeeClick.ns(function()
 	    			theApp.logging.njdebug("quickpicks", "retrieved quickpick: " + name + ", " + clid);
 
 	    			// Create the clid menu item.
-	    			item = listMenu.appendItem(name);
+	    			var item = listMenu.appendItem(name);
 	    			item.id = "njClick.menu_ClidQuickPick.clid-index-" + i;
 	    			item.setAttribute("id", "njClick.menu_ClidQuickPick.clid-index-" + i);
 	    			item.setAttribute("clid-index", i);
