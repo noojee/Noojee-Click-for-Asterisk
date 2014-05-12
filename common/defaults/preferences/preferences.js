@@ -33,8 +33,8 @@ fiddle with the Asterisk settings. If you do this you need to
 set the default Asterisk host, port and context via this file
 before shipping the xpi.
  */
-pref("extensions.noojeeclick.tab.asterisk.enabled", false);
-pref("extensions.noojeeclick.tab.advanced.enabled", false);
+pref("extensions.noojeeclick.tab.asterisk.enabled", true);
+pref("extensions.noojeeclick.tab.advanced.enabled", true);
 
 /* The follow control regional specific settings.
 Australia:
