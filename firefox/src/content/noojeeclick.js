@@ -182,10 +182,10 @@ noojeeClick.ns(function()
 						    // The user has done a right click on the Noojee
 						    // click to dial icon so show
 						    // the dial differently menu item.
-						    var menuItem = document.getElementById("njClick.njcontextDialDifferently");
+						    var menuItem = document.getElementById("noojeeClick.njcontextDialDifferently");
 						    menuItem.hidden = false;
 						    // and the dial menu item
-						    var menuItem = document.getElementById("njClick.contextDialSelection");
+						    var menuItem = document.getElementById("noojeeClick.contextDialSelection");
 						    menuItem.hidden = false;
 
 						    // We don't check for 'selected' text if the user
@@ -202,7 +202,7 @@ noojeeClick.ns(function()
 					    // we don't need the dial different option (the standard
 					    // dial option lets them dial
 					    // differently).
-					    var menuItem = document.getElementById("njClick.njcontextDialDifferently");
+					    var menuItem = document.getElementById("noojeeClick.njcontextDialDifferently");
 					    menuItem.hidden = true;
 					    visibleItems--;
 				    }
@@ -217,9 +217,9 @@ noojeeClick.ns(function()
 						    // The user has selected some text AND it contains a
 						    // number
 						    theApp.logging.njdebug("noojeeclick", "popup - text selected");
-						    var menuItem = document.getElementById("njClick.contextDialSelection");
+						    var menuItem = document.getElementById("noojeeClick.contextDialSelection");
 						    menuItem.hidden = false;
-						    menuItem = document.getElementById("njClick.contextDialAddPattern");
+						    menuItem = document.getElementById("noojeeClick.contextDialAddPattern");
 						    menuItem.hidden = false;
 					    }
 					    else
@@ -227,10 +227,10 @@ noojeeClick.ns(function()
 						    // either their is no selection or it doesn't
 						    // contain a number so suppress both menus.
 						    theApp.logging.njdebug("noojeeclick", "popup - text not selected");
-						    var menuItem = document.getElementById("njClick.contextDialSelection");
+						    var menuItem = document.getElementById("noojeeClick.contextDialSelection");
 						    menuItem.hidden = true;
 						    visibleItems--;
-						    menuItem = document.getElementById("njClick.contextDialAddPattern");
+						    menuItem = document.getElementById("noojeeClick.contextDialAddPattern");
 						    menuItem.hidden = true;
 						    visibleItems--;
 					    }
@@ -242,7 +242,7 @@ noojeeClick.ns(function()
 					    // all of the menu items have been suppressed so remove
 					    // the
 					    // separator.
-					    var menuItem = document.getElementById("njClick.contextSeparator");
+					    var menuItem = document.getElementById("noojeeClick.contextSeparator");
 					    menuItem.hidden = true;
 				    }
 			    }
@@ -289,7 +289,7 @@ noojeeClick.ns(function()
 		    onDialDifferentlyShowing : function(menu)
 		    {
 			    theApp.logging.njdebug("noojeeclick", "onDialDifferentlyShowing");
-			    var menuItem = document.getElementById('njClick.njcontextDialDifferently');
+			    var menuItem = document.getElementById('noojeeClick.njcontextDialDifferently');
 			    menuItem.hidden = false;
 		    },
 
@@ -299,7 +299,7 @@ noojeeClick.ns(function()
 			    var selected = theApp.util.getSelectedText();
 			    if (selected == null || selected.length == 0)
 			    {
-				    var menuItem = document.getElementById('njClick.contextDialSelection');
+				    var menuItem = document.getElementById('noojeeClick.contextDialSelection');
 				    menuItem.hidden = true;
 			    }
 		    },
@@ -309,7 +309,7 @@ noojeeClick.ns(function()
 			    var selected = theApp.util.getSelectedText();
 			    if (selected == null || selected.length == 0)
 			    {
-				    var menuItem = document.getElementById('njClick.contextDialAddPattern');
+				    var menuItem = document.getElementById('noojeeClick.contextDialAddPattern');
 				    menuItem.hidden = true;
 			    }
 
@@ -327,7 +327,7 @@ noojeeClick.ns(function()
 		    {
 			    theApp.logging.njdebug("noojeeclick", "onShowClickIconsShowing called");
 			    var showClickIcons = theApp.prefs.getBoolValue("showClickIcons");
-			    var showClickIconsMenu = document.getElementById('njClick.menu_ShowClickIcons');
+			    var showClickIconsMenu = document.getElementById('noojeeClick.menu_ShowClickIcons');
 			    showClickIconsMenu.setAttribute("checked", showClickIcons);
 		    },
 
@@ -336,7 +336,7 @@ noojeeClick.ns(function()
 		    {
 			    theApp.logging.njdebug("noojeeclick", "onRedialShowing called");
 			    var lastDialed = theApp.prefs.getValue("lastDialed");
-			    var redialMenu = document.getElementById('njClick.menu_Redial');
+			    var redialMenu = document.getElementById('noojeeClick.menu_Redial');
 			    if (lastDialed != null && lastDialed.length > 0)
 			    {
 				    redialMenu.label = "Redial: " + lastDialed;
@@ -373,16 +373,16 @@ noojeeClick.ns(function()
 		    renderQuickPickMenu : function ()
 		    {
 		    	// Clear the existing menu items.
-		    	var element = document.getElementById("njClick.menu_ClidQuickPick");
+		    	var element = document.getElementById("noojeeClick.menu_ClidQuickPick");
 		    	if (element != null)
 		    		element.parentNode.removeChild(element);
 
 		    	// Create the new popup menu
 	    		var listMenu = document.createElement("menu");
 	    		listMenu.setAttribute("label","Switch CLID");
-	    		listMenu.setAttribute("id", "njClick.menu_ClidQuickPick");
+	    		listMenu.setAttribute("id", "noojeeClick.menu_ClidQuickPick");
 
-	    		var menuDial = document.getElementById('njClick.menuDial');
+	    		var menuDial = document.getElementById('noojeeClick.menuDial');
 	    		theApp.logging.njdebug("quickpicks", "retrieved menu: " + menuDial);
 	    		menuDial.appendChild(listMenu);
 
@@ -408,8 +408,8 @@ noojeeClick.ns(function()
 
 	    			// Create the clid menu item.
 	    			var item = listMenu.appendItem(name);
-	    			item.id = "njClick.menu_ClidQuickPick.clid-index-" + i;
-	    			item.setAttribute("id", "njClick.menu_ClidQuickPick.clid-index-" + i);
+	    			item.id = "noojeeClick.menu_ClidQuickPick.clid-index-" + i;
+	    			item.setAttribute("id", "noojeeClick.menu_ClidQuickPick.clid-index-" + i);
 	    			item.setAttribute("clid-index", i);
 	    			item.setAttribute("type", "radio");
 	    			item.setAttribute("oncommand", "noojeeClick.noojeeclick.onSelectClidQuickPick(this);");
@@ -423,7 +423,7 @@ noojeeClick.ns(function()
 	    				
 	    			// add the quick pick to the menu.
 	    			//var item = window.document.createElement("menuitem"); 
-	    			//njClick.menu_ClidQuickPick_List_" + name);
+	    			//noojeeClick.menu_ClidQuickPick_List_" + name);
 	    			//item.addEventListener("onClick", function() {noojeeClick.noojeeclick.onSelectClidQuickPick()}, false);
 	    			if (i == activeQuickPick)
 	    			{
@@ -445,7 +445,7 @@ noojeeClick.ns(function()
 				    if (enabled)
 				    {
 				    	var reset = theApp.prefs.getBoolValue("clidquickpick.reset");
-				    	var quickPickMenu = document.getElementById('njClick.menu_ClidQuickPick');
+				    	var quickPickMenu = document.getElementById('noojeeClick.menu_ClidQuickPick');
 				    	if (quickPickMenu == null || reset == true)
 				    	{
 							// Flag that the menu has been reset.
@@ -458,7 +458,7 @@ noojeeClick.ns(function()
 				    }
 				    else
 				    {
-				    	var quickPickMenu = document.getElementById('njClick.menu_ClidQuickPick');
+				    	var quickPickMenu = document.getElementById('noojeeClick.menu_ClidQuickPick');
 				    	if (quickPickMenu != null)
 				    		quickPickMenu.hidden = true;
 				    }
