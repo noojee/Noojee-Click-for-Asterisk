@@ -385,9 +385,6 @@ noojeeClick
 											            clickElement.setAttribute("style", "cursor:pointer;");
 											            clickElement.addEventListener("click", theApp.handlers.onDialHandler,
 											                    true);
-											            /*
-														 * a.addEventListener("mouseover", numInfo, false);
-														 */
 											            clickElement.appendChild(text);
 											            clickElement.setAttribute("PhoneNo", match[0]);
 
