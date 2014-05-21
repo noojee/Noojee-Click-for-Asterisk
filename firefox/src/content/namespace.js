@@ -351,12 +351,12 @@ var noojeeClick = {};
 			// We orginally did this off the back of the configuration window close event
 			// but when the window closes all timers are killed (as well as any outstanding ajax calls).
 			// hence we now have this timer.
-			setInterval(noojeeClick.retrieveQuickPicks(), 5000);
+			setInterval(function () {noojeeClick.retrieveQuickPicks()}, 5000);
 
 		} 
 		catch (e)
 		{
-			ns_alert("Noojee Click error in init" + e);
+			ns_alert("Noojee Click error in initialize " + e);
 		}
 	};
 
