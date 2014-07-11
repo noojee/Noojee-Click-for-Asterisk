@@ -154,6 +154,7 @@
 											<menuitem label="Linksys" value="Linksys" />
 											<menuitem label="Polycom" value="Polycom" />
 											<menuitem label="Snom" value="Snom" />
+											<menuitem label="Snom v8.7+" value="Snom v8.7+" />
 											<menuitem label="Yealink" value="Yealink" />
 										</menupopup>
 									</menulist>

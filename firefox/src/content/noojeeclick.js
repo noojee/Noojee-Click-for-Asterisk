@@ -48,7 +48,7 @@ noojeeClick.ns(function()
 		        header : "Call-Info:\\\\; answer-after=0"
 		    },
 		    {
-		        manufacturer : "Snom - post firmware v8.7",
+		        manufacturer : "Snom v8.7+",
 		        header : "Alert-Info:http://www.ignored.com\\;info=alert-autoanswer\\;delay=0"
 		    },
 		    {
