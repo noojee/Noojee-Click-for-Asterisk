@@ -54,7 +54,6 @@ pref("extensions.noojeeclick.pattern", "XXXX XXX XXX\nXXXX XXXX\nXX XXXX XXXX\nX
 
 pref("extensions.noojeeclick.showClickIcons", true);
 pref("extensions.noojeeclick.initialised", false);
-pref("extensions.noojeeclick.serverType", "AJAM");
 pref("extensions.noojeeclick.extension", "");
 pref("extensions.noojeeclick.enableAutoAnswer", true);
 pref("extensions.noojeeclick.handsetType", "Yealink");

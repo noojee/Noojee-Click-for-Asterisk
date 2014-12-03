@@ -745,23 +745,13 @@ genURL: function (command)
 	
 	var host = theApp.prefs.getValue("host");
 	var port = theApp.prefs.getValue("port");
-	var serverType = theApp.prefs.getValue("serverType");
 	var httpPrefix = theApp.prefs.getValue("httpPrefix");
 	// The asterisk appliance doesn't allow a prefix so we need to support a null prefix
 	if (httpPrefix == null || theApp.util.trim(httpPrefix).length == 0)
 		httpPrefix = "/";
 	else
 		httpPrefix = "/" + theApp.util.trim(httpPrefix) + "/";
-	theApp.logging.njdebug("job", "serverType=" + serverType);
-	if (serverType == theApp.noojeeclick.serverTypeList[0].type)
-		url = protocol + host + ":" + port + httpPrefix + "manager?action=" + command;
-	else if (serverType == theApp.noojeeclick.serverTypeList[1].type)
-		url = protocol + host + ":" + port + httpPrefix + "mxml?action=" + command;
-	else
-	{
-		theApp.logging.njlog("Error: Unknown server type selected =" + serverType);
-		theApp.prompts.njAlert("Unknown server type selected =" + serverType);
-	}
+	url = protocol + host + ":" + port + httpPrefix + "mxml?action=" + command;
 
 	theApp.logging.njdebug("job", "genURL ret=" + url);
 	return url;

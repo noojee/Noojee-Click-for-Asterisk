@@ -189,45 +189,25 @@ Asterisk: function ()
 			xmlDoc = parser.parseFromString(responseText, "application/xhtml+xml");
 			
 
-			var serverType = theApp.prefs.getValue("serverType"); 
-			if (serverType == theApp.noojeeclick.serverTypeList[0].type)
-			{
-				theApp.logging.njdebug("asterisk", "running AstmanProxy");
-				var tag = xmlDoc.getElementsByTagName("Response");
-				if (tag[0] != null)
-					response = tag[0].getAttribute("Value");
-				tag = xmlDoc.getElementsByTagName("Message");
-				if (tag[0] != null)
-					message = tag[0].getAttribute("Value");
+			theApp.logging.njdebug("asterisk", "running AJAM or NJVision");
+			var generic = xmlDoc.getElementsByTagName("generic");
 
+			if (generic.length > 0)
+			{
+				response = generic[0].getAttribute("response");
+				message = generic[0].getAttribute("message");
 				result =
 				{
 				    response :response,
 				    message :message
 				};
 			}
-			else if (serverType == theApp.noojeeclick.serverTypeList[1].type 
-			|| serverType == theApp.noojeeclick.serverTypeList[2].type)
+			else
 			{
-				theApp.logging.njdebug("asterisk", "running AJAM or NJVision");
-				var generic = xmlDoc.getElementsByTagName("generic");
-
-				if (generic.length > 0)
-				{
-					response = generic[0].getAttribute("response");
-					message = generic[0].getAttribute("message");
-					result =
-					{
-					    response :response,
-					    message :message
-					};
-				}
-				else
-				{
-					result.response = "ignore";
-					theApp.logging.njerror("Invalid AJAM Result: " + responseText + " : ignored as this could be an asterisk bug.");
-				}
+				result.response = "ignore";
+				theApp.logging.njerror("Invalid AJAM Result: " + responseText + " : ignored as this could be an asterisk bug.");
 			}
+			
 			
 			if (result.response == "Success")
 			{

@@ -25,7 +25,6 @@ function save_options() {
 	localStorage['exclusions'] = $("#exclusions").val();
 
 	// Asterisk
-	localStorage['serverType'] = $("#server-type").val();
 	localStorage['host'] = $("#host").val();
 	localStorage['port'] = $("#port").val();
 	localStorage['username'] = $("#username").val();
@@ -60,7 +59,6 @@ function restore_options() {
 	$("#exclusions").val(localStorage['exclusions']);
 
 	// Asterisk
-	$("#server-type").val(localStorage['serverType']);
 	$("#host").val(localStorage['host']);
 	$("#port").val(localStorage['port']);
 	$("#username").val(localStorage['username']);

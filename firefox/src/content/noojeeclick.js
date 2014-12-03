@@ -56,21 +56,6 @@ noojeeClick.ns(function()
 		        header : "Call-Info:\\\\; answer-after=0"
 		    } ],
 
-		    serverTypeList : [
-		    {
-		        type : "Astmanproxy",
-		        description : "Astmanproxy"
-		    },
-		    {
-		        type : "AJAM",
-		        description : "AJAM (Asterisk 1.4+)"
-		    },
-		    {
-		        type : "NJVision",
-		        description : "Noojee Vision"
-		    } ],
-
-
 
 		    /*
 			 * Called when a page finishes loading This is hooked by the

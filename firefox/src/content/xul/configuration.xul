@@ -55,8 +55,6 @@
 		helpURI="http://www.noojee.com.au/Page/NoojeeClickHelp"
 		>
 		<preferences>
-			<preference id="extensions.noojeeclick.serverType" name="extensions.noojeeclick.serverType"
-				type="unichar" />
 			<preference id="extensions.noojeeclick.host" name="extensions.noojeeclick.host"
 				type="unichar" />
 			<preference id="extensions.noojeeclick.port" name="extensions.noojeeclick.port"
@@ -308,24 +306,9 @@
 							</columns>
 							
 							<rows>
-
 								<row  align="center">
-
-									<label value="Server Type:" />
-									<menulist preference="extensions.noojeeclick.serverType">
-										<menupopup>
-											<menuitem label="AJAM (Asterisk 1.4+)" value="AJAM" />
-											<menuitem label="Astmanproxy" value="Astmanproxy" />
-											<menuitem label="Noojee Vision" value="NJVision" />
-										</menupopup>
-									</menulist>
-
-								</row>
-								<row  align="center">
-
 									<label value="Asterisk Hostname:" />
 									<textbox preference="extensions.noojeeclick.host" id="host" />
-
 								</row>
 								<row  align="center">
 									<label value="Manager Port:" />
