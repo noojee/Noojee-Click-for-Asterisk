@@ -38,18 +38,16 @@ noojeeClick
 		            njClickElementType : "button",
 		            njClickElementName : "noojeeClickImg",
 
-		            onRefresh : function()
+		            onRefreshAll : function()
 		            {
-			            var documentList = theApp.util.getWindowList();
-
-			            for ( var i = 0; i < documentList.length; i++)
-				            this.onRefreshOne(documentList[i]);
+		            	// Call onRefreshOne for every open document
+			            theApp.util.documentIterator(this.onRefreshOne);
 
 		            },
 
 		            onRefreshOne : function(doc)
 		            {
-
+		            	console.log("onRefreshOne" + doc);
 			            theApp.logging.njdebug("render", "onRefreshOne called for doc=" + doc);
 			            try
 			            {
