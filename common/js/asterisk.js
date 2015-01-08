@@ -38,6 +38,38 @@ getInstance: function ()
 	return this.gAsterisk;
 },
 
+/**
+ * Returns true if all of the needed asterisk configuration is available.
+ */
+isConfigured: function()
+{
+	var extension = theApp.prefs.getValue("extension");
+	var context = theApp.prefs.getValue("context");
+	var handsetType = theApp.prefs.getValue("handsetType");
+	var host = theApp.prefs.getValue("host");
+	var port = theApp.prefs.getValue("port");
+
+	var isConfigured = true;
+	if (extension == null || extension == "")
+		isConfigured = false;
+
+	if (context === null || context == "")
+		isConfigured = false;
+
+	if (handsetType === null || handsetType == "")
+		isConfigured = false;
+
+	if (host === null || host == "")
+		isConfigured = false;
+
+	if (port === null|| port == "")
+		isConfigured = false;
+
+	return isConfigured;
+
+},
+
+
 Asterisk: function ()
 {
 	// channel attached to local phone
@@ -89,7 +121,8 @@ Asterisk: function ()
 		this.channel = _channel;
 		theApp.logging.njdebug("asterisk", "Asterisk.channel set to " + this.channel);
 	};
-
+	
+	
 	this.dial = function(phoneNo)
 	{
 		theApp.logging.njdebug( "asterisk", "Asterisk.dial=" + phoneNo);
