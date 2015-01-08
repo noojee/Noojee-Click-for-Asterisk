@@ -156,31 +156,6 @@ showTree: function (node)
 
 
 
-getWindowList: function ()
-{
-	var documentList = [];
-	var count = 0;
-
-	theApp.logging.njdebug("util", "getWindowList a");
-	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
-	        .getService(Components.interfaces.nsIWindowMediator);
-	var enumerator = wm.getEnumerator(null);
-	while (enumerator.hasMoreElements())
-	{
-		var win = enumerator.getNext();
-
-		theApp.logging.njdebug("util", win);
-		if (win.content != undefined && this.isHtmlDocument(win.content.document))
-		{
-			documentList[count++] = win.content.document;
-			theApp.logging.njdebug("util", "added=" + win.content.document);
-
-		}
-	}
-
-	theApp.logging.njdebug("util", "winList count=" + count);
-	return documentList;
-},
 
 /*
  * Returns the class name of the argument or undefined if it's not a valid
@@ -297,50 +272,20 @@ getRawSelectedText: function ()
 	return selectedText;
 },
 
+
+documentIterator: function (callback)
+{
+	// forward the call to the browser specific implementation
+	return theApp.browserutil.documentIterator(callback);
+},
+
+
 getClipboardText: function ()
 {
-	var pasteText = "";
-	var clip = Components.classes["@mozilla.org/widget/clipboard;1"].getService(Components.interfaces.nsIClipboard);
-	if (!clip)
-		return false;
-	var trans = Components.classes["@mozilla.org/widget/transferable;1"]
-	        .createInstance(Components.interfaces.nsITransferable);
-	if (!trans)
-		return false;
-
-	trans.init(null);
-	
-	trans.addDataFlavor("text/unicode");
-
-	clip.getData(trans, clip.kGlobalClipboard);
-	var str = new Object();
-	var strLength = new Object();
-	try
-	{
-		trans.getTransferData("text/unicode", str, strLength);
-		var temp = "";
-		
-		if (str)
-		{
-			str = str.value.QueryInterface(Components.interfaces.nsISupportsString);
-			temp = str.data.substring(0, strLength.value / 2);
-			
-			// remove duplicate strings
-			temp = temp.replace(/\ \ /g, " ");
-			theApp.logging.njdebug("util", "clipboard: removed doublspaces" + temp);
-		}
-
-		pasteText = temp;
-
-	}
-	catch (e)
-	{
-		// Clipboard is empty (we think)
-		theApp.logging.njerror("clipboard access threw exception, may just be empty " + e);
-	}
-
-	return pasteText;
+	// forward the call to the browser specific implementation
+	return theApp.browserutil.getClipboardText();
 },
+
 
 };
 
