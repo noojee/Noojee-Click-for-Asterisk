@@ -42,8 +42,6 @@
     <script type="application/x-javascript"
        src="chrome://noojeeclick/content/handlersMenu.js"/>
     <script type="application/x-javascript"
-       src="chrome://noojeeclick/content/handlersContent.js"/>
-    <script type="application/x-javascript"
        src="chrome://noojeeclick/content/render.js"/>
     <script type="application/x-javascript"
        src="chrome://noojeeclick/content/phonepatterns.js"/>

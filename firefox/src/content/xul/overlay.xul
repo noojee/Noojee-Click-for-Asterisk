@@ -133,7 +133,9 @@
 	<script type="application/x-javascript"
        src="chrome://noojeeclick/content/asterisk.js"/>
     <script type="application/x-javascript"
-       src="chrome://noojeeclick/content/messagepassing.js"/>
+       src="chrome://noojeeclick/content/backgroundMessageTo.js"/>
+    <script type="application/x-javascript"
+       src="chrome://noojeeclick/content/contentMessageTo.js"/>
     <script type="application/x-javascript"
        src="chrome://noojeeclick/content/noojeeclick.js"/>
     <script type="application/x-javascript"
