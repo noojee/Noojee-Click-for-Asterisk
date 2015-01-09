@@ -30,13 +30,15 @@ theApp.prompts =
 
 	njPrompt: function (msg, defaultValue)
 	{
-		var input = {value: defaultValue};
-		var check = {value: false};
-		var result = prompt(window, "Noojee Click: ", msg, input, null, check);
+		var result = prompt(msg, defaultValue);
 		// input.value is the string user entered
 		// result - whether user clicked OK (true) or Cancel
 
-		return {value: input.value, OK:result};
+		var OK = true;
+		if (result == null)
+			OK = false;
+		
+		return {value: result, OK:OK};
 	}
 
 };
