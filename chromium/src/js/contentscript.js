@@ -51,17 +51,18 @@ chrome.extension.sendRequest({type: "options"}, function(response)
 
 
 /**
- * Handles the 'refresh' request from the popup menu item.
+ * Handles messages sent from non-content scripts.
+ * Messages are passed via contentsriptMessageTo.js
  */
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) 
 {
-	 if (request.action == "refresh")
+	 if (request.action == "showClickIcons")
+	 {
+		 noojeeClick.handlersContent.onShowClickIcons();
+	 }
+	 else if (request.action == "refresh")
 	 {
 		 noojeeClick.LIB.theApp.render.onRefreshOne(document);
-	 }
-	 else if (request.action == "showClickIcons")
-	 {
-		 noojeeClick.handlers.onShowClickIcons();
 	 }
 	 else
 	   sendResponse({}); // Send nothing..
