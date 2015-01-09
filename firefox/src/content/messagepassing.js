@@ -32,6 +32,13 @@ dial: function (phoneNo)
 	theApp.asterisk.getInstance().dial(phoneNo);
 },
 
+hangup: function ()
+{
+	theApp.asterisk.getInstance().hangup();
+},
+
+
+
 };
 
 }});
