@@ -18,13 +18,59 @@
  **/
 
 /**
+ * Each content page gets its own copy of the options for fast access.
+ * 
  * Since content scripts run in a context of a web page and not the 
  * extension, it's important to retrieve the options from the extension.
  * (http://code.google.com/chrome/extensions/messaging.html)
  * 
  * The following code requests the option values from the extension.
  * (see listeners in background.js)
- **/
-chrome.extension.sendRequest({ action: 'options' }, function (response) {
-    noojeeClick.LIB.theApp.prefs.setStorage(response.option_values);
+ * 
+ */
+var options;
+
+chrome.extension.sendRequest({type: "options"}, function(response) 
+{
+	   // retrieve all options from background process
+		options = response.option_values;
+		
+		with (noojeeClick.LIB) 
+		{
+			// initialise nj click for this content page.
+			noojeeClick.loadNamespace();
+
+			// store the options
+			theApp.prefs.setStorage(options);
+
+			
+			var e = { originalTarget : document};
+			theApp.noojeeclick.onPageLoad(e);
+		}
 });
+
+
+/**
+ * Handles the 'refresh' request from the popup menu item.
+ */
+chrome.extension.onRequest.addListener(function(request, sender, sendResponse) 
+{
+	 if (request.action == "refresh")
+	 {
+		 noojeeClick.LIB.theApp.render.onRefreshOne(document);
+	 }
+	 else if (request.action == "showClickIcons")
+	 {
+		 noojeeClick.handlers.onShowClickIcons();
+	 }
+	 else
+	   sendResponse({}); // Send nothing..
+});
+
+
+
+
+
+
+
+
