@@ -1,13 +1,12 @@
-// Removes all options from storage
-function clearStorage() {
-	for (var key in localStorage) {
-		localStorage.removeItem(key);
-	}
+// Reset all of the options to the original installed defautls.
+function resetStorage() 
+{
+	noojeeClick.LIB.theApp.prefs.initPrefs();
 }
 
-// Saves options to localStorage.
+// Saves options from the option.html page fields
+// to localStorage.
 function save_options() {
-	clearStorage();
 
 	// Phone
 	localStorage['extension'] = $("#extension").val();
@@ -41,8 +40,8 @@ function save_options() {
 	localStorage['debugFilter'] = $("#debug-filters").val();
 }
 
-// Restores select box state to saved value from localStorage.
-function restore_options() {
+// Loads the the options.html fields from localStorage.
+function load_options() {
 	// Phone
 	$("#extension").val(localStorage['extension']);
 	$("#auto-answer").attr('checked', localStorage['enableAutoAnswer'] == "true");
@@ -102,6 +101,10 @@ function importOptions() {
 function getExport() {
 	var data = "";
 	for (var key in localStorage) {
+		var prefix = "z.defaults";
+		// we don't export defaults
+		if (key.indexOf(prefix) == 0)
+			continue;
 		if(key != "password") {
 			var val = localStorage[key];
 			data += key + "=" + val.replace(/\n/g, "~") + "\n";
@@ -140,7 +143,7 @@ $(function() {
 				modal: true,
 				buttons: {
 					"Reset values": function() {
-						clearStorage();
+						resetStorage();
 						$( this ).dialog( "close" );
 						// force reload
 						window.location.reload();
@@ -164,7 +167,7 @@ $(function() {
 				buttons: {
 					"Import": function() {
 						importOptions();
-						restore_options();
+						load_options();
 						$( this ).dialog( "close" );
 					},
 					Cancel: function() {
@@ -194,4 +197,4 @@ $(function() {
 
 
 
-$(document).ready(function () {restore_options();});
+$(document).ready(function () {load_options();});
