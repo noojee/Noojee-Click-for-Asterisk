@@ -18,6 +18,9 @@
  * with Noojee Click. If not, see http://www.gnu.org/licenses/.
  **/
 
+/**
+ * Handlers for the main extension level menu.
+ */
 noojeeClick.ns(function() { with (noojeeClick.LIB) {
 
 theApp.handlersMenu =
@@ -87,7 +90,8 @@ onShowClickIcons: function ()
 	var enabled = theApp.prefs.getBoolValue("showClickIcons");
 	enabled = !enabled;
 	theApp.prefs.setBoolValue("showClickIcons", enabled);
-	theApp.render.onRefresh();
+	theApp.contentMessageTo.refresh();
+	
 	if (enabled == true)
 		theApp.asterisk.getInstance().init();
 },
