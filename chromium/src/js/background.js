@@ -20,7 +20,9 @@
 noojeeClick.loadNamespace();
 
 /**
- * Create context menus for selection
+ * Create context menus for selection on each content page.
+ * 
+ * I'm surprised this goes here as I thought it would need to be defined as part of the contentscript.
  */
 chrome.contextMenus.removeAll();
 chrome.contextMenus.create({
@@ -32,9 +34,17 @@ chrome.contextMenus.create({
 
 function dial() {
     return function (info, tab) {
-	noojeeClick.LIB.theApp.asterisk.getInstance().dial(info.selectionText);
+	this.dial(info.selectionText);
     };
 };
+
+function dial(phoneNo) 
+{
+	if (noojeeClick.LIB.theApp.asterisk.isConfigured())
+		noojeeClick.LIB.theApp.asterisk.getInstance().dial(phoneNo);
+	else
+		theApp.prompts.njAlert("Please configure Asterisk options first.");
+}
 
 
 /*
@@ -51,7 +61,8 @@ chrome.extension.onRequest.addListener(
 		}
 		// dial number
 		else if (request.type == "dial") {
-			noojeeClick.LIB.theApp.asterisk.getInstance().dial(request.phoneNo);
+			this.dial(request.phoneNo);
+
 			// empty response
 			sendResponse({});
 		}
