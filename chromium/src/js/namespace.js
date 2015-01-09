@@ -36,7 +36,7 @@ var noojeeClick = {};
 	};
 	
 	// Initialization
-	this.initialize = function()
+	this.loadNamespace = function()
 	{
 		try
 		{
@@ -53,4 +53,9 @@ var noojeeClick = {};
 			alert("Noojee Click error in init" + e);
 		}
 	};
+	
+	// Register handlers to maintain extension life cycle.
+	window.addEventListener("load", noojeeClick.loadNamespace, false);
+	window.addEventListener("unload", noojeeClick.shutdown, false);
+
 }).apply(noojeeClick);
