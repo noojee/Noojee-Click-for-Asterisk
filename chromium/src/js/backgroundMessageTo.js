@@ -29,7 +29,7 @@ noojeeClick.ns(function() { with (noojeeClick.LIB) {
 /**
  * 
  */
-theApp.messagepassing =
+theApp.backgroundMessageTo =
 {
 
 
