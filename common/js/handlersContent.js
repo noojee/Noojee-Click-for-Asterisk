@@ -21,7 +21,7 @@
 noojeeClick.ns(function() { with (noojeeClick.LIB) {
 
 /**
- * Handles actions from the 'content' page as apposed to handling actions from the NJ click menu which are handled by handlersMenu.js
+ * Handles actions from the 'content' page as opposed to handling actions from the NJ click menu which are handled by handlersMenu.js
  */
 theApp.handlersContent =
 {
@@ -169,6 +169,16 @@ doDialDifferently: function (target)
 	}
 },
 
+onShowClickIcons: function ()
+{
+	var enabled = theApp.prefs.getBoolValue("showClickIcons");
+	enabled = !enabled;
+	theApp.prefs.setBoolValue("showClickIcons", enabled);
+	theApp.render.onRefresh();
+	if (enabled == true)
+		theApp.asterisk.getInstance().init();
+},
+
 /**
  * Users has selected text (we hope) and wants to use that text to create and add
  * a dial pattern.
@@ -239,6 +249,8 @@ onAddDialPatternMenuAction: function ()
 		}
 	}
 },
+
+
 
 
 };
