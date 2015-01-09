@@ -9,10 +9,10 @@
  *  The first time Noojee click runs the username/password will be cleared from the default settings
  *  and moved into the Browsers Login Manager.
 */
-pref("extensions.noojeeclick.host", "noojee.pmdomain.local");
+pref("extensions.noojeeclick.host", "<asterisk fqdn>");
 pref("extensions.noojeeclick.port", "8088");
-pref("extensions.noojeeclick.username", "click");
-pref("extensions.noojeeclick.password", "Vei6Re0R");
+pref("extensions.noojeeclick.username", "<enter ami username>");
+//pref("extensions.noojeeclick.password", "<enter ami password >");
 
 /* setting firstrun to 'true' causes the above password to be moved into secure
  * storage the first time Noojee Click runs. The password is then removed from the
@@ -70,7 +70,7 @@ pref("extensions.noojeeclick.exclusions", "http://www.noojee.com.au");
 pref("extensions.noojeeclick.lastDialed", "");
 
 pref("extensions.noojeeclick.clidquickpick.enabled", true);
-pref("extensions.noojeeclick.clidquickpick.url", "http://noojee.pmdomain.local/servicemanager/NoojeeClickCallerId");
+pref("extensions.noojeeclick.clidquickpick.url", "http://<noojee pbx url>/servicemanager/NoojeeClickCallerId");
 
 pref("extensions.noojeeclick.suppressNoojeeAnswerBar.enabled", false);
 
