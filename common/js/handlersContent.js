@@ -58,7 +58,7 @@ onDial: function (e)
 	if (phoneNo == null || phoneNo.length == 0)
 		theApp.prompts.njAlert("Please enter a phone number.");
 	else 
-		theApp.messagepassing.dial(phoneNo);
+		theApp.backgroundMessageTo.dial(phoneNo);
 	
 
 	return true;
@@ -71,7 +71,7 @@ onDial: function (e)
 onHangup: function ()
 {
 	theApp.logging.njdebug("handlersContent", "onHangup");
-	theApp.messagepassing.hangup();
+	theApp.backgroundMessageTo.hangup();
 	theApp.noojeeclick.resetIcon();
 
 },
