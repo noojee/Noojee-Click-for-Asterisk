@@ -22,8 +22,10 @@
 <link rel="stylesheet" type="text/css" href="css/options.css" />
 <script type="text/javascript" src="js/jquery/jquery-1.7.1.min.js"></script>
 <script type="text/javascript" src="js/jquery/jquery-ui-1.8.17.custom.min.js"></script>
-<script type="text/javascript" src="js/preferences.js"></script>
-<script type="text/javascript" src="defaults/preferences.js"></script>
+<script type="text/javascript" src="js/namespace.js"></script>
+<script type="text/javascript" src="js/lib.js"></script>
+<script type="text/javascript" src="js/noojeeclick.js"></script>
+<script type="text/javascript" src="js/prefs.js"></script>
 <script type="text/javascript" src="js/options.js"></script>
 </head>
 
@@ -52,7 +54,7 @@
 <div id="dialog-import" title="Import options">
 	<p>
 		<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>Paste the options data (as exported) and click on button "Import".</p>
-		<textarea id="importoptions" rows="9" cols="60"></textarea>
+		<textarea id="importoptions" rows="16" cols="109"></textarea>
 	</p>
 </div>
 
@@ -64,7 +66,7 @@
 		<li>Copy to clipboard (Ctrl+C)</li>
 		<li>Paste it somewhere (wiki, text file, etc...).</li>
 		</ul>
-		<textarea id="exportoptions" rows="9" cols="60"></textarea>
+		<textarea id="exportoptions" rows="17" cols="110"></textarea>
 	</p>
 </div>
 
@@ -231,7 +233,7 @@
 		<tr class="content">
 			<td class="label">Debug Filters:</td>
 			<td class="option">
-				<input id="debug-filters" type="text" />
+				<input id="debug-filters" type="text" size="100"/>
 			</td>
 		</tr>
 		</table>
