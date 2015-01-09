@@ -278,7 +278,7 @@ var noojeeClick = {};
 
 
 	// Initialization
-	this.initialize = function()
+	this.loadNamespace = function()
 	{
 		try
 		{
@@ -356,14 +356,14 @@ var noojeeClick = {};
 		} 
 		catch (e)
 		{
-			ns_alert("Noojee Click error in initialize " + e);
+			ns_alert("Noojee Click error in loadNamespace " + e);
 		}
 	};
 
 	// Clean up
 	this.shutdown = function()
 	{
-		window.removeEventListener("load", noojeeClick.initialize, false);
+		window.removeEventListener("load", noojeeClick.loadNamespace, false);
 		window.removeEventListener("unload", noojeeClick.shutdown, false);
 	};
 
@@ -551,7 +551,7 @@ var noojeeClick = {};
 	};
 
 	// Register handlers to maintain extension life cycle.
-	window.addEventListener("load", noojeeClick.initialize, false);
+	window.addEventListener("load", noojeeClick.loadNamespace, false);
 	window.addEventListener("unload", noojeeClick.shutdown, false);
 
 }).apply(noojeeClick);
