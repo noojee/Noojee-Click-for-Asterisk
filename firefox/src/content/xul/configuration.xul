@@ -22,6 +22,8 @@
     <script type="application/x-javascript"
        src="chrome://noojeeclick/content/prompts.js"/>
     <script type="application/x-javascript"
+       src="chrome://noojeeclick/content/browser_util.js"/>
+	<script type="application/x-javascript"
        src="chrome://noojeeclick/content/util.js"/>
 	<script type="application/x-javascript"
        src="chrome://noojeeclick/content/api.js"/>
@@ -38,7 +40,9 @@
     <script type="application/x-javascript"
        src="chrome://noojeeclick/content/sequence.js"/>
     <script type="application/x-javascript"
-       src="chrome://noojeeclick/content/handlers.js"/>
+       src="chrome://noojeeclick/content/handlersMenu.js"/>
+    <script type="application/x-javascript"
+       src="chrome://noojeeclick/content/handlersContent.js"/>
     <script type="application/x-javascript"
        src="chrome://noojeeclick/content/render.js"/>
     <script type="application/x-javascript"
@@ -499,15 +503,4 @@
 			</tabpanels>
 		</tabbox>
 	</prefpane>
-	
-	<!--
-	<script type="application/x-javascript" src="chrome://noojeeclick/content/namespace.js"/>
-    <script type="application/x-javascript" src="chrome://noojeeclick/content/lib.js"/>
-	<script type="application/x-javascript" src="chrome://noojeeclick/content/util.js" />
-	<script type="application/x-javascript" src="chrome://noojeeclick/content/prefs.js" />
-	<script type="application/x-javascript" src="chrome://noojeeclick/content/configuration.js" />
-	-->
-	
-	
-
 </prefwindow>
