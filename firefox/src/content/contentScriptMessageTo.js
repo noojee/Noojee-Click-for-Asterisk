@@ -19,22 +19,22 @@
  **/
 
 /**
- * This class is used to pass messages from content scripts to the background process.
- * This is specific to Chrome extension's development. 
+ * This class is used to emulate the chrome message passing interface.
+ * 
+ * In 
+ * 
+ * Message passing is not required in firefox so this just directly call the target function.
+ * 
+ *  
  **/
 noojeeClick.ns(function() { with (noojeeClick.LIB) {
 
-theApp.messagepassing =
+theApp.contentMessageTo =
 {
 
-dial: function (phoneNo)
+refresh: function ()
 {
-	theApp.asterisk.getInstance().dial(phoneNo);
-},
-
-hangup: function ()
-{
-	theApp.asterisk.getInstance().hangup();
+	theApp.render.onRefresh();
 },
 
 
