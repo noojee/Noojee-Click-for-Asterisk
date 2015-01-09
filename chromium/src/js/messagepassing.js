@@ -21,15 +21,26 @@
 /**
  * This class is used to pass messages from content scripts to the background process.
  * This is specific to Chrome extension's development. 
+ * 
+ * The background process is implemented in background.js 
  **/
 noojeeClick.ns(function() { with (noojeeClick.LIB) {
 
+/**
+ * 
+ */
 theApp.messagepassing =
 {
+
 
 dial: function (phoneNo)
 {
 	chrome.extension.sendRequest({type: "dial", phoneNo: phoneNo});
+},
+
+hangup: function ()
+{
+	chrome.extension.sendRequest({type: "hangup"});
 },
 
 };
