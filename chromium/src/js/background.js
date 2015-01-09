@@ -17,23 +17,18 @@
  * with Noojee Click. If not, see http://www.gnu.org/licenses/.
  **/
 
+noojeeClick.loadNamespace();
+
 /**
  * Create context menus for selection
  */
+chrome.contextMenus.removeAll();
 chrome.contextMenus.create({
     "title": "Dial %s",
     "type": "normal",
-    "contexts": ["selection"],
+    "contexts": ["browser_action"],
     "onclick": dial()
 });
-
-chrome.contextMenus.create({
-    "title": "Dial 0%s",
-    "type": "normal",
-    "contexts": ["selection"],
-    "onclick": editAndDial()
-});
-
 
 function dial() {
     return function (info, tab) {
@@ -41,19 +36,12 @@ function dial() {
     };
 };
 
-function editAndDial() {
-    return function (info, tab) {
 
-        // The srcUrl property is only available for image elements.
-        var url = 'http://127.0.0.1:7069/Dial/0' + info.selectionText;
-        // Create a new window to the info page.
-        chrome.windows.create({ url: url, width: 520, height: 660 });
-    };
-};
-
-/*******************************************
- * Interactions with page                  *
- *******************************************/
+/*
+ * Handles Request from the content page.
+ * Requests are sent here via messagepassing.js
+ * 
+ */
 chrome.extension.onRequest.addListener(
 	function(request, sender, sendResponse) {
 		// content script requests for option values
@@ -67,6 +55,15 @@ chrome.extension.onRequest.addListener(
 			// empty response
 			sendResponse({});
 		}
+		else if (request.type == "hangup") {
+			noojeeClick.LIB.theApp.asterisk.getInstance().hangup();
+			// empty response
+			sendResponse({});
+		}
+		
+		
+		
+
 		// ignore invalid requests
 		else {
 			sendResponse({});
@@ -74,4 +71,24 @@ chrome.extension.onRequest.addListener(
 	}
 );
 
-noojeeClick.initialize();
+/**
+ * Handle installs
+ * 
+ */
+chrome.runtime.onInstalled.addListener(function(details)
+{
+    if(details.reason == "install")
+    {
+        noojeeClick.LIB.theApp.prefs.initPrefs();
+        console.log("This is a first install!");
+    }
+    else if(details.reason == "update")
+    {
+        var thisVersion = chrome.runtime.getManifest().version;
+        noojeeClick.LIB.theApp.prefs.initPrefs();
+        console.log("Updated from " + details.previousVersion + " to " + thisVersion + "!");
+    }
+});
+
+
+
