@@ -24,8 +24,8 @@
 			"js/logging.js", 
 			"js/prompts.js", 
 			"js/render.js", 
-			"js/handlers.js", 
-			"js/messagepassing.js", 
+			"js/handlersContent.js",
+			"js/backgroundMessageTo.js", 
 			"js/contentscript.js" 
 			]
 	}
