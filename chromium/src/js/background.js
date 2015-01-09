@@ -39,7 +39,7 @@ function dial() {
 
 /*
  * Handles Request from the content page.
- * Requests are sent here via messagepassing.js
+ * Requests are sent here via backgroundMessageTo.js
  * 
  */
 chrome.extension.onRequest.addListener(
