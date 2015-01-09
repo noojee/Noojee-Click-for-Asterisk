@@ -48,9 +48,15 @@ noojeeClick.ns(function()
 					theApp.logging.njdebug("notification", "Showing " + title);
 
 					this.hide();
-					this.curnotification = window.webkitNotifications.createNotification(icon,title,text);
+					
+					Notification.requestPermission( function(status) {
+						  console.log(status); // notifications will only be displayed if "granted"
+						  var n = new Notification("title", {body: "notification body"}); // this also shows the notification
+						});
+				/*	this.curnotification = window.webkitNotifications.createNotification(icon,title,text);
 					this.curnotification.onclose = onCloseHandler;
 					this.curnotification.show();
+*/
 				},
 
 				/**
