@@ -102,7 +102,18 @@ theApp.prefs =
 	
 	onConfiguration: function (e)
 	{
-		chrome.tabs.create({url: "options.html"});
+		var optionsUrl = chrome.extension.getURL('options.html');
+
+		/**
+		 * Open or switch to an already open options.html.
+		 */
+		chrome.tabs.query({url: optionsUrl}, function(tabs) {
+		    if (tabs.length) {
+		        chrome.tabs.update(tabs[0].id, {active: true});
+		    } else {
+		        chrome.tabs.create({url: optionsUrl});
+		    }
+		});
 		return true;
 	},
 
