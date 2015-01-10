@@ -114,7 +114,6 @@ theApp.prefs =
 		        chrome.tabs.create({url: optionsUrl});
 		    }
 		});
-		return true;
 	},
 
 
