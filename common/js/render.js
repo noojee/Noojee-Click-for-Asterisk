@@ -381,7 +381,7 @@ noojeeClick
 														 */
 											            clickElement = document.createElement("a");
 											            clickElement.setAttribute("style", "cursor:pointer;");
-											            clickElement.addEventListener("click", theApp.handlers.onDialHandler,
+											            clickElement.addEventListener("click", theApp.handlersContent.onDialHandler,
 											                    true);
 											            clickElement.appendChild(text);
 											            clickElement.setAttribute("PhoneNo", match[0]);
@@ -406,13 +406,13 @@ noojeeClick
 																		+ "background: url('" + imgURL + "') 0 0 no-repeat;"
 																		+ "border: 0; padding: 0;");
 																	  
-											            btn.addEventListener("click", theApp.handlers.onDialHandler, false);
+											            btn.addEventListener("click", theApp.handlersContent.onDialHandler, false);
 											            /*
 														 * We need to suppress any mouse action we may inherit from parent
 														 * element
 														 */
-											            btn.addEventListener("mouseover", theApp.handlers.onMouseOver, false);
-											            btn.addEventListener("mouseout", theApp.handlers.onMouseOut, false);
+											            btn.addEventListener("mouseover", theApp.handlersContent.onMouseOver, false);
+											            btn.addEventListener("mouseout", theApp.handlersContent.onMouseOut, false);
 
 											            btn.setAttribute("PhoneNo", match[0]);
 
