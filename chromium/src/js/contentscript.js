@@ -30,6 +30,20 @@
  */
 var options;
 
+/**
+ * Create context menus for selection on each content page.
+ * 
+ */
+/*chrome.contextMenus.removeAll();
+chrome.contextMenus.create({
+    "title": "Dial %s",
+    "type": "normal",
+    "contexts": ["browser_action"],
+    "onclick": dial()
+});
+*/
+
+
 chrome.extension.sendRequest({type: "options"}, function(response) 
 {
 	   // retrieve all options from background process
@@ -58,7 +72,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse)
 {
 	 if (request.action == "showClickIcons")
 	 {
-		 noojeeClick.handlersContent.onShowClickIcons();
+		 noojeeClick.handlersContent.onShowClickIcons(document);
 	 }
 	 else if (request.action == "refresh")
 	 {
