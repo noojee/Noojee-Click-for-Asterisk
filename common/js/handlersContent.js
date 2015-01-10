@@ -58,7 +58,9 @@ onDial: function (e)
 	if (phoneNo == null || phoneNo.length == 0)
 		theApp.prompts.njAlert("Please enter a phone number.");
 	else 
+	{
 		theApp.backgroundMessageTo.dial(phoneNo);
+	}
 	
 
 	return true;
