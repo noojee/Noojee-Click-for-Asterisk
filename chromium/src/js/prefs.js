@@ -98,7 +98,14 @@ theApp.prefs =
 				console.log(key + " : " + value);
 			}
 		}
-	}
+	},
+	
+	onConfiguration: function (e)
+	{
+		chrome.tabs.create({url: "options.html"});
+		return true;
+	},
+
 
 };
 
