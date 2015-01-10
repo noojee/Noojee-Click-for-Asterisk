@@ -171,14 +171,12 @@ doDialDifferently: function (target)
 	}
 },
 
-onShowClickIcons: function ()
+onShowClickIcons: function (doc)
 {
 	var enabled = theApp.prefs.getBoolValue("showClickIcons");
 	enabled = !enabled;
 	theApp.prefs.setBoolValue("showClickIcons", enabled);
-	theApp.render.onRefresh();
-	if (enabled == true)
-		theApp.asterisk.getInstance().init();
+	theApp.render.onRefreshOne(doc);
 },
 
 /**
@@ -246,7 +244,7 @@ onAddDialPatternMenuAction: function ()
 				var patternList = theApp.prefs.getValue("pattern");
 				patternList += "\n" + newPattern;
 				theApp.prefs.setValue("pattern", patternList);
-				theApp.render.onRefresh();
+				theApp.render.onRefreshOne(window);
 			}
 		}
 	}

@@ -85,15 +85,22 @@ redialMenuAction: function ()
 },
 
 
-onShowClickIcons: function ()
+showClickIcons: function ()
 {
-	var enabled = theApp.prefs.getBoolValue("showClickIcons");
-	enabled = !enabled;
-	theApp.prefs.setBoolValue("showClickIcons", enabled);
-	theApp.contentMessageTo.refresh();
+	noojeeClick.contentScriptMessageTo.showClickIcons();
 	
 	if (enabled == true)
 		theApp.asterisk.getInstance().init();
+},
+
+showConfiguration: function ()
+{
+	noojeeClick.prefs.onConfiguration();
+},
+
+refresh: function ()
+{
+	noojeeClick.contentScriptMessageTo.refresh();
 },
 
 
