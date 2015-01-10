@@ -31,19 +31,19 @@
 
     </popup>
 
-  <commandset id="mainCommandSet"
-  commandupdater="true"
-  events="focus"
-  oncommandupdate="goUpdateCommand('Task:enable');goUpdateCommand('Task:redail');">
+
+
+
+  <commandset id="mainCommandSet"  commandupdater="true" events="focus" oncommandupdate="goUpdateCommand('Task:enable');goUpdateCommand('Task:redail');">
     <command id="Tasks:noojeeClick.dial" oncommand="noojeeClick.handlersMenu.dialMenuAction();"/>
     <command id="Tasks:noojeeClick.redial" oncommand="noojeeClick.handlersMenu.redialMenuAction();"/>
     <command id="Tasks:noojeeClick.dialFromClipboard" oncommand="noojeeClick.handlersMenu.dialFromClipboardMenuAction();"/>
+    <command id="Tasks:noojeeClick.configuration" oncommand="noojeeClick.handlersMenu.showConfiguration();"/>
+	<command id="Tasks:noojeeClick.showClickIcons" oncommand="noojeeClick.handlersMenu.showClickIcons();"/>
+	<command id="Tasks:noojeeClick.refresh" oncommand="noojeeClick.handlersMenu.refresh();"/> 
     <command id="Tasks:noojeeClick.dialSelection" oncommand="noojeeClick.handlersContent.dialSelectionMenuAction();"/>
     <command id="Tasks:noojeeClick.dialDifferently" oncommand="noojeeClick.handlersContent.dialDifferentlyMenuAction();"/>
-    <command id="Tasks:noojeeClick.configuration" oncommand="noojeeClick.prefs.onConfiguration();"/>
 	<command id="Tasks:noojeeClick.dialAddPattern" oncommand="noojeeClick.handlersContent.onAddDialPatternMenuAction();"/>
-	<command id="Tasks:noojeeClick.refresh" oncommand="noojeeClick.render.onRefresh();"/> 
-    <command id="Tasks:noojeeClick.showClickIcons" oncommand="noojeeClick.handlersMenu.onShowClickIcons();"/>
     <command id="Tasks:noojeeClick.hangup" oncommand="noojeeClick.handlersContent.onHangup();"/>
     
   </commandset>
