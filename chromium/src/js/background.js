@@ -19,18 +19,6 @@
 
 noojeeClick.loadNamespace();
 
-/**
- * Create context menus for selection on each content page.
- * 
- * I'm surprised this goes here as I thought it would need to be defined as part of the contentscript.
- */
-chrome.contextMenus.removeAll();
-chrome.contextMenus.create({
-    "title": "Dial %s",
-    "type": "normal",
-    "contexts": ["browser_action"],
-    "onclick": dial()
-});
 
 function dial() {
     return function (info, tab) {
@@ -43,7 +31,7 @@ function dial(phoneNo)
 	if (noojeeClick.LIB.theApp.asterisk.isConfigured())
 		noojeeClick.LIB.theApp.asterisk.getInstance().dial(phoneNo);
 	else
-		theApp.prompts.njAlert("Please configure Asterisk options first.");
+		noojeeClick.LIB.theApp.prompts.njAlert("Please configure Asterisk options first.");
 }
 
 
