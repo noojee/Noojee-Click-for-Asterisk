@@ -34,7 +34,11 @@ theApp.backgroundMessageTo =
 
 dial: function (phoneNo)
 {
-	theApp.asterisk.getInstance().dial(phoneNo);
+	if (theApp.asterisk.isConfigured())
+		theApp.asterisk.getInstance().dial(phoneNo);
+	else
+		theApp.prompts.njAlert("Please configure Asterisk options first.");
+
 },
 
 hangup: function ()
