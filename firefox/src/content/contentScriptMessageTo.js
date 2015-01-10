@@ -32,9 +32,15 @@ noojeeClick.ns(function() { with (noojeeClick.LIB) {
 theApp.contentMessageTo =
 {
 
+showClickIcons: function ()
+{
+	theApp.handlersContent.onShowClickIcons(document);
+},
+
 refresh: function ()
 {
 	theApp.render.onRefresh();
+
 },
 
 
