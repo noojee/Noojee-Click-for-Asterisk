@@ -65,56 +65,7 @@ theApp.prefs =
 		return theApp.prefs.getValue("password");	
 	},
 	
-	/** 
-	 * Used on a first time install (and perhaps on an update)
-	 * to set defaults for local storage.
-	 * The default values are created by 'prefs.js' under the
-	 * key prefix extensions.noojeeclick.
-	 * 
-	 * This method takes those defaults and puts them into the correct local storage.
-	 * 
-	 * We do this two phase method to be compatible with firefoxes 'pref' method for setting up defaults.
-	 * The problem with the firefox method under chrome is that we have no way of controling when the 
-	 * defaults/preferencespreferences.js script runs so it runs every time the extension starts (by inclusion in background.html)
-	 * rather than just on install or update.
-	 * So initPrefs is only called on install or update to copy any defaults into localstorage. This stops
-	 * localstorage being overwritten all of the time.
-	 */
-	initPrefs: function()
-	{
-		for (var i=0; i < localStorage.length; i++) 
-		{
-			var key = localStorage.key(i);
-			var value = localStorage[key];
-
-			var prefix = "z.defaults.noojeeclick.";
-			var len = prefix.length;
-			// Is this a default
-			if (key.indexOf(prefix) == 0)
-			{
-				// yes so transfer it.
-				key = key.substring(len);
-				localStorage[key] = value;
-				console.log(key + " : " + value);
-			}
-		}
-	},
 	
-	onConfiguration: function (e)
-	{
-		var optionsUrl = chrome.extension.getURL('options.html');
-
-		/**
-		 * Open or switch to an already open options.html.
-		 */
-		chrome.tabs.query({url: optionsUrl}, function(tabs) {
-		    if (tabs.length) {
-		        chrome.tabs.update(tabs[0].id, {active: true});
-		    } else {
-		        chrome.tabs.create({url: optionsUrl});
-		    }
-		});
-	},
 
 
 };
