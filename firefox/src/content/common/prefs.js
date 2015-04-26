@@ -4,30 +4,10 @@ noojeeClick.ns(function() { with (noojeeClick.LIB) {
 theApp.prefs =
 {
 
-		// constants
-		CONST_IMG_CALLPHONE:  "chrome://noojeeclick/content/images/call-phone.png",
+	// constants
+	CONST_IMG_CALLPHONE:  "chrome://noojeeclick/content/images/call-phone.png",
 
   
-
-onConfiguration: function (e)
-{
-	var features = "chrome,titlebar,toolbar,centerscreen,modal";
-	window.openDialog("chrome://noojeeclick/content/xul/configuration.xul", "Preferences", features);
-
-	theApp.render.onRefresh();
-	// force a fresh login in case the asterisk settings changed.
-	if (theApp.asterisk.getInstance() != null)
-		theApp.asterisk.getInstance().setLoggedIn(false);
-	return true;
-},
-
-onTestConnection: function ()
-{
-	var features = "chrome,titlebar,toolbar,centerscreen,modal";
-
-	window.openDialog("chrome://noojeeclick/content/xul/diagnose.xul", "Diagnose", features);
-},
-
 
 getValue: function (key)
 {

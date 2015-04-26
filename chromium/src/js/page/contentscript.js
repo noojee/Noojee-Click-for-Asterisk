@@ -78,6 +78,10 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse)
 	 {
 		 noojeeClick.LIB.theApp.render.onRefreshOne(document);
 	 }
+	 else if (request.action == "refreshAll")
+	 {
+		 noojeeClick.LIB.theApp.render.onRefreshOne(document);
+	 }
 	 else
 	   sendResponse({}); // Send nothing..
 });

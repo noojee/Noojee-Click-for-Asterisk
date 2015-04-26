@@ -8,49 +8,15 @@
 	image="chrome://noojeeclick/content/images/noojee.png" 
 	buttons="accept,cancel"
 	helpURI="http://www.noojee.com.au/Page/NoojeeClickHelp"
-	onload='noojeeClick.onConfigurationLoad()'
-	onunload='noojeeClick.onConfigurationClosed()'
+	onload='noojeeClick.OptionsLoad()'
+	onunload='noojeeClick.onOptionsClosed()'
 	>
 	<!--            ondialoghelp="showHelpWindow();" -->
 
-	 <script type="application/x-javascript"
-       src="chrome://global/content/globalOverlay.js"/>
-    <script type="application/x-javascript"
-       src="chrome://noojeeclick/content/namespace.js"/>
-    <script type="application/x-javascript"
-       src="chrome://noojeeclick/content/lib.js"/>
-    <script type="application/x-javascript"
-       src="chrome://noojeeclick/content/prompts.js"/>
-    <script type="application/x-javascript"
-       src="chrome://noojeeclick/content/browser_util.js"/>
-	<script type="application/x-javascript"
-       src="chrome://noojeeclick/content/util.js"/>
-	<script type="application/x-javascript"
-       src="chrome://noojeeclick/content/api.js"/>
-    <script type="application/x-javascript"
-       src="chrome://noojeeclick/content/prefs.js"/>
-	<script type="application/x-javascript"
-       src="chrome://noojeeclick/content/dialstatus.js"/>
-    <script type="application/x-javascript"
-       src="chrome://noojeeclick/content/monitor.js"/>
-    <script type="application/x-javascript"
-       src="chrome://noojeeclick/content/event.js"/>
-    <script type="application/x-javascript"
-       src="chrome://noojeeclick/content/job.js"/>
-    <script type="application/x-javascript"
-       src="chrome://noojeeclick/content/sequence.js"/>
-    <script type="application/x-javascript"
-       src="chrome://noojeeclick/content/handlersMenu.js"/>
-    <script type="application/x-javascript"
-       src="chrome://noojeeclick/content/render.js"/>
-    <script type="application/x-javascript"
-       src="chrome://noojeeclick/content/phonepatterns.js"/>
-	<script type="application/x-javascript"
-       src="chrome://noojeeclick/content/asterisk.js"/>
-    <script type="application/x-javascript"
-       src="chrome://noojeeclick/content/noojeeclick.js"/>
-    <script type="application/x-javascript"
-       src="chrome://noojeeclick/content/configuration.js"/>
+	<script type="application/x-javascript"  src="chrome://global/content/globalOverlay.js"/>
+    <script type="text/javascript" src="chrome://noojeeclick/content/js/common/namespace.js"></script>
+	<script type="text/javascript" src="chrome://noojeeclick/content/js/background/options.js"></script>
+    
 
 
 	<prefpane id="noojeeClick" label="Preferences"

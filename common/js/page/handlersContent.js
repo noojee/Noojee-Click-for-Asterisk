@@ -74,7 +74,7 @@ onHangup: function ()
 {
 	theApp.logging.njdebug("handlersContent", "onHangup");
 	theApp.backgroundMessageTo.hangup();
-	theApp.noojeeclick.resetIcon();
+	theApp.dialStatus.getInstance().hangup();
 
 },
 
@@ -224,7 +224,7 @@ onAddDialPatternMenuAction: function ()
 					newPattern += ' ';
 					break;
 				default:
-					theApp.prompts.njAlert("Unsupported character '" + phoneNo[i] + "' found in phone number. Add the character to the 'Delimiters' field on 'Advanced' tab in the Noojee Click configuration and try again.");
+					theApp.prompts.njAlert("Unsupported character '" + phoneNo[i] + "' found in phone number. Add the character to the 'Delimiters' field on 'Advanced' tab in the Noojee Click Options and try again.");
 					fault = true;
 					break;
 

@@ -215,7 +215,7 @@ getParentDocument: function (element)
 },
 
 // Retrieves the channel name of the users own extension (including technology)
-// from the Noojee Click configuration.
+// from the Noojee Click Options
 getLocalChannel: function ()
 {
 	var channel = null;
@@ -249,7 +249,7 @@ extractChannel: function (uniqueChannel)
 }	,
 	
 //Tests if the given channel (from an event usually) matches the users
-//local channel from Noojee Click's configuration.
+//local channel from Noojee Click's Options.
 isLocalChannel: function (channel)
 {
 	return this.extractChannel(channel).toLowerCase() == this.getLocalChannel().toLowerCase();

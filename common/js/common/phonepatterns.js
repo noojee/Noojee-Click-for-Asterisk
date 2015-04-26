@@ -34,9 +34,9 @@ normalisePhoneNo: function (phoneNo)
 			|| theApp.util.trim(theApp.prefs.getValue("internationalPrefix")).length == 0)
 	        && phoneNo.indexOf("+") >= 0)
 	{
-		theApp.logging.njlog("The International Prefix has not been set. Please set it via the configuration panel before trying again");
-		theApp.prompts.njAlert("The International Prefix has not been set. Please set it via the configuration panel before trying again");
-		throw "Invalid Configuration";
+		theApp.logging.njlog("The International Prefix has not been set. Please set it via the Options panel before trying again");
+		theApp.prompts.njAlert("The International Prefix has not been set. Please set it via the Options panel before trying again");
+		throw "Invalid Options";
 	}
 
 	// remove all space

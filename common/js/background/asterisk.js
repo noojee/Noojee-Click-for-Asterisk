@@ -27,6 +27,38 @@ gAsterisk: null,
 
 authRequired: false,
 
+autoAnswerList : [
+      		    {
+      		        manufacturer : "Aastra",
+      		        header : "Call-Info: Answer-After=0"
+      		    },
+      		    {
+      		        manufacturer : "GrandStream",
+      		        header : "Call-Info:\\\\; answer-after=0"
+      		    },
+      		    {
+      		        manufacturer : "Linksys",
+      		        header : "Call-Info:\\\\; answer-after=0"
+      		    },
+      		    {
+      		        manufacturer : "Polycom",
+      		        header : "Alert-Info: Ring Answer"
+      		    },
+      		    {
+      		        manufacturer : "Snom",
+      		        header : "Call-Info:\\\\; answer-after=0"
+      		    },
+      		    {
+      		        manufacturer : "Snom v8.7+",
+      		        header : "Alert-Info: <http://www.ignored.com>\\;info=alert-autoanswer\\;delay=0"
+      		    },
+      		    {
+      		        manufacturer : "Yealink",
+      		        header : "Call-Info:\\\\; answer-after=0"
+      		    } ],
+
+
+
 getInstance: function ()
 {
 	if (this.gAsterisk == null)

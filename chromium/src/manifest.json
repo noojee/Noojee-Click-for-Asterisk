@@ -3,8 +3,8 @@
 	"version" : "0.94",
 	"manifest_version": 2,
 	"description" : "Turns phone numbers in any web page into 'click to dial' links. With Noojee Click and Asterisk you can dial any phone number on a web page with a single click.",
-	"background" : { "page": "background.html"},
-	"options_page" : "options.html",
+	"background" : { "page": "background/background.html"},
+	"options_page" : "background/options.html",
 	"icons" : {
 		"128" : "img/phone-128.png"
 	},
@@ -12,21 +12,22 @@
 	{
 		"matches": ["*://*/*"],
 		"js": [
-			"js/namespace.js", 
-			"js/lib.js",
-			"js/browser_util.js", 
-			"js/util.js",
-			"js/api.js",
-			"js/monitor.js",    
-			"js/phonepatterns.js", 
-			"js/noojeeclick.js", 
-			"js/prefs.js", 
-			"js/logging.js", 
-			"js/prompts.js", 
-			"js/render.js", 
-			"js/handlersContent.js",
-			"js/backgroundMessageTo.js", 
-			"js/contentscript.js" 
+			"js/jquery/jquery-2.1.1.js",
+			"js/jquery/jquery-ui.js",
+			"js/common/namespace.js", 
+			"js/common/logging.js", 
+			"js/common/phonepatterns.js", 
+			"js/common/prefs.js", 
+			"js/common/prompts.js", 
+			"js/common/util.js",
+			"js/page/api.js",
+			"js/page/contentscript.js",
+			"js/page/backgroundMessageTo.js", 
+			"js/page/browser_util.js", 
+			"js/page/handlersContent.js",
+			"js/page/monitor.js",    
+			"js/page/noojeeclick.js", 
+			"js/page/render.js"
 			]
 	}
 	],
@@ -41,7 +42,7 @@
             "73": "img/noojeeclick.png"
           },
     "default_title": "Noojee Click for Asterisk",
-    "default_popup": "menu.html"
+    "default_popup": "background/menu.html"
   },
    "web_accessible_resources": [
     "img/*.png"

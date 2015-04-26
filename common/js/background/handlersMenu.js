@@ -89,13 +89,14 @@ showClickIcons: function ()
 {
 	noojeeClick.contentScriptMessageTo.showClickIcons();
 	
+	var enabled = theApp.prefs.getBoolValue("showClickIcons");
 	if (enabled == true)
 		theApp.asterisk.getInstance().init();
 },
 
-showConfiguration: function ()
+showOptions: function ()
 {
-	noojeeClick.prefs.onConfiguration();
+	noojeeClick.options.showOptions();
 },
 
 refresh: function ()

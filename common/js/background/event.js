@@ -249,7 +249,7 @@ Unlink: function (response)
 			theApp.logging.njdebug("event.high", "Unlink event received.");
 			asterisk.remoteChannel = this.remoteChannel;
 			asterisk.updateState("Disconnected");
-			theApp.noojeeclick.resetIcon();
+			theApp.dialStatus.getInstance().callFailed();
 			window.setTimeout(function () {noojeeClick.asterisk.getInstance().updateState('');}, 3000);
 		}
 	};
@@ -280,7 +280,7 @@ Hangup: function (response)
 				asterisk.updateState("Hangup: " + theApp.prefs.getValue("extension"));
 */
 			asterisk.updateState("Disconnected");
-			theApp.noojeeclick.resetIcon();
+			theApp.dialStatus.getInstance().hangup();
 			window.setTimeout(function () {noojeeClick.asterisk.getInstance().updateState('');}, 3000);
 		}
 	

@@ -43,6 +43,13 @@ hangup: function ()
 	chrome.extension.sendRequest({type: "hangup"});
 },
 
+callFailed: function()
+{
+	chrome.extension.sendRequest({type: "callFailed"});
+}
+
+
+
 };
 
 }});

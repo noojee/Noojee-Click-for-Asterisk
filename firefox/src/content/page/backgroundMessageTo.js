@@ -46,6 +46,11 @@ hangup: function ()
 	theApp.asterisk.getInstance().hangup();
 },
 
+resetIcon: function()
+{
+	theApp.noojeeClick.resetIcon();
+}
+
 
 };
 

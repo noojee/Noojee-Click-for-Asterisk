@@ -215,7 +215,8 @@ noojeeClick
 						        var details = this;
 						        var seq = this.sequence;
 						        theApp.logging.njdebug("sequence", "error this=" + seq.currentJob.name);
-						        theApp.noojeeclick.resetIcon();
+						        theApp.dialStatus.getInstance().callFailed();
+						        
 						        theApp.asterisk.getInstance().updateState("");
 
 						        theApp.logging.njdebug("sequence", "sequence.error: " + details.readyState + ":" + details.status
@@ -238,7 +239,7 @@ noojeeClick
 								        if (!initialising)
 								            theApp.util
 								                    .showError(details.responseText,
-								                            "Unable to connect to Asterisk. Asterisk may be down or your configuration may be incorrect.");
+								                            "Unable to connect to Asterisk. Asterisk may be down or your configuration Options may be incorrect.");
 							        }
 							        else
 							        {

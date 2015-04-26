@@ -2,6 +2,9 @@
 function init_menu() {
 
 	$("#menu").menu();
+	$( "#menu" ).menu({
+		  icons: { submenu: "ui-icon-circle-triangle-e" }
+		});
 
 	$("#menu").on('click', 'div', function(event) {
 		switch ($(this).text()) {
@@ -21,18 +24,22 @@ function init_menu() {
 			window.close();
 			break;
 
-		case "Configuration...":
-			noojeeClick.handlersMenu.showConfiguration();
+		case "Options...":
+			noojeeClick.handlersMenu.showOptions();
 			break;
 
 		case "Show Click Icons":
+			// ui-icon-check - show is on
+			// ui-icon-close - show is off
 			noojeeClick.handlersMenu.showClickIcons();
-			window.close();
+			var enabled = theApp.prefs.getBoolValue("showClickIcons");
+			
+			//window.close();
 			break;
 
 		case "Refresh":
 			noojeeClick.handlersMenu.refresh();
-			window.close();
+			//window.close();
 			break;
 			
 		case "Switch CLID":

@@ -5,7 +5,7 @@
 <prefwindow type="prefwindow" id="Diagnose" title="Testing Asterisk Connection"
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	image="chrome://noojeeclick/content/images/noojee.png" buttons="accept,cancel"
-	helpURI="http://www.noojee.com.au/Page/NoojeeClickHelp" ondialogaccept="onConfigurationClosed();">
+	helpURI="http://www.noojee.com.au/Page/NoojeeClickHelp" ondialogaccept="onOptionsClosed();">
 
 
 	<prefpane id="njDiagnose" label="Preferences"
@@ -32,6 +32,6 @@
 				</pane>
 	</prefpane>
 
-	<script type="application/x-javascript" src="chrome://noojeeclick/content/diagnose.js" />
+	<script type="application/x-javascript" src="chrome://noojeeclick/content/background/diagnose.js" />
 
 </prefwindow>

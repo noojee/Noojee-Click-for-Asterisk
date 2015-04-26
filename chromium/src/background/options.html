@@ -1,0 +1,267 @@
+<!--
+ * Copyright 2012 Sven Werlen
+ *
+ * This file is part of Noojee Click.
+ * 
+ * Noojee Click is free software: you can redistribute it and/or modify it 
+ * under the terms of the GNU General Public License as published by the 
+ * Free Software Foundation, either version 3 of the License, or (at your 
+ * option) any later version.
+ * 
+ * Noojee Click is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License 
+ * for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along 
+ * with Noojee Click. If not, see http://www.gnu.org/licenses/.
+-->
+<html>
+<head>
+<title>Noojee Click - Options</title>
+
+<link rel="stylesheet" type="text/css"
+	href="/css/ui-lightness/jquery-ui.custom.css" />
+<link rel="stylesheet" type="text/css"
+	href="/js/jquery/jquery-ui.theme.css"></link>
+<link rel="stylesheet" type="text/css" href="/css/options.css"></link>
+<script type="text/javascript" src="/js/jquery/jquery-2.1.1.js"></script>
+<script type="text/javascript" src="/js/jquery/jquery-ui.js"></script>
+
+<!--  NJ Click scripts - namespace.js must ALWAYS come first -->
+<script type="text/javascript" src="/js/common/namespace.js"></script>
+<script type="text/javascript" src="/js/common/logging.js"></script>
+<script type="text/javascript" src="/js/common/prefs.js"></script>
+<script type="text/javascript" src="/js/common/prompts.js"></script>
+<script type="text/javascript" src="/js/common/util.js"></script>
+
+<script type="text/javascript" src="/js/background/asterisk.js"></script>
+<script type="text/javascript" src="/js/background/contentScriptMessageTo.js"></script>
+<script type="text/javascript" src="/js/background/event.js"></script>
+<script type="text/javascript" src="/js/background/options.js"></script>
+<script type="text/javascript" src="/js/background/job.js"></script>
+<script type="text/javascript" src="/js/background/sequence.js"></script>
+
+</head>
+
+<body>
+
+	<div class="options">
+
+		<img src="../img/noojeeclick.png" style="float: left;" /> <img
+			src="../img/asterisk.png" width="100px" style="float: right;" />
+		<h1>Noojee Click</h1>
+
+		<!-- Status box -->
+		<div class="toggler">
+			<div id="status" class="ui-widget-header ui-corner-all">
+				<h2>
+					Options successfully saved!
+					</h3>
+			</div>
+		</div>
+
+		<!-- Confirm dialog -->
+		<div id="dialog-reset" title="Reset options?">
+			<p>
+				<span class="ui-icon ui-icon-alert"
+					style="float: left; margin: 0 7px 20px 0;"></span>This action will
+				replace your saved options with extension defaults. Confirm to
+				proceed.
+			</p>
+		</div>
+
+		<!-- Import dialog -->
+		<div id="dialog-import" title="Import options">
+			<p>
+			<p>
+				<span class="ui-icon ui-icon-alert"
+					style="float: left; margin: 0 7px 20px 0;"></span>Paste the options
+				data (as exported) and click on button "Import".
+			</p>
+			<textarea id="importoptions" rows="16" cols="109"></textarea>
+			</p>
+		</div>
+
+		<!-- Export dialog -->
+		<div id="dialog-export" title="Export options">
+			<p>
+			<ul>
+				<li>Select all text (Ctrl+A)</li>
+				<li>Copy to clipboard (Ctrl+C)</li>
+				<li>Paste it somewhere (wiki, text file, etc...).</li>
+			</ul>
+			<textarea id="exportoptions" rows="17" cols="110"></textarea>
+			</p>
+		</div>
+
+		<!-- Options -->
+		<div id="tabs">
+			<ul>
+				<li><a href="#tabs-1">Phone</a></li>
+				<li><a href="#tabs-2">Patterns</a></li>
+				<li><a href="#tabs-3">Exclusions</a></li>
+				<li><a href="#tabs-4">Asterisk</a></li>
+				<li><a href="#tabs-5">Advanced</a></li>
+				<li><a href="#tabs-6">About</a></li>
+			</ul>
+			<!-- ================================ -->
+			<div id="tabs-1">
+				<table>
+					<tr>
+						<th>Phone:</th>
+					</tr>
+					<tr class="content">
+						<td class="label">Extension:</td>
+						<td class="option"><input id="extension" type="text" /></td>
+					</tr>
+					<tr class="content">
+						<td class="label">Auto Answer:</td>
+						<td class="option"><input id="auto-answer" type="checkbox" />
+						</td>
+					</tr>
+					<tr class="content">
+						<td class="label">Phone Type:</td>
+						<td class="option"><select id="phone-type">
+								<option>Aastra</option>
+								<option>Grandstream</option>
+								<option>Linksys</option>
+								<option>Polycom</option>
+								<option>Snom</option>
+								<option>Yealink</option>
+						</select></td>
+					</tr>
+					<tr class="content">
+						<td class="label">International Prefix:</td>
+						<td class="option"><input id="international-prefix"
+							type="text" /></td>
+					</tr>
+					<tr class="content">
+						<td class="label">Dial Prefix:</td>
+						<td class="option"><input id="dial-prefix" type="text" /></td>
+					</tr>
+					<tr class="content">
+						<td class="label">Local Prefix:</td>
+						<td class="option"><input id="local-prefix-1" type="text" />
+							<input id="local-prefix-2" type="text" /></td>
+					</tr>
+				</table>
+			</div>
+			<!-- ================================ -->
+			<div id="tabs-2">
+				<table>
+					<tr>
+						<th>Patterns:</th>
+					</tr>
+					<tr class="content">
+						<td class="option"><textarea id="pattern" rows="15" cols="30">
+				</textarea></td>
+					</tr>
+				</table>
+			</div>
+			<!-- ================================ -->
+			<div id="tabs-3">
+				<table>
+					<tr>
+						<th>Exclusions:</th>
+					</tr>
+					<tr class="content">
+						<td class="option"><textarea id="exclusions" rows="9"
+								cols="100">
+				</textarea></td>
+					</tr>
+				</table>
+			</div>
+			<!-- ================================ -->
+			<div id="tabs-4">
+				<table>
+					<tr>
+						<th>Asterisk:</th>
+					</tr>
+					<tr class="content">
+						<td class="label">Host:</td>
+						<td class="option"><input id="host" type="text" size="40" />
+						</td>
+					</tr>
+					<tr class="content">
+						<td class="label">Port:</td>
+						<td class="option"><input id="port" type="text" size="6" /></td>
+					</tr>
+					<tr class="content">
+						<td class="label">Username:</td>
+						<td class="option"><input id="username" type="text" size="40" />
+						</td>
+					</tr>
+					<tr class="content">
+						<td class="label">Password:</td>
+						<td class="option"><input id="password" type="password"
+							size="40" /></td>
+					</tr>
+					<tr class="content">
+						<td class="label">Context:</td>
+						<td class="option"><input id="context" type="text" size="40" />
+						</td>
+					</tr>
+					<tr class="content">
+						<td class="label">Use HTTPS:</td>
+						<td class="option"><input id="use-https" type="checkbox" />
+						</td>
+					</tr>
+				</table>
+			</div>
+			<!-- ================================ -->
+			<div id="tabs-5">
+				<table>
+					<tr>
+						<th>Advanced:</th>
+					</tr>
+					<tr class="content">
+						<td class="label">HTTP Prefix:</td>
+						<td class="option"><input id="http-prefix" type="text" /></td>
+					</tr>
+					<tr class="content">
+						<td class="label">Caller ID:</td>
+						<td class="option"><input id="caller-id" type="text" /></td>
+					</tr>
+					<tr class="content">
+						<td class="label">Delimiters:</td>
+						<td class="option"><input id="delimiters" type="text" /></td>
+					</tr>
+					<tr class="content">
+						<td class="label" nowrap>Enable Logging:</td>
+						<td class="option"><input id="enable-logging" type="checkbox" />
+						</td>
+					</tr>
+					<tr class="content">
+						<td class="label" nowrap>Enable Debugging:</td>
+						<td class="option"><input id="enable-debugging"
+							type="checkbox" /></td>
+					</tr>
+					<tr class="content">
+						<td class="label">Debug Filters:</td>
+						<td class="option"><input id="debug-filters" type="text"
+							size="100" /></td>
+					</tr>
+				</table>
+			</div>
+			<!-- ================================ -->
+			<div id="tabs-6">
+				Developed by <a href="http://www.noojee.com.au">Noojee Telephony
+					Solutions</a>.<br /> Copyright Brett Sutton<br />
+				<br /> Adapted for Google Chrome by Sven Werlen.<br /> <b>License</b>:
+				GNU Public License v.3 (<a
+					href="http://www.gnu.org/licenses/gpl.html">read</a>) <br /> <br />
+				Thank you for using Noojee Click!
+			</div>
+			<!-- ================================ -->
+		</div>
+
+		<br />
+		<div class="actions">
+			<button id="save">Save Options</button>
+			<button id="reset">Reset Defaults</button>
+			<button id="import">Import</button>
+			<button id="export">Export</button>
+		</div>
+</body>
+</html>

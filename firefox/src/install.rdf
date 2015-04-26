@@ -10,7 +10,7 @@
         </em:description>
         <em:creator>Brett Sutton</em:creator>
         <em:homepageURL>http://www.noojee.com.au//products/noojee-click/click-overview</em:homepageURL>
-        <em:optionsURL>chrome://noojeeclick/content/xul/configuration.xul</em:optionsURL>
+        <em:optionsURL>chrome://noojeeclick/content/xul/options.xul</em:optionsURL>
 
         <!-- You can't do this when uploading to the mozilla add on site. -->
 		@updateURL@

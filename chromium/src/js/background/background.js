@@ -59,10 +59,12 @@ chrome.extension.onRequest.addListener(
 			// empty response
 			sendResponse({});
 		}
+		else if (request.type == "callFailed") {
+			noojeeClick.LIB.theApp.dialStatus.callFailed();
+			// empty response
+			sendResponse({});
+		}
 		
-		
-		
-
 		// ignore invalid requests
 		else {
 			sendResponse({});
@@ -78,13 +80,13 @@ chrome.runtime.onInstalled.addListener(function(details)
 {
     if(details.reason == "install")
     {
-        noojeeClick.LIB.theApp.prefs.initPrefs();
+        noojeeClick.LIB.theApp.options.initOptions();
         console.log("This is a first install!");
     }
     else if(details.reason == "update")
     {
         var thisVersion = chrome.runtime.getManifest().version;
-        noojeeClick.LIB.theApp.prefs.initPrefs();
+        noojeeClick.LIB.theApp.options.initOptions();
         console.log("Updated from " + details.previousVersion + " to " + thisVersion + "!");
     }
 });

@@ -23,7 +23,7 @@ noojeeClick.ns(function()
 	with (noojeeClick.LIB)
 	{
 
-		theApp.dialstatus =
+		theApp.dialStatus =
 		{
 
 		    self : null,
@@ -70,6 +70,16 @@ noojeeClick.ns(function()
 
 				    return this.statusWindow;
 			    };
+			    
+			    this.callFailed = function()
+			    {
+			    	theApp.noojeeClick.resetIcon();
+			    }
+
+			    this.hangup = function()
+			    {
+			    	theApp.noojeeClick.resetIcon();
+			    }
 
 		    }
 

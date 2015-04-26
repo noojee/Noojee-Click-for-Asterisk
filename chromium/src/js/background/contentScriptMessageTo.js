@@ -19,7 +19,7 @@
  **/
 
 /**
- * This class is used to pass messages from content scripts to the background process.
+ * This class is used to pass messages from background scripts to content scripts.
  * This is specific to Chrome extension's development. 
  * 
  * The background process is implemented in background.js 
@@ -31,7 +31,6 @@ noojeeClick.ns(function() { with (noojeeClick.LIB) {
  */
 theApp.contentScriptMessageTo =
 {
-
 showClickIcons: function ()
 {
 	chrome.tabs.getSelected(null, function(tab) 
@@ -39,7 +38,8 @@ showClickIcons: function ()
 				// Send a request to the content script in the current tab to re-render the click icons.
 				chrome.tabs.sendRequest(tab.id, {action: "showClickIcons"}, function(response) 
 				{
-					console.log(response);
+					if (response != undefined)
+						console.log(response);
 				});
 			});
 },
@@ -48,16 +48,30 @@ refresh: function ()
 {
 	chrome.tabs.getSelected(null, function(tab) 
 			{
-				
 				// Send a request to the content script in the current tab to re-render the click icons.
 				chrome.tabs.sendRequest(tab.id, {action: "refresh"}, function(response) 
 				{
-					console.log(response);
+					if (response != undefined)
+						console.log(response);
 				});
 			});
 
 },
 
+refreshAll: function ()
+{
+	chrome.tabs.getSelected(null, function(tab) 
+			{
+				// Send a request to the content script in the current tab to re-render the click icons.
+				// It will then propagate the request to all open tabs.
+				chrome.tabs.sendRequest(tab.id, {action: "refreshAll"}, function(response) 
+				{
+					if (response != undefined)
+						console.log(response);
+				});
+			});
+
+},
 };
 
 }});

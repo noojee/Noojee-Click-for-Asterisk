@@ -20,6 +20,13 @@
 
 var noojeeClick = {};
 
+noojeeClick.LIB = {
+    // Extension app singleton shortcut
+    theApp: noojeeClick
+};
+
+
+
 (function()
 {
 	// for debugging as we can't use njdebug during the initialisation.
@@ -58,7 +65,7 @@ var noojeeClick = {};
 	;
 
 	/*
-	 * Used to support the above function onConfigurationLoad. This method is an
+	 * Used to support the above function onOptionsLoad. This method is an
 	 * intentional duplication of noojeeClick.util.getBoolValue
 	 */
 	function getBoolValue(key)
@@ -348,7 +355,7 @@ var noojeeClick = {};
 			
 			
 			// every 5 seconds check if quick picks need to be reloaded.
-			// We orginally did this off the back of the configuration window close event
+			// We orginally did this off the back of the Options window close event
 			// but when the window closes all timers are killed (as well as any outstanding ajax calls).
 			// hence we now have this timer.
 			setInterval(function () {noojeeClick.retrieveQuickPicks()}, 5000);
@@ -398,7 +405,7 @@ var noojeeClick = {};
 
 		if (hostname == null || hostname.length == 0 || username == null || username.length == 0 || password == null || password.length == 0)
 		{
-			ns_alert("Error: You can't save the Noojee Click configuration with an empty Host, Username or Password.");
+			ns_alert("Error: You can't save the Noojee Click Options with an empty Host, Username or Password.");
 		}
 		else
 		{
@@ -419,7 +426,7 @@ var noojeeClick = {};
 	 * * returns the login object for the given hostname/username combination if
 	 * it exists. * If the credential doesn't exist then null is returned. * The
 	 * hostname should the ip address/hostname of the asterisk server as * it
-	 * appears in the configuration dialog.
+	 * appears in the Options dialog.
 	 */
 	function findCredentials(hostname, username)
 	{
@@ -453,7 +460,7 @@ var noojeeClick = {};
 	/*
 	 * * returns the password for the given hostname/username combination * The
 	 * hostname should the ip address/hostname of the asterisk server as * it
-	 * appears in the configuration dialog.
+	 * appears in the Optoins dialog.
 	 */
 	function retrieveCredentials(hostname, username)
 	{
@@ -469,19 +476,19 @@ var noojeeClick = {};
 
 	/*
 	 * This method doesn't really belong here, unfortunately this method is used
-	 * from configuration.xul and configuration.xul doesn't like initialising
+	 * from options.xul and options.xul doesn't like initialising
 	 * the name space. I believe that a xul windows is just like another browser
 	 * instance and so the namespace has to be loaded. My best guess is that the
 	 * eventListeners (at the bottom of this class) aren't being called.
 	 */
-	this.onConfigurationLoad = function()
+	this.onOptionsLoad = function()
 	{
 		try
 		{
-			ns_debug("config", "onConfigurationLoad called");
+			ns_debug("config", "onOptionsLoad called");
 			if (window.document != null)
 			{
-				var tabBox = window.document.getElementById('njConfigTabbox');
+				var tabBox = window.document.getElementById('njOptionsTabbox');
 				var asteriskTab = tabBox.tabs.getItemAtIndex(3);
 				var advancedTab = tabBox.tabs.getItemAtIndex(4);
 
@@ -512,17 +519,17 @@ var noojeeClick = {};
 			}
 		} catch (e)
 		{
-			ns_alert("error loading configuration " + e);
+			ns_alert("error loading options" + e);
 		}
 	};
 
 	
 
-	this.onConfigurationClosed = function()
+	this.onOptionsClosed = function()
 	{
 		try
 		{
-			ns_debug("config", "onConfigurationClosed called");
+			ns_debug("config", "onOptionsClosed called");
 
 			if (window.document != null)
 			{
@@ -541,7 +548,7 @@ var noojeeClick = {};
 			}
 		} catch (e)
 		{
-			ns_alert("error saving configuration " + e);
+			ns_alert("error saving options" + e);
 			ns_debug("config", "Exception: " + e);
 		}
 

@@ -41,13 +41,13 @@ Dial: function ()
 				
 		if (extension == null)
 		{
-			theApp.prompts.njAlert("Please enter your extension via the configuration panel first.");
+			theApp.prompts.njAlert("Please enter your extension via the Options panel first.");
 			return;
 		}
 
 		if (context == null)
 		{
-			theApp.prompts.njAlert("Please enter the context via the configuration panel first.");
+			theApp.prompts.njAlert("Please enter the context via the Options panel first.");
 			return;
 		}
 
@@ -117,12 +117,12 @@ Dial: function ()
 		if (enableAutoAnswer)
 		{
 			var i = 0;
-			for (i = 0; i < theApp.noojeeclick.autoAnswerList.length; i++)
+			for (i = 0; i < theApp.asterisk.autoAnswerList.length; i++)
 			{
-				theApp.logging.njdebug("job", "manufacturer(i)=" + theApp.noojeeclick.autoAnswerList[i].manufacturer);
-				if (handsetType == theApp.noojeeclick.autoAnswerList[i].manufacturer)
+				theApp.logging.njdebug("job", "manufacturer(i)=" + theApp.asterisk.autoAnswerList[i].manufacturer);
+				if (handsetType == theApp.asterisk.autoAnswerList[i].manufacturer)
 				{
-					url += "&Variable=" + "SIPAddHeader=" + theApp.noojeeclick.autoAnswerList[i].header;
+					url += "&Variable=" + "SIPAddHeader=" + theApp.asterisk.autoAnswerList[i].header;
 					break;
 				}
 			}
@@ -149,7 +149,7 @@ Dial: function ()
 		{
 			theApp.logging.njlog("Dial Failed");
 			theApp.asterisk.getInstance().updateState("");
-			theApp.noojeeclick.resetIcon();
+			theApp.dialStatus.getInstance().callFailed();
 			theApp.notification.getInstance().hide();
 			
 			if (result.message == "Authentication Required")
@@ -164,7 +164,7 @@ Dial: function ()
 				theApp.asterisk.getInstance().setLoggedIn(false);
 				if (result.message == "Permission denied: please login first.")
 				{
-					theApp.util.showError(result.response, "Invalid Username/Password. Please check your Noojee Click configuration against manager.conf.");
+					theApp.util.showError(result.response, "Invalid Username/Password. Please check your Noojee Click Options against manager.conf.");
 				}
 				else
 					theApp.util.showError(result.response, "Permission Denied, please check the read/write options in manager.conf.");
@@ -212,13 +212,13 @@ Answer: function (channel)
 
 		if (extension == null)
 		{
-			theApp.prompts.njAlert("Please enter your extension via the configuration panel first.");
+			theApp.prompts.njAlert("Please enter your extension via the Options panel first.");
 			return;
 		}
 
 		if (context == null)
 		{
-			theApp.prompts.njAlert("Please enter the context via the configuration panel first.");
+			theApp.prompts.njAlert("Please enter the context via the Options panel first.");
 			return;
 		}
 
@@ -250,12 +250,12 @@ Answer: function (channel)
 		if (enableAutoAnswer)
 		{
 			var i = 0;
-			for (i = 0; i < theApp.noojeeclick.autoAnswerList.length; i++)
+			for (i = 0; i < theApp.asterisk.autoAnswerList.length; i++)
 			{
-				theApp.logging.njdebug("job", "manufacturer(i)=" + theApp.noojeeclick.autoAnswerList[i].manufacturer);
-				if (handsetType == theApp.noojeeclick.autoAnswerList[i].manufacturer)
+				theApp.logging.njdebug("job", "manufacturer(i)=" + theApp.asterisk.autoAnswerList[i].manufacturer);
+				if (handsetType == theApp.asterisk.autoAnswerList[i].manufacturer)
 				{
-					url += "&Variable=" + "SIPAddHeader=" + theApp.noojeeclick.autoAnswerList[i].header;
+					url += "&Variable=" + "SIPAddHeader=" + theApp.asterisk.autoAnswerList[i].header;
 					break;
 				}
 			}
@@ -283,7 +283,7 @@ Answer: function (channel)
 		{
 			theApp.logging.njlog("Answer Failed");
 			theApp.asterisk.getInstance().updateState("");
-			theApp.noojeeclick.resetIcon();
+			theApp.dialStatus.getInstance().callFailed();
 			if (result.message == "Authentication Required")
 			{
 				theApp.dialstatus.getInstance().updateStatus("The connection to Asterisk was lost. Wait whilst we reconnect.");
@@ -296,7 +296,7 @@ Answer: function (channel)
 				theApp.asterisk.getInstance().setLoggedIn(false);
 				if (result.message == "Permission denied: please login first.")
 				{
-					theApp.util.showError(result.response, "Invalid Username/Password. Please check your Noojee Click configuration against manager.conf.");
+					theApp.util.showError(result.response, "Invalid Username/Password. Please check your Noojee Click Options against manager.conf.");
 				}
 				else
 					theApp.util.showError(result.response, "Permission Denied, please check the read/write options in manager.conf.");
@@ -407,7 +407,7 @@ Wait: function (subSequence)
 	
 	this.error = function(responseText)
 	{
-		theApp.noojeeclick.resetIcon();
+		theApp.dialStatus.getInstance().callFailed();
 		theApp.asterisk.getInstance().updateState("");
 		
 		if (responseText == null || responseText.length == 0)
@@ -436,17 +436,17 @@ HangupAction: function (channel)
 		var context = theApp.prefs.getValue("context");
 
 		theApp.asterisk.getInstance().updateState("");
-		theApp.noojeeclick.resetIcon();
+		theApp.dialStatus.getInstance().hangup();
 
 		if (extension == null)
 		{
-			theApp.prompts.njAlert("Please enter your extension via the configuration panel first.");
+			theApp.prompts.njAlert("Please enter your extension via the Options panel first.");
 			return;
 		}
 
 		if (context == null)
 		{
-			theApp.prompts.njAlert("Please enter the context via the configuration panel first.");
+			theApp.prompts.njAlert("Please enter the context via the Options panel first.");
 			return;
 		}
 
@@ -493,7 +493,7 @@ HangupAction: function (channel)
 		// We have now hungup so make certain the status line
 		// is clear.
 		theApp.asterisk.getInstance().updateState("Disconnecting");
-		theApp.noojeeclick.resetIcon();
+		theApp.dialStatus.getInstance().hangup();
 		window.setTimeout(function () {noojeeClick.asterisk.getInstance().updateState('');}, 3000);
 		
 		return abort;
