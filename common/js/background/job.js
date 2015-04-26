@@ -103,6 +103,7 @@ Dial: function ()
 
 		url += "&Variable=CALLERID(Num)=" + normalised; // Hopefully sets the handsets display 
 		url += "&Variable=CALLERID(Name)=" + "Dialing: " + phoneNo ;  //and this as well.
+		url += "&Variable=NoojeeAPICallerIDNum=" + normalised; // NoojeePBX over-writes CALLERID(NUM) but will use this.
 		url += "&Variable=njClickOriginated=true";  //Tells Noojee Answer and everybody else that NJ click started the call.
 		
 		var supressNjAnswer = theApp.prefs.getBoolValue("supressNoojeeAnswerBar.enabled");

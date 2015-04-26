@@ -9,7 +9,7 @@
 	<property name="build" location="build" />
 	<property name="dist" location="dist" />
 
-	<property name="version" value="2.0.13" />
+	<property name="version" value="3.0.0" />
 	<property name="maxMozillaFirefoxVersion" value="32.0" />
 	<property name="maxLocalFirefoxVersion" value="45.0" />
 	<property name="maxClientFirefoxVersion" value="45.0" />
