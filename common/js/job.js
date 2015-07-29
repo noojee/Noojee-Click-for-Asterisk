@@ -101,7 +101,8 @@ Dial: function ()
 		// is being dialed on the local handset's LCD.
 		// The CALLERID(Name) is set for sip phones that can display text (I think this might work)
 
-		url += "&Variable=CALLERID(Num)=" + normalised; // Hopefully sets the handsets display 
+		url += "&Variable=CALLERID(Num)=" + normalised; // Hopefully sets the handsets display
+		url += "&Variable=NoojeeAPICallerIDNum=" + callerID; // NoojeePBX over-writes CALLERID(NUM) but will use this.
 		url += "&Variable=CALLERID(Name)=" + "Dialing: " + phoneNo ;  //and this as well.
 		url += "&Variable=njClickOriginated=true";  //Tells Noojee Answer and everybody else that NJ click started the call.
 		
