@@ -1,11 +1,9 @@
-noojeeClick.ns(function() 
+noojeeClick.ns(function ()
 {
 	with (noojeeClick.LIB) 
 	{
-	
 		theApp.quickpicks =
 		{
-		
 			reloadQuickPicks : function()
 			{
 				setBoolValue("clidquickpick.reload", true);
@@ -33,7 +31,9 @@ noojeeClick.ns(function()
 							{
 								if (xmlhttp.status == 200)
 								{
-									// We have a success so lets load the pick list and
+									// We have a success so lets
+									// load the pick
+									// list and
 									// save
 									// it to properties.
 			
@@ -62,10 +62,12 @@ noojeeClick.ns(function()
 								}
 			
 								ns_debug("quickpicks", "exiting state=" + xmlhttp.readyState);
-								// Flag that the menu needs to be reloaded.
+								// Flag that the menu needs to be
+								// reloaded.
 								setBoolValue("clidquickpick.reset", "true");
 							}
-						} catch (e)
+						} 
+						catch (e)
 						{
 							ns_debug("quickpicks", "exception " + e);
 						}
@@ -74,17 +76,12 @@ noojeeClick.ns(function()
 					ns_debug("quickpicks", "calling open on url");
 					xmlhttp.open("GET", quickPickUrl, true);
 			
-					// xmlhttp.open("GET", quickPickUrl + ((/\?/).test(url) ? "&" : "?")
-					// +
-					// (new Date()).getTime(), true);
-					// xmlhttp.withCredentials = "true";
 					ns_debug("quickpicks", "calling send on url");
 					xmlhttp.send();
 					ns_debug("quickpicks", "calling send complete");
 				}
-			};
-		
-		
-		};
+			} // end of retrieve picks
+		}; // end of theApp.quickpicks = 
+	} // end of with
+});
 
-}});
