@@ -14,7 +14,7 @@
 	 On my system I ran:
 	  ln -s /usr/bin/chromium-browser /usr/bin/google-chrome
 	-->
-	<property name="chrome" location="/usr/bin/google-chrome"/>
+	<property name="chrome" location="/opt/google/chrome/chrome"/>
 	
 	<!-- ==============================
 		Initialization
@@ -31,15 +31,15 @@
 		<!-- Create the build directory -->
 		<mkdir dir="${build}"/>
 		
-		<!-- copy the defaults -->
+		<!-- copy the defaults
 		<mkdir dir="${build}/defaults" />
 		<copy todir="${build}/defaults">
 			<fileset dir="../common/defaults/preferences" />
 		</copy>
+		-->
 		
-		<!-- Merge common and specific sources -->
+		<!-- Copy sources to build area -->
 		<copy todir="${build}">
-			<fileset dir="../common"/>
 			<fileset dir="${src}">
 				<exclude name="js/README"/>
 			</fileset>
@@ -49,7 +49,8 @@
 	<!-- ==============================
 		Packages NoojeeClick extension
 		-->
-	<target name="dist" depends="build">
+	<!-- Chrome packaging -->
+	<target name="dist-chrome" depends="build">
 		<!-- Create the distribution directory -->
 		<mkdir dir="${dist}"/>
 		
@@ -58,11 +59,37 @@
 			<arg value="--pack-extension=${build}"/>
 			<arg value="--pack-extension-key=private_key/noojee_click.pem"/>
 			<arg value="--no-message-box"/>
+			<!-- pass a fake profile in as if chrome is already running it will refuse to package unless we use a different profile.-->
+			<arg value="--user-data-dir=build_profile"/>
 		</exec>
 		
 		<!-- Move generated file -->
 		<move file="build.crx" tofile="${dist}/noojee_click.crx"/>
 	</target>
+
+	<!-- Firefox packaging -->
+	<target name="dist-firefox" depends="build">
+		<!-- Create the distribution directory -->
+		<mkdir dir="${dist}"/>
+		
+		<jar basedir="@{build}" duplicate="fail" excludes="**/*" destfile="@{dist}/noojeeclick.xpi">
+			<fileset dir="@{build}">
+				<include name="**/*.xml" />
+				<include name="**/*.js" />
+				<include name="**/*.css" />
+				<include name="**/*.png" />
+				<include name="**/*.json" />
+				<include name="**/*.html" />
+				<exclude name="**/.*" />
+			</fileset>
+		</jar>
+		
+		<!-- Move generated file -->
+		<move file="build.crx" tofile="${dist}/noojee_click.crx"/>
+	</target>
+
+	<target name="dist" depends="dist-chrome, dist-firefox"/>
+
 
 	<!-- ==============================
 		Clean-up

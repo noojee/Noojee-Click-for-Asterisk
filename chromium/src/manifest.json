@@ -1,34 +1,41 @@
 {
-	"name" : "Noojee Click for Asterisk",
-	"version" : "0.94",
+	"name": "Noojee Click for Asterisk",
+	"version": "0.94",
 	"manifest_version": 2,
-	"description" : "Turns phone numbers in any web page into 'click to dial' links. With Noojee Click and Asterisk you can dial any phone number on a web page with a single click.",
-	"background" : { "page": "background.html"},
-	"options_page" : "options.html",
-	"icons" : {
-		"128" : "img/phone-128.png"
+	"description": "Turns phone numbers in any web page into 'click to dial' links. With Noojee Click and Asterisk you can dial any phone number on a web page with a single click.",
+	"background": {
+		"page": "background.html"
 	},
-	"content_scripts": [
-	{
+	"options_ui": {
+		"page": "options.html",
+		"chrome_style": true
+	},
+	"icons": {
+		"128": "img/phone-128.png"
+	},
+//	"applications": {
+//		"gecko": {
+//			"id": "noojeeclick@noojee.com.au"
+//		}
+//	},
+	"content_scripts": [{
 		"matches": ["*://*/*"],
 		"js": [
-			"js/namespace.js", 
-			"js/lib.js", 
-			"js/util.js", 
-			"js/phonepatterns.js", 
-			"js/noojeeclick.js", 
-			"js/prefs.js", 
-			"js/logging.js", 
-			"js/prompts.js", 
-			"js/render.js", 
-			"js/handlers.js", 
-			"js/messagepassing.js", 
-			"js/init.js"]
-	}
-	],
-	"permissions" : [
-		"http://*/", 
-		"contextMenus",
-		"notifications"
-	]
+		"js/lib.js",
+		"js/util.js",
+		"js/phonepatterns.js",
+		"js/dialstatus.js",
+		"js/noojeeclick.js",
+		"js/notification.js",
+		"js/prefs.js",
+		"js/logging.js",
+		"js/prompts.js",
+		"js/render.js",
+		"js/handlers.js",
+		"js/messagepassing.js",
+		"js/init.js"]
+	}],
+	"permissions": ["http://*/",
+	"contextMenus",
+	"notifications"]
 }

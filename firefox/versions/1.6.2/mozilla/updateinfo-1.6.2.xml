@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xhtml>
-<body>
-<h1>Release notes</h1>
-<p>Version 1.6.2 is a small patch designed to fix a problem where the callerid function is called with the incorrect case.
-
-If you have feature requests or installation/configuration problems post them at http://forums.noojee.com.au</p>
-</body>
-</xhtml>
