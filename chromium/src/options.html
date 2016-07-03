@@ -22,14 +22,12 @@
 <link rel="stylesheet" type="text/css" href="css/options.css" />
 <script type="text/javascript" src="js/jquery/jquery-1.7.1.min.js"></script>
 <script type="text/javascript" src="js/jquery/jquery-ui-1.8.17.custom.min.js"></script>
-<script type="text/javascript" src="js/preferences.js"></script>
-<script type="text/javascript" src="defaults/preferences.js"></script>
-<script type="text/javascript" src="js/options.js"></script>
+<script type="text/javascript" src="js/background/options.js"></script>
 </head>
 
 <body>
 
-<div width="1000" class="options">
+<div style="width:1000;" class="options">
 
 <img src="../img/noojeeclick.png" style="float: left;"/>
 <img src="../img/asterisk.png" width="100px" style="float: right;"/>
@@ -38,7 +36,7 @@
 <!-- Status box -->
 <div class="toggler">
 	<div id="status" class="ui-widget-header ui-corner-all">
-		<h2>Options successfully saved!</h3>
+		<h2>Options successfully saved!</h2>
 	</div>
 </div>
 
@@ -51,7 +49,8 @@
 <!-- Import dialog -->
 <div id="dialog-import" title="Import options">
 	<p>
-		<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>Paste the options data (as exported) and click on button "Import".</p>
+		<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
+		Paste the options data (as exported) and click on button "Import".
 		<textarea id="importoptions" rows="9" cols="60"></textarea>
 	</p>
 </div>
@@ -238,13 +237,16 @@
 	</div>
 	<!-- ================================ -->
 	<div id="tabs-6">
-		Developed by <a href="http://www.noojee.com.au">Noojee Telephony Solutions</a>.<br />
-		Copyright Brett Sutton<br /><br />
-		Adapted for Google Chrome by Sven Werlen.<br />
+		Developed by <a href="http://www.noojee.com.au">Noojee Contact Solutions'</a> sister company Noojee IT. 	Copyright S. Brett Sutton<br /><br />
+		Author S. Brett Sutton<br /><br />
+		<br />
+		I hope you get some value out of using Noojee Click.<br/>
+		If you do, then consider making a donation to a worthy charity or just donate some of your time to a local community group.<br/>
+		Did I mention how much I hate Javascript! Close to the worst language I've ever used and I've used Cobol...<br/><br/>
+		
+		A big thanks to <b>Sven Werlen</b> for the initial port to Chrome.<br /><br/>
 		<b>License</b>: GNU Public License v.3 (<a href="http://www.gnu.org/licenses/gpl.html">read</a>)
-		<br />
-		<br />
-		Thank you for using Noojee Click!
+		
 	</div>
 	<!-- ================================ -->
 </div>
@@ -255,6 +257,7 @@
 	<button id="reset">Reset Defaults</button>
 	<button id="import">Import</button>
 	<button id="export">Export</button>
+</div>
 </div>
 </body>
 </html>

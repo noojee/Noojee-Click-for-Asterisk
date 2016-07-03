@@ -18,19 +18,16 @@
  **/
 
 /**
- * Since content scripts run in a context of a web page and not the 
- * extension, it's important to retrieve the options from the extension.
+ * Since content scripts run in a context of a web page and not the extension, it's important to retrieve the options from the extension.
  * (http://code.google.com/chrome/extensions/messaging.html)
  * 
- * The following code requests the option values from the extension.
- * (see listeners in src/js/background/background.js)
- **/
-chrome.extension.sendRequest({ action: 'options' }, function (response) 
+ * The following code requests the option values from the extension. (see listeners in src/js/background/background.js)
+ */
+chrome.extension.sendRequest(
 {
-    optionsAccessor.getInstance().setStorage(response.option_values);
-    noojeeClick.getInstance().onPageLoad();
+	action : 'options'
+}, function(response)
+{
+	optionsAccessor.getInstance().setStorage(response.option_values);
+	noojeeClick.getInstance().onPageLoad();
 });
-
-
-
-

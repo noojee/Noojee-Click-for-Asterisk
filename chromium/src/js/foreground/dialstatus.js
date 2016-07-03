@@ -62,8 +62,7 @@ var dialstatus = ( function( window, undefined )
 		    return this.statusWindow;
 		}
 
-		return 
-		{
+		return {
 			updateStatus : updateStatus,
 			getStatusWindow : getStatusWindow
 		};

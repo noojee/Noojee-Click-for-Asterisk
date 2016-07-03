@@ -365,7 +365,7 @@ var event = ( function( window, undefined )
 					asterisk.updateState(this.state);
 				}
 			};
-		},
+		}
 		
 		function Newcallerid(response)
 		{
@@ -397,7 +397,7 @@ var event = ( function( window, undefined )
 		
 		return 
 		{
-			eventFactory : eventFactory,
+			eventFactory : eventFactory
 		};
 		
 	} // end initializeNewModule

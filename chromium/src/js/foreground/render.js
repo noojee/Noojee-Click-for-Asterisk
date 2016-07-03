@@ -1,22 +1,16 @@
 /**
- * Copyright 2012 Brett Sutton
- * (Adapted for Google Chrome by Sven Werlen)
- *
+ * Copyright 2012 Brett Sutton (Adapted for Google Chrome by Sven Werlen)
+ * 
  * This file is part of Noojee Click.
  * 
- * Noojee Click is free software: you can redistribute it and/or modify it 
- * under the terms of the GNU General Public License as published by the 
- * Free Software Foundation, either version 3 of the License, or (at your 
- * option) any later version.
+ * Noojee Click is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later version.
  * 
- * Noojee Click is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License 
- * for more details.
+ * Noojee Click is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
- * You should have received a copy of the GNU General Public License along 
- * with Noojee Click. If not, see http://www.gnu.org/licenses/.
- **/
+ * You should have received a copy of the GNU General Public License along with Noojee Click. If not, see http://www.gnu.org/licenses/.
+ */
 
 
 
@@ -58,11 +52,10 @@ var render = ( function( window, undefined )
 		        try
 		        {
 		            /*
-					 * Special check. It looks like an interaction problem between the monitor and fckEditor. Anyway
-					 * I'm guessing document has gone away by the time the monitor kicks in. Any reference to the
-					 * document will throw an error. Given we don't want to add click to dial links to these type of
-					 * pages we just suppress the error by catching it and returning. Note: the monitor is currently
-					 * disabled due to massive performance problems with firefox.
+					 * Special check. It looks like an interaction problem between the monitor and fckEditor. Anyway I'm guessing document has gone away by the
+					 * time the monitor kicks in. Any reference to the document will throw an error. Given we don't want to add click to dial links to these
+					 * type of pages we just suppress the error by catching it and returning. Note: the monitor is currently disabled due to massive performance
+					 * problems with firefox.
 					 */
 		            if (doc === null || doc.location === null || doc.location.href === null)
 		            {
@@ -170,10 +163,9 @@ var render = ( function( window, undefined )
 			            var xpath = "//text()[(parent::" + this.tagsOfInterest.join(" or parent::") + ")]";
 			            
 			            /**
-			             * Seach the document for any tag which is in the set of 'tagsOfInterest'.
-			             * candidateTags contain the list of tags from the active document
-			             * which we need to search for phone numbers.
-			             */
+						 * Seach the document for any tag which is in the set of 'tagsOfInterest'. candidateTags contain the list of tags from the active
+						 * document which we need to search for phone numbers.
+						 */
 			            var candidateTags = document.evaluate(xpath, document, null,
 			                    XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null);
 		
@@ -191,21 +183,20 @@ var render = ( function( window, undefined )
 		
 				            logging.getInstance().njdebug("render", "examining node=" + candidateTag.nodeValue);
 				            /*
-				             * Examine the candidateTags content (nodeValue) to see if it has a phone number.
-				             */
+							 * Examine the candidateTags content (nodeValue) to see if it has a phone number.
+							 */
 				            if (phonePatternRegex.test(candidateTag.nodeValue))
 				            {
 				            	/* Looks like the candidateTag contains a phone number */
 				            	
 					            /*
-								 * Check that the node isn't owned by a document which is in design mode (i.e. an
-								 * editor such as fckeditor). If it is then we skip the node.
+								 * Check that the node isn't owned by a document which is in design mode (i.e. an editor such as fckeditor). If it is then we
+								 * skip the node.
 								 */
 					            logging.getInstance().njdebug("render", "Scanning for an editor parent for cand=" + candidateTag);
 		
 					            /*
-								 * Scan all of the owners checking for an editor. If we are owned by an editor then
-								 * skip this tag.
+								 * Scan all of the owners checking for an editor. If we are owned by an editor then skip this tag.
 								 */
 		
 					            var parent = candidateTag.parentNode;
@@ -231,8 +222,7 @@ var render = ( function( window, undefined )
 						            {
 							            logging.getInstance().njerror("render", "bugger, self referencing parent.");
 							            /*
-										 * definition:bugger, from the latin australias - Woe is me, that shouldn't
-										 * have happened.
+										 * definition:bugger, from the latin australias - Woe is me, that shouldn't have happened.
 										 */
 							            break;
 						            }
@@ -241,14 +231,13 @@ var render = ( function( window, undefined )
 					            }
 		
 					            /*
-					             * If the candidateTag is editable then we aren't interested so lets skip out of here.
-					             */
+								 * If the candidateTag is editable then we aren't interested so lets skip out of here.
+								 */
 					            if (editable) continue;
 		
 					            /*
-								 * First check that the parent isn't already a noojeeClick element. In some cases we
-								 * appear to be processing the document twice but I've not found a simple way to
-								 * suppress it so we do this simple check
+								 * First check that the parent isn't already a noojeeClick element. In some cases we appear to be processing the document twice
+								 * but I've not found a simple way to suppress it so we do this simple check
 								 */
 					            if (candidateTag.parentNode !== null
 					                    && candidateTag.parentNode.getAttribute("name") != "noojeeClick")
@@ -256,16 +245,14 @@ var render = ( function( window, undefined )
 						            var candParent = candidateTag.parentNode;
 		
 						            /*
-						             * Start by determining where to re-insert the tag
-						             * i.e. some candidate tags will have siblings.
-						             */
+									 * Start by determining where to re-insert the tag i.e. some candidate tags will have siblings.
+									 */
 						            var insertPosition = candidateTag.nextSibling;
 						            
 		
 						            /*
-									 * We now remove the candidateTag as we are going to re-insert it back into the
-									 * parent piecemeal with noojeeclick spans inserted around each phone number.
-									 * Remember each candidateTag can have multiple phone numbers present.
+									 * We now remove the candidateTag as we are going to re-insert it back into the parent piecemeal with noojeeclick spans
+									 * inserted around each phone number. Remember each candidateTag can have multiple phone numbers present.
 									 */
 						            candParent.removeChild(candidateTag);
 						            
@@ -274,10 +261,9 @@ var render = ( function( window, undefined )
 						            phonePatternRegex.lastIndex = 0;
 		
 						            /*
-									 * In a single piece of text we may have multiple matches so we need to iterate
-									 * over the list of matches. We go through the 'text' identifying each phone
-									 * number which we wrap in an span tag with the noojee click icon. As we go we
-									 * re-insert the text back into the parent (which we removed it from)
+									 * In a single piece of text we may have multiple matches so we need to iterate over the list of matches. We go through the
+									 * 'text' identifying each phone number which we wrap in an span tag with the noojee click icon. As we go we re-insert the
+									 * text back into the parent (which we removed it from)
 									 */
 						            for ( var match = null, lastLastIndex = 0; (match = phonePatternRegex.exec(candidateContents));)
 						            {
@@ -287,22 +273,18 @@ var render = ( function( window, undefined )
 						            	logging.getInstance().njdebug("render.build", "match=" + match);
 		
 							            /*
-										 * rebuild the original source string as we go by adding the non-matching
-										 * substrings between the matching substrings.
+										 * rebuild the original source string as we go by adding the non-matching substrings between the matching substrings.
 										 */
 		
 							            /*
-										 * Add the non-matching substring which appears between the matching
-										 * substrings into the new parent node.
+										 * Add the non-matching substring which appears between the matching substrings into the new parent node.
 										 */
 							            var nonMatching = candidateContents.substring(lastLastIndex, match.index);
 		
 							            /*
-										 * Check the characters immediately before and after the matching digit. If
-										 * we find a digit, period, comma, plus or minus sign or one of the defined
-										 * delimiters before or after the matching region then the match region is
-										 * probably part of some bigger number which isn't actually a phone number.
-										 * So mark it as non-matching and move on.
+										 * Check the characters immediately before and after the matching digit. If we find a digit, period, comma, plus or
+										 * minus sign or one of the defined delimiters before or after the matching region then the match region is probably
+										 * part of some bigger number which isn't actually a phone number. So mark it as non-matching and move on.
 										 */
 		
 							            /*
@@ -311,23 +293,20 @@ var render = ( function( window, undefined )
 							            if (match.index > 0)
 							            {
 								            /*
-											 * njlog("preceeding=" + source.substring( match.index - 1,
-											 * match.index));
+											 * njlog("preceeding=" + source.substring( match.index - 1, match.index));
 											 */
 								            if ("0123456789+-,.".indexOf(candidateContents.substring(match.index - 1,
 								                    match.index)) != -1)
 								            {
 									            /*
-												 * the non match had an invalid character so our number mustn't be a
-												 * phone number. 
+												 * the non match had an invalid character so our number mustn't be a phone number.
 												 */
 								            	continue;
 								            }
 								            if (delimiters.indexOf(candidateContents.substring(match.index - 1, match.index)) != -1)
 								            {
 									            /*
-												 * the non match contained a delimiter so our number mustn't be a
-												 * phone number. 
+												 * the non match contained a delimiter so our number mustn't be a phone number.
 												 */
 								            	continue;
 								            }
@@ -339,15 +318,13 @@ var render = ( function( window, undefined )
 							            if (match.index + match[0].length < candidateContents.length - 1)
 							            {
 								            /*
-											 * njlog("following=" + source.substring( match.index + match[0].length,
-											 * match.index + match[0].length + 1));
+											 * njlog("following=" + source.substring( match.index + match[0].length, match.index + match[0].length + 1));
 											 */
 								            if ("0123456789+-,.".indexOf(candidateContents.substring(match.index
 								                    + match[0].length, match.index + match[0].length + 1)) != -1)
 								            {
 									            /*
-												 * the non match had an invalid character so our number mustn't be a
-												 * phone number.
+												 * the non match had an invalid character so our number mustn't be a phone number.
 												 */
 									            continue;
 								            }
@@ -355,8 +332,7 @@ var render = ( function( window, undefined )
 								                    match.index + match[0].length + 1)) != -1)
 								            {
 									            /*
-												 * the non match had an invalid character so our number mustn't be a
-												 * phone number.
+												 * the non match had an invalid character so our number mustn't be a phone number.
 												 */
 									            continue;
 								            }
@@ -371,9 +347,8 @@ var render = ( function( window, undefined )
 							            	candParent.insertBefore(document.createTextNode(nonMatching), insertPosition);
 		
 							            /*
-										 * Now render the matching substring (phone number) with the noojee Click
-										 * element wrapping it so it becomes clickable. We support a growing number
-										 * of render styles.
+										 * Now render the matching substring (phone number) with the noojee Click element wrapping it so it becomes clickable.
+										 * We support a growing number of render styles.
 										 */
 							            var renderStyle = "button";
 							            var text = document.createTextNode(match[0]);
@@ -412,8 +387,7 @@ var render = ( function( window, undefined )
 														  
 								            btn.addEventListener("click", handlers.onDialHandler, false);
 								            /*
-											 * We need to suppress any mouse action we may inherit from parent
-											 * element
+											 * We need to suppress any mouse action we may inherit from parent element
 											 */
 								            btn.addEventListener("mouseover", handlers.onMouseOver, false);
 								            btn.addEventListener("mouseout", handlers.onMouseOut, false);
@@ -454,8 +428,7 @@ var render = ( function( window, undefined )
 		}
 		
 		/*
-		 * Determines if a document should be excluded by check if its URL matches any of the URLs laid out in the
-		 * excluded preferences.
+		 * Determines if a document should be excluded by check if its URL matches any of the URLs laid out in the excluded preferences.
 		 */
 		function excluded(doc)
 		{
@@ -500,8 +473,7 @@ var render = ( function( window, undefined )
 		    return excluded;
 		}
 		
-		return 
-		{
+		return {
 			onRefresh : onRefresh,
 			onRefreshOne : onRefreshOne,
 			addClickToDialLinks : addClickToDialLinks,

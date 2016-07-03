@@ -3,18 +3,13 @@
  * 
  * This file is part of Noojee Click.
  * 
- * Noojee Click is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Noojee Click is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later version.
  * 
- * Noojee Click is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * Noojee Click is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
- * You should have received a copy of the GNU General Public License along with
- * Noojee Click. If not, see http://www.gnu.org/licenses/.
+ * You should have received a copy of the GNU General Public License along with Noojee Click. If not, see http://www.gnu.org/licenses/.
  */
  
 
@@ -27,8 +22,7 @@ var phonePatterns = ( function( window, undefined )
 	{
 	  
 		/*
-		 * normalisePhoneNo non-numeric characters from the phone number ready to use in
-		 * dial string
+		 * normalisePhoneNo non-numeric characters from the phone number ready to use in dial string
 		 */ 
 		function normalisePhoneNo(phoneNo)
 		{
@@ -176,10 +170,8 @@ var phonePatterns = ( function( window, undefined )
 						builder += pattern[i];
 					}
 			/*
-			 * deprecating the dot as a wildcard pattern match so that we can use it as
-			 * a delimiter It doesn't actually seem usefull as a wild card as we need to
-			 * match exact sequence lengths otherwise we get to many false positive
-			 * recognitions. else if (pattern[i] == '.') { builder += "\\d+"; }
+			 * deprecating the dot as a wildcard pattern match so that we can use it as a delimiter It doesn't actually seem usefull as a wild card as we need
+			 * to match exact sequence lengths otherwise we get to many false positive recognitions. else if (pattern[i] == '.') { builder += "\\d+"; }
 			 */		
 					else if ("+".indexOf(pattern[i]) > -1)
 					{
@@ -285,8 +277,7 @@ var phonePatterns = ( function( window, undefined )
 			return phone;
 		}
 	
-		return 
-		{
+		return {
 			normalisePhoneNo : normalisePhoneNo,
 			prepPhoneWords : prepPhoneWords,
 			transposePattern : transposePattern,

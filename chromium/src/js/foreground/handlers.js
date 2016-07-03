@@ -1,22 +1,16 @@
 /**
- * Copyright 2012 Brett Sutton
- * (Adapted for Google Chrome by Sven Werlen)
- *
+ * Copyright 2012 Brett Sutton (Adapted for Google Chrome by Sven Werlen)
+ * 
  * This file is part of Noojee Click.
  * 
- * Noojee Click is free software: you can redistribute it and/or modify it 
- * under the terms of the GNU General Public License as published by the 
- * Free Software Foundation, either version 3 of the License, or (at your 
- * option) any later version.
+ * Noojee Click is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later version.
  * 
- * Noojee Click is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License 
- * for more details.
+ * Noojee Click is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
- * You should have received a copy of the GNU General Public License along 
- * with Noojee Click. If not, see http://www.gnu.org/licenses/.
- **/
+ * You should have received a copy of the GNU General Public License along with Noojee Click. If not, see http://www.gnu.org/licenses/.
+ */
 
 
 var handlers= ( function( window, undefined ) 
@@ -38,7 +32,7 @@ var handlers= ( function( window, undefined )
 			e.preventDefault();
 		}
 		
-		//Suppress parent mouse actions.
+		// Suppress parent mouse actions.
 		function onMouseOut (e)
 		{
 			// We don't want any parent elements to see this otherwise they
@@ -65,9 +59,9 @@ var handlers= ( function( window, undefined )
 		}
 		
 		/*
-		* Called when the users clicks the 'Hangup' button on the status bar
-		* 
-		*/
+		 * Called when the users clicks the 'Hangup' button on the status bar
+		 * 
+		 */
 		function onHangup()
 		{
 			logging.getInstance().njdebug("handlers", "onHangup");
@@ -280,8 +274,7 @@ var handlers= ( function( window, undefined )
 		
 		
 		
-		return 
-		{
+		return {
 			onMouseOver: onMouseOver,
 			onMouseOut : onMouseOut,
 			onDial : onDial,

@@ -25,7 +25,7 @@ chrome.contextMenus.create({
     "title": "Dial %s",
     "type": "normal",
     "contexts": ["selection"],
-    "onclick": background.getInstance().dial()
+    "onclick": "background.getInstance().dial()"
 });
 
 chrome.contextMenus.create({

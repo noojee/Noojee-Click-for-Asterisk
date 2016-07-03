@@ -19,9 +19,8 @@
  **/
 
 /**
- * This class is used to pass messages from content scripts to the background process.
- * This is specific to Web Extension development. 
- **/
+ * This class is used to pass messages from content scripts to the background process. This is specific to Web Extension development.
+ */
 
 
 var messagepassing = ( function( window, undefined ) 
@@ -36,8 +35,7 @@ var messagepassing = ( function( window, undefined )
 		  	chrome.extension.sendRequest({type: "dial", phoneNo: phoneNo});
 		}
 		
-		return 
-		{
+		return {
 			dial : dial,
 		};
 		

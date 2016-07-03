@@ -1,21 +1,16 @@
 /**
  * Copyright 2012 Sven Werlen
- *
+ * 
  * This file is part of Noojee Click.
  * 
- * Noojee Click is free software: you can redistribute it and/or modify it 
- * under the terms of the GNU General Public License as published by the 
- * Free Software Foundation, either version 3 of the License, or (at your 
- * option) any later version.
+ * Noojee Click is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later version.
  * 
- * Noojee Click is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License 
- * for more details.
+ * Noojee Click is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
- * You should have received a copy of the GNU General Public License along 
- * with Noojee Click. If not, see http://www.gnu.org/licenses/.
- **/
+ * You should have received a copy of the GNU General Public License along with Noojee Click. If not, see http://www.gnu.org/licenses/.
+ */
 
 
 var noojeeclick = ( function( window, undefined ) 
@@ -27,8 +22,8 @@ var noojeeclick = ( function( window, undefined )
 	function initializeNewModule() 
 	{
 		/**
-			 * Shows a new notification
-			 **/
+		 * Shows a new notification
+		 */
 		function show(icon, title, text, onCloseHandler)
 		{
 			logging.getInstance().njdebug("notification", "Showing " + title);
@@ -40,8 +35,8 @@ var noojeeclick = ( function( window, undefined )
 		}
 		
 		/**
-		 * Hides current notification 
-		 **/
+		 * Hides current notification
+		 */
 		function hide()
 		{
 			if(this.curnotification) 
@@ -58,8 +53,7 @@ var noojeeclick = ( function( window, undefined )
 		  this.show('img/call.png',message,'Close this notification to hang-up immediately.',function() { asterisk.getInstance().hangup(); }	);
 		
 		}
-		return 
-		{
+		return {
 			show : show,
 			hide : hide,
 			dialing : dialing

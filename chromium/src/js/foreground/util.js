@@ -1,22 +1,16 @@
 /**
- * Copyright 2012 Brett Sutton
- * (Adapted for Google Chrome by Sven Werlen)
- *
+ * Copyright 2012 Brett Sutton (Adapted for Google Chrome by Sven Werlen)
+ * 
  * This file is part of Noojee Click.
  * 
- * Noojee Click is free software: you can redistribute it and/or modify it 
- * under the terms of the GNU General Public License as published by the 
- * Free Software Foundation, either version 3 of the License, or (at your 
- * option) any later version.
+ * Noojee Click is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later version.
  * 
- * Noojee Click is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License 
- * for more details.
+ * Noojee Click is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
- * You should have received a copy of the GNU General Public License along 
- * with Noojee Click. If not, see http://www.gnu.org/licenses/.
- **/
+ * You should have received a copy of the GNU General Public License along with Noojee Click. If not, see http://www.gnu.org/licenses/.
+ */
 
 
 
@@ -111,7 +105,7 @@ var util = ( function( window, undefined )
 		{
 			logging.getInstance().njerror("showError r=" + response + " m=" + message);
 			prompts.njAlert(message);
-			//dialstatus.getInstance().updateStatus(message);
+			// dialstatus.getInstance().updateStatus(message);
 		}
 		
 		function showException(method, e)
@@ -123,7 +117,7 @@ var util = ( function( window, undefined )
 				"Error message: " + e.message;
 			logging.getInstance().njerror(message);
 		
-			//logging.getInstance().njerror(this.stacktrace(e));
+			// logging.getInstance().njerror(this.stacktrace(e));
 			prompts.njAlert(message);
 		}
 		
@@ -133,20 +127,20 @@ var util = ( function( window, undefined )
 		function stacktrace(e)
 		{
 			return "";
-		//	var e = new Error('dummy');
-		//	var stack = e.stack.replace(/^[^\(]+?[\n$]/gm, '') // remove lines without '('
-		//	  .replace(/^\s+at\s+/gm, '') // remove prefix text ' at '
-		//	  .split('\n');
+		// var e = new Error('dummy');
+		// var stack = e.stack.replace(/^[^\(]+?[\n$]/gm, '') // remove lines without '('
+		// .replace(/^\s+at\s+/gm, '') // remove prefix text ' at '
+		// .split('\n');
 			
-		//	var f = this.stacktrace;
-		//	var stack = "Stack trace:";
-		//	while (f)
-		//	{
-		//		if (f != this.stacktrace)
-		//			stack += "\n" + f.name;
-		//		f = f.caller;
-		//	}
-		//	return stack;
+		// var f = this.stacktrace;
+		// var stack = "Stack trace:";
+		// while (f)
+		// {
+		// if (f != this.stacktrace)
+		// stack += "\n" + f.name;
+		// f = f.caller;
+		// }
+		// return stack;
 		
 		}
 		
@@ -189,8 +183,7 @@ var util = ( function( window, undefined )
 		}
 		
 		/*
-		 * Returns the class name of the argument or undefined if it's not a valid
-		 * JavaScript object.
+		 * Returns the class name of the argument or undefined if it's not a valid JavaScript object.
 		 */
 		function getObjectClass(obj)
 		{
@@ -279,8 +272,8 @@ var util = ( function( window, undefined )
 			return channel;
 		}	
 			
-		//Tests if the given channel (from an event usually) matches the users
-		//local channel from Noojee Click's configuration.
+		// Tests if the given channel (from an event usually) matches the users
+		// local channel from Noojee Click's configuration.
 		function isLocalChannel(channel)
 		{
 			return this.extractChannel(channel).toLowerCase() == this.getLocalChannel().toLowerCase();
@@ -348,8 +341,7 @@ var util = ( function( window, undefined )
 			return pasteText;
 		}
 		
-		return 
-		{
+		return {
 			Right : Right,
 			Left : Left,
 			trim : trim,
