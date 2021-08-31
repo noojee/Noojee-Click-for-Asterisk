@@ -26,10 +26,8 @@ var background = ( function( window, undefined )
   function initializeNewModule() 
   {
     
-	  function idial()
+	  function dial()
 	  {
-		  debugger;
-		  alert("dial");
 		  return function (info, tab)
 		  {
 			  asterisk.getInstance().dial(info.selectionText);
@@ -82,7 +80,7 @@ var background = ( function( window, undefined )
 
     return {
     	init : init,
-    	dial : idial,
+    	dial : dial,
     	editAndDial : editAndDial
     };
     

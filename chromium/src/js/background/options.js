@@ -59,36 +59,37 @@ var options = (function(window, undefined)
 			debugger;
 			clearStorage();
 
+			alert(commonUtil.trim($("#extension").val()));
 			// Phone
-			localStorage['extension'] = trim($("#extension").val());
+			localStorage['extension'] = commonUtil.trim($("#extension").val());
 			localStorage['enableAutoAnswer'] = $("#auto-answer").attr('checked') == "checked";
 			localStorage['handsetType'] = $("#phone-type").val();
-			localStorage['internationalPrefix'] = trim($("#international-prefix").val());
-			localStorage['dialPrefix'] = trim($("#dial-prefix").val());
-			localStorage['localPrefix'] = trim($("#local-prefix-1").val());
-			localStorage['localPrefixSubstitution'] = trim($("#local-prefix-2").val());
+			localStorage['internationalPrefix'] = commonUtil.trim($("#international-prefix").val());
+			localStorage['dialPrefix'] = commonUtil.trim($("#dial-prefix").val());
+			localStorage['localPrefix'] = commonUtil.trim($("#local-prefix-1").val());
+			localStorage['localPrefixSubstitution'] = commonUtil.trim($("#local-prefix-2").val());
 
 			// Patterns
-			localStorage['pattern'] = trim($("#pattern").val());
+			localStorage['pattern'] = commonUtil.trim($("#pattern").val());
 
 			// Exclusions
-			localStorage['exclusions'] = trim($("#exclusions").val());
+			localStorage['exclusions'] = commonUtil.trim($("#exclusions").val());
 
 			// Asterisk
-			localStorage['host'] = trim($("#host").val());
-			localStorage['port'] = trim($("#port").val());
-			localStorage['username'] = trim($("#username").val());
-			localStorage['password'] = $("#password").val();
-			localStorage['context'] = trim($("#context").val());
+			localStorage['host'] = commonUtil.trim($("#host").val());
+			localStorage['port'] = commonUtil.trim($("#port").val());
+			localStorage['username'] = commonUtil.trim($("#username").val());
+			localStorage['password'] = commonUtil.trim($("#password").val());
+			localStorage['context'] = commonUtil.trim($("#context").val());
 			localStorage['useHttps'] = $("#use-https").attr('checked') == "checked";
 
 			// Advanced
-			localStorage['httpPrefix'] = trim($("#http-prefix").val());
-			localStorage['callerId'] = trim($("#caller-id").val());
-			localStorage['delimiters'] = trim($("#delimiters").val());
+			localStorage['httpPrefix'] = commonUtil.trim($("#http-prefix").val());
+			localStorage['callerId'] = commonUtil.trim($("#caller-id").val());
+			localStorage['delimiters'] = commonUtil.trim($("#delimiters").val());
 			localStorage['enableLogging'] = $("#enable-logging").attr('checked') == "checked";
 			localStorage['enableDebugging'] = $("#enable-debugging").attr('checked') == "checked";
-			localStorage['debugFilter'] = trim($("#debug-filters").val());
+			localStorage['debugFilter'] = commonUtil.trim($("#debug-filters").val());
 		}
 
 		// Restores select box state to saved value from localStorage.
@@ -275,10 +276,21 @@ var options = (function(window, undefined)
 			$("#status").hide();
 			$("#save").click(function()
 			{
+				debugger;
 				var options =
 				{};
+				
+				try
+				{
+				chrome.extension.getBackgroundPage().console.log("saving " + $("#extension").val());
 				$("#status").show("pulsate", options, 500, callback);
 				saveOptions();
+				chrome.extension.getBackgroundPage().console.log("saving " + localStorage['extension']);
+				}
+				catch(e)
+				{
+					chrome.extension.getBackgroundPage().console.log(e);
+				}
 				return false;
 			});
 

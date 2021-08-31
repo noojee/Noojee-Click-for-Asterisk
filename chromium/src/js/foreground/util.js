@@ -14,56 +14,13 @@
 
 
 
-var util = ( function( window, undefined ) 
+var fgUtil = ( function( window, undefined ) 
 {
 	var instance = null;
 	  
 	// revealing module pattern that handles initialization of our new module
 	function initializeNewModule() 
 	{
-						
-		
-		function Right(str, n)
-		{
-			if (n <= 0)
-				return "";
-			else if (n > String(str).length)
-				return str;
-			else
-			{
-				var iLen = String(str).length;
-				return String(str).substring(iLen, iLen - n);
-			}
-		}
-		
-		function Left(str, n)
-		{
-			if (n <= 0)
-				return "";
-			else if (n > String(str).length)
-				return str;
-			else
-			{
-				return String(str).substring(0, n);
-			}
-		}
-		
-		function trim(string)
-		{
-			return string.replace(/^\s+|\s+$/g, "");
-		}
-		
-		function ltrim(string)
-		{
-			return string.replace(/^\s+/, "");
-		}
-		
-		
-		function rtrim()
-		{
-			return string.replace(/\s+$/, "");
-		}
-		
 		function isRClick(e)
 		{
 			var emod = (e) ? (e.eventPhase) ? "W3C" : "NN4" : (window.event) ? "IE4+" : "unknown";
@@ -121,41 +78,6 @@ var util = ( function( window, undefined )
 			prompts.njAlert(message);
 		}
 		
-		/**
-		 * Unfortunately due to security concerns Mozilla deprecated the ability to dumpe a stacktrace.
-		 */
-		function stacktrace(e)
-		{
-			return "";
-		// var e = new Error('dummy');
-		// var stack = e.stack.replace(/^[^\(]+?[\n$]/gm, '') // remove lines without '('
-		// .replace(/^\s+at\s+/gm, '') // remove prefix text ' at '
-		// .split('\n');
-			
-		// var f = this.stacktrace;
-		// var stack = "Stack trace:";
-		// while (f)
-		// {
-		// if (f != this.stacktrace)
-		// stack += "\n" + f.name;
-		// f = f.caller;
-		// }
-		// return stack;
-		
-		}
-		
-		function showTree(node)
-		{
-			logging.getInstance().njdebug("util", "showTree");
-			while (node !== null)
-			{
-				logging.getInstance().njdebug("util", node + ":" + node.nodeName + ":" + node.nodeValue + (node.text !== undefined ? (":" + node.text) : ""));
-				node = node.parentNode;
-			}
-		}
-		
-		
-		
 		function getWindowList()
 		{
 			var documentList = [];
@@ -181,26 +103,7 @@ var util = ( function( window, undefined )
 			logging.getInstance().njdebug("util", "winList count=" + count);
 			return documentList;
 		}
-		
-		/*
-		 * Returns the class name of the argument or undefined if it's not a valid JavaScript object.
-		 */
-		function getObjectClass(obj)
-		{
-			if (obj && obj.constructor && obj.constructor.toString)
-			{
-				var arr = obj.constructor.toString().match(/function\s*(\w+)/);
-		
-				if (arr && arr.length == 2)
-				{
-					return arr[1];
-				}
-			}
-		
-			return undefined;
-		}
-		
-		
+
 		function isHtmlDocument(object)
 		{
 			var isHtml = false;
@@ -237,49 +140,6 @@ var util = ( function( window, undefined )
 			}
 			return doc;
 		}
-		
-		// Retrieves the channel name of the users own extension (including technology)
-		// from the Noojee Click configuration.
-		function getLocalChannel()
-		{
-			var channel = null;
-			var extension = options.getInstance().getValue("extension");
-			
-			if (extension !== null)
-			{
-				if (extension.indexOf("/") == -1)
-				{
-					channel = "SIP/" + extension;
-				}
-				else
-				{
-					channel = extension;
-				}
-			}
-			return channel;
-		
-		}
-		
-		function extractChannel(uniqueChannel)
-		{
-			var channel = uniqueChannel;
-		
-			var index = uniqueChannel.indexOf('-');
-			if (index != -1)
-			{
-				channel = uniqueChannel.substring(0, index);
-			}
-			return channel;
-		}	
-			
-		// Tests if the given channel (from an event usually) matches the users
-		// local channel from Noojee Click's configuration.
-		function isLocalChannel(channel)
-		{
-			return this.extractChannel(channel).toLowerCase() == this.getLocalChannel().toLowerCase();
-		}
-		
-			
 		
 		function getSelectedText()
 		{
@@ -342,11 +202,6 @@ var util = ( function( window, undefined )
 		}
 		
 		return {
-			Right : Right,
-			Left : Left,
-			trim : trim,
-			ltrim : ltrim,
-			rtrim : rtrim,
 			isRClick : isRClick,
 			showError : showError,
 			showTree : showTree,
@@ -355,9 +210,6 @@ var util = ( function( window, undefined )
 			isHtmlDocument : isHtmlDocument,
 			isDigit: isDigit,
 			getParentDocument : getParentDocument,
-			getLocalChannel :getLocalChannel,
-			extractChannel : extractChannel,
-			isLocalChannel : isLocalChannel,
 			getSelectedText : getSelectedText,
 			getRawSelectedText: getRawSelectedText, 
 			getClipboardText : getClipboardText

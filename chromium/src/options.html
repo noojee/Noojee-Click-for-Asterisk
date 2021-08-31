@@ -22,6 +22,7 @@
 <link rel="stylesheet" type="text/css" href="css/options.css" />
 <script type="text/javascript" src="js/jquery/jquery-1.7.1.min.js"></script>
 <script type="text/javascript" src="js/jquery/jquery-ui-1.8.17.custom.min.js"></script>
+<script type="text/javascript" src="js/common/util.js"></script>
 <script type="text/javascript" src="js/background/options.js"></script>
 </head>
 
@@ -47,24 +48,24 @@
 </div>
 
 <!-- Import dialog -->
-<div id="dialog-import" title="Import options">
+<div id="dialog-import" title="Import options" style="display:lex;flex-direction: column; ">
 	<p>
 		<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
 		Paste the options data (as exported) and click on button "Import".
-		<textarea id="importoptions" rows="9" cols="60"></textarea>
+		<textarea style="width:100%;box-sizing: border-box;height: 70%;" id="importoptions" rows="9" cols="60"></textarea>
 	</p>
 </div>
 
 <!-- Export dialog -->
-<div id="dialog-export" title="Export options">
-	<p>
+<div id="dialog-export" title="Export options" style="display: flex;flex-direction: column;">
+	
 		<ul>
 		<li>Select all text (Ctrl+A)</li>
 		<li>Copy to clipboard (Ctrl+C)</li>
 		<li>Paste it somewhere (wiki, text file, etc...).</li>
 		</ul>
-		<textarea id="exportoptions" rows="9" cols="60"></textarea>
-	</p>
+		<textarea  style="width:100%;box-sizing: border-box;height: 100%;" id="exportoptions" rows="9" cols="60"></textarea>
+	
 </div>
 
 <!-- Options -->
